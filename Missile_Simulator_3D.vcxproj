@@ -146,6 +146,7 @@
     <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="src\Engine.cpp" />
     <ClCompile Include="src\glad.c" />
+    <ClCompile Include="src\Missile.cpp" />
     <ClCompile Include="src\Missile_Simulator_3D.cpp" />
     <ClCompile Include="src\Planes.cpp" />
     <ClCompile Include="src\Simulation.cpp" />
@@ -153,6 +154,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Engine.h" />
+    <ClInclude Include="src\Missile.h" />
     <ClInclude Include="src\Planes.h" />
     <ClInclude Include="src\Simulation.h" />
   </ItemGroup>
@@ -163,6 +165,8 @@
     <None Include="Shader\cubemap.vs" />
     <None Include="Shader\ground.fs" />
     <None Include="Shader\ground.vs" />
+    <None Include="Shader\missile.fs" />
+    <None Include="Shader\missile.vs" />
     <None Include="Shader\plane.fs" />
     <None Include="Shader\plane.vs" />
     <None Include="Shader\screen.fs" />

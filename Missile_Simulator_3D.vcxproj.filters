@@ -57,6 +57,9 @@
     <ClCompile Include="src\Planes.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="src\Missile.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Engine.h">
@@ -66,6 +69,9 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\Planes.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Missile.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
@@ -110,6 +116,12 @@
       <Filter>Ressourcendateien</Filter>
     </None>
     <None Include="Shader\plane.fs">
+      <Filter>Ressourcendateien</Filter>
+    </None>
+    <None Include="Shader\missile.vs">
+      <Filter>Ressourcendateien</Filter>
+    </None>
+    <None Include="Shader\missile.fs">
       <Filter>Ressourcendateien</Filter>
     </None>
   </ItemGroup>

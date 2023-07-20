@@ -23,6 +23,7 @@
 #include <SkyBox/Skybox.h>
 
 #include "Planes.h"
+#include "Missile.h"
 
 
 class Simulation
@@ -55,6 +56,8 @@ private:
 	Shader groundShader;
 	Shader planeShader;
 
+	Shader missileShader;
+
 	//Matrizen
 	glm::mat4 projection;
 	glm::mat4 view;
@@ -65,12 +68,20 @@ private:
 	float FPS;
 
 	//Test
+	float rotSpeedX = 0.0f;
+	float rotSpeedY = 0.0f;
+	float rotSpeedZ = 0.0f;
+
+	int missilesLost = 0;
+	int missilesSelfDestruct = 0;
 
 	//World objects
 
 	ModelHandler* plane;
+	ModelHandler* missile;
 
 	vector<Planes*>planes;
+	vector<Missile*>missiles;
 
 	Camera camera;
 
@@ -169,12 +180,16 @@ private:
 	//Updates------------------------------------------------------------------------------
 
 	void updateSimulation();
+	std::tuple<int, float> updateNearestPlane(Missile* missile, vector<Planes*> planes);
+	void updateHitPlane();
+	void updateHitMissile();
 
 	//Rendering------------------------------------------------------------------------------
 
 	void DrawSimulation();
 	void DrawGround();
 	void DrawPlanes();
+	void DrawMissiles();
 	void DrawSettings();
 	void DrawScreen();
 	void DrawText();
