@@ -308,17 +308,19 @@ void Simulation::initVariables()
 	this->cityBox = new Skybox(this->city);
 	this->skyBoxChoice = 1;
 
+	//Timing
+	this->timeFactor = 1.0f;
 
 
-	int amount = 10;
+	int amount = 1;
 	//Planes
-	for (int i = 0; i < amount; i++) {
+	for (int i = 0; i < 2; i++) {
 		for (int j = 0; j < amount; j++) {
 			this->planes.push_back(new Planes(glm::vec3(-1000.0 + j* (rand() % 10 + 1), 400.0+ j * (rand() % 10 + 1), i * (rand() % 200 - 100)), glm::vec3(1.0, 0.0, 0.1), 70, glm::vec3(0.1)));
 		}
 	}
 	//Missiles
-	for (int i = 0; i < amount; i++) {
+	for (int i = 0; i < 2; i++) {
 		for (int j = 0; j < amount; j++) {
 			this->missiles.push_back(new Missile(glm::vec3(0.0 + j * (rand() % 200 + 1), 3.0, i * (rand() % 200 + 1)), glm::vec3(0.0, 1.0, 0.1), 0, RED_ORANGE));
 		}
@@ -334,6 +336,8 @@ void Simulation::initModels()
 	this->plane->Scale(1.0f);
 	this->missile = new ModelHandler(R"(resources\models\missile\missile.obj)");
 	this->missile->Scale(1.0f);
+	this->torret = new ModelHandler(R"(resources\models\torret\torret.obj)");
+
 }
 
 //Inputhandling------------------------------------------------------------------------------
@@ -458,13 +462,13 @@ int Simulation::random(int range, int start)
 void Simulation::updateSimulation()
 {
 	for (auto i : this->planes) {
-		i->update(this->deltaTime);
+		i->update(this->deltaTime * this->timeFactor);
 		i->setDirection(glm::vec3(i->getDirection().x + rotSpeedX, i->getDirection().y + rotSpeedY, i->getDirection().z + rotSpeedZ));
 	}
 	if (this->missiles.size() > 0)
 	{
 		for (auto i : this->missiles) {
-			i->update(this->deltaTime);
+			i->update(this->deltaTime * this->timeFactor);
 			if (this->planes.size() > 0) {
 			
 				int nearest;
@@ -474,7 +478,7 @@ void Simulation::updateSimulation()
 				nearestDistance = std::get<1>(result);
 				glm::vec3 direction = glm::normalize(planes[nearest]->getPosition() - i->getPosition());
 
-				if (nearestDistance < 1000) {
+				if (nearestDistance < 800) {
 					i->setVelocity(150);
 				}
 
@@ -482,17 +486,22 @@ void Simulation::updateSimulation()
 				{
 					i->setDirection(glm::vec3(i->getDirection().x + direction.x*0.02, i->getDirection().y + direction.y * 0.02, i->getDirection().z + direction.z * 0.02));
 				}
+
 				else if (nearestDistance <= 50){
 					i->setDirection(glm::vec3(i->getDirection().x + direction.x * 0.08, i->getDirection().y + direction.y * 0.08, i->getDirection().z + direction.z * 0.08));
 				}
-				else {
-					this->missilesLost++;
-				}
+
 			}
 		}
 	}
+	this->updateCrashingPlanes();
 	this->updateHitPlane();
 	this->updateHitMissile();
+	this->updateErasing();
+
+
+
+	//this->updatePlaneHitsPlane();
 }
 
 std::tuple<int, float> Simulation::updateNearestPlane(Missile* missile, vector<Planes*> planes)
@@ -500,7 +509,7 @@ std::tuple<int, float> Simulation::updateNearestPlane(Missile* missile, vector<P
 	int nearest = 0;
 	float tempDistance = 100000000.0f;
 
-	for (int i = 0; i < planes.size(); i++ ) {
+	for (size_t i = 0; i < planes.size(); i++ ) {
 		float distance;
 		glm::vec3 connectionVector = planes[i]->getPosition() - missile->getPosition();
 		distance = sqrt(connectionVector.x * connectionVector.x + connectionVector.y * connectionVector.y + connectionVector.z * connectionVector.z);
@@ -523,10 +532,13 @@ void Simulation::updateHitPlane()
 			float distance = sqrt(connectionVector.x * connectionVector.x + connectionVector.y * connectionVector.y + connectionVector.z * connectionVector.z);
 		
 			if (distance <= radius) {
-				missiles.erase(missiles.begin() + i);
-				planes.erase(planes.begin() + j);
-				--i; 
-				break;  
+				int crashProb = rand() % 2 + 1;
+				if (crashProb == 1) {
+					planes[j]->setCrashRotationSpeed(rand() % 10 + - 5);
+					this->crashingPlanes.push_back(planes[j]);
+				}
+				this->eraseMissiles.push_back(i);
+				this->erasePlanes.push_back(j);
 			}
 		}
 	}
@@ -534,22 +546,95 @@ void Simulation::updateHitPlane()
 
 void Simulation::updateHitMissile()
 {
-	float radius = 5;
+	float radius = 1;
 	for (size_t i = 0; i < missiles.size(); ++i) {
 		for (size_t j = i + 1; j < missiles.size(); ++j) {
 			glm::vec3 connectionVector = missiles[j]->getPosition() - missiles[i]->getPosition();
 			float distance = sqrt(connectionVector.x * connectionVector.x + connectionVector.y * connectionVector.y + connectionVector.z * connectionVector.z);
 
 			if (distance <= radius) {
-				missiles.erase(missiles.begin() + i);
-				missiles.erase(missiles.begin() + j);
+				this->eraseMissiles.push_back(i);
+				this->eraseMissiles.push_back(j);
 				this->missilesSelfDestruct++;
-				--i;
-				--j;
-				break;
 			}
 		}
 	}
+}
+
+//buggt noch
+void Simulation::updatePlaneHitsPlane()
+{
+	float radius = 5;
+	for (size_t i = 0; i < planes.size(); ++i) {
+		for (size_t j = i + 1; j < planes.size(); ++j) {
+			glm::vec3 connectionVector = planes[j]->getPosition() - planes[i]->getPosition();
+			float distance = sqrt(connectionVector.x * connectionVector.x + connectionVector.y * connectionVector.y + connectionVector.z * connectionVector.z);
+
+			if (distance <= radius) {
+				int crashProb = rand() % 2 + 1;
+				if (crashProb == 1) {
+					planes[i]->setCrashRotationSpeed(rand() % 10 + -5);
+					this->crashingPlanes.push_back(planes[j]);
+				}
+				crashProb = rand() % 2 + 1;
+				if (crashProb == 1) {
+					planes[j]->setCrashRotationSpeed(rand() % 10 + -5);
+					this->crashingPlanes.push_back(planes[j]);
+				}
+				this->erasePlanes.push_back(i);
+				this->erasePlanes.push_back(j);
+				this->planesSelfDestruct++;
+			}
+		}
+	}
+}
+
+void Simulation::updateCrashingPlanes()
+{
+	if (this->crashingPlanes.size() > 0) {
+		this->debug = "here";
+		for (size_t i = 0; i < this->crashingPlanes.size(); i++) {
+			this->crashingPlanes[i]->update(this->deltaTime * this->timeFactor);
+			if (this->crashingPlanes[i]->getDirection().y > -0.9) {
+				this->crashingPlanes[i]->setDirection(glm::vec3(this->crashingPlanes[i]->getDirection().x, this->crashingPlanes[i]->getDirection().y - 0.003, this->crashingPlanes[i]->getDirection().z));
+			}
+			else {
+				this->crashingPlanes[i]->setDirection(glm::vec3(this->crashingPlanes[i]->getDirection().x, -0.9, this->crashingPlanes[i]->getDirection().z));
+			}
+			int explodeProb = rand() % 1000 + 1;
+			if (explodeProb == 1) {
+				this->eraseCrashedPlanes.push_back(i);
+			}
+			if (crashingPlanes[i]->getPosition().y < 0) {
+				this->eraseCrashedPlanes.push_back(i);
+			}
+		}
+	}
+}
+
+void Simulation::updateErasing()
+{
+	//Crashed Planes
+	for (size_t i = 0; i < this->eraseCrashedPlanes.size(); i++) {
+		this->crashingPlanes[eraseCrashedPlanes[i]] = this->crashingPlanes.back();
+		this->crashingPlanes.pop_back();
+	}
+	this->eraseCrashedPlanes.clear();
+
+	//Missiles
+	for (size_t i = 0; i < this->eraseMissiles.size(); i++) {
+		this->missiles[eraseMissiles[i]] = this->missiles.back();
+		this->missiles.pop_back();
+	}
+	this->eraseMissiles.clear();
+
+	//Planes
+	for (size_t i = 0; i < this->erasePlanes.size(); i++) {
+		this->planes[erasePlanes[i]] = this->planes.back();
+		this->planes.pop_back();
+	}
+	this->erasePlanes.clear();
+
 }
 
 //Rendering------------------------------------------------------------------------------
@@ -588,6 +673,13 @@ void Simulation::DrawPlanes()
 		this->plane->Rotate(i->getRotationAngle(), i->getRotationAxis());
 		this->plane->Draw(&this->planeShader, this->projection, this->view, i->getColor());
 	}
+	for (auto i : crashingPlanes) {
+		this->plane->Translate(i->getPosition());
+		//this->plane->Rotate(i->getRotationAngle(), i->getRotationAxis());
+		this->plane->Rotate(glfwGetTime()*i->getCrahsRotationSpeed(), i->getDirection());
+		this->plane->Draw(&this->planeShader, this->projection, this->view, i->getColor());
+	}
+
 }
 
 void Simulation::DrawMissiles()
@@ -633,7 +725,9 @@ void Simulation::DrawSettings()
 		if (ImGui::Button(play))
 		{
 			this->start = !this->start;
-		}		
+		}				
+		ImGui::SliderFloat("Timefactor", &this->timeFactor, 0.0f, 1.0f);
+
 		const char* shading = "Reflection";
 		if (this->shadingChoice == 1) {
 			shading = "Colors";
@@ -708,8 +802,9 @@ void Simulation::DrawText()
 	this->textRenderer->Draw(this->textShader, "Skybox: " + skyboxes[skyBoxChoice], this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 3 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 	this->textRenderer->Draw(this->textShader, "Planes: " + std::to_string(this->planes.size()), this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 4 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 	this->textRenderer->Draw(this->textShader, "Missiles: " + std::to_string(this->missiles.size()), this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 5 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-	this->textRenderer->Draw(this->textShader, "MissilesLost: " + std::to_string(this->missilesLost), this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 6 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-	this->textRenderer->Draw(this->textShader, "MissilesSelfDestruct: " + std::to_string(this->missilesSelfDestruct), this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 7 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+	this->textRenderer->Draw(this->textShader, "MissilesSelfDestruct: " + std::to_string(this->missilesSelfDestruct), this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 6 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+	this->textRenderer->Draw(this->textShader, "PlanesSelfDestruct: " + std::to_string(this->planesSelfDestruct), this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 7 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+	this->textRenderer->Draw(this->textShader, "Debug: " + this->debug, this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 8 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
 void Simulation::DrawSkyBox()

@@ -66,21 +66,29 @@ private:
 	//TIMING
 	float deltaTime;
 	float FPS;
+	float timeFactor;
 
 	//Test
 	float rotSpeedX = 0.0f;
 	float rotSpeedY = 0.0f;
 	float rotSpeedZ = 0.0f;
 
-	int missilesLost = 0;
 	int missilesSelfDestruct = 0;
+	int planesSelfDestruct = 0;
+	string debug = " ";
+
+	vector<int> eraseCrashedPlanes;
+	vector<int> erasePlanes;
+	vector<int> eraseMissiles;
 
 	//World objects
 
 	ModelHandler* plane;
 	ModelHandler* missile;
+	ModelHandler* torret;
 
 	vector<Planes*>planes;
+	vector<Planes*>crashingPlanes;
 	vector<Missile*>missiles;
 
 	Camera camera;
@@ -183,6 +191,9 @@ private:
 	std::tuple<int, float> updateNearestPlane(Missile* missile, vector<Planes*> planes);
 	void updateHitPlane();
 	void updateHitMissile();
+	void updatePlaneHitsPlane();
+	void updateCrashingPlanes();
+	void updateErasing();
 
 	//Rendering------------------------------------------------------------------------------
 

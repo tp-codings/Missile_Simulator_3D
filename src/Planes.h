@@ -20,6 +20,7 @@ public:
 
 	float getRotationAngle();
 	glm::vec3 getRotationAxis();
+	int getCrahsRotationSpeed();
 
 	float getVelocity();
 
@@ -27,6 +28,7 @@ public:
 	void setVelocity(float vel);
 	void setDirection(glm::vec3 dir);
 	void setPosition(glm::vec3 pos);
+	void setCrashRotationSpeed(int crashRotationSpeed);
 
 private:
 	glm::vec3 direction;
@@ -34,11 +36,12 @@ private:
 	glm::vec3 position;
 	glm::vec3 startPosition;
 	glm::vec3 color;
-
 	glm::vec3 rotationAxis;
-	float rotationAngle;
 
+	float rotationAngle;
 	float velocity;
+
+	int crashRotationSpeed;
 
 };
 
