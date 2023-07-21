@@ -4,6 +4,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+
+
 class Torret
 {
 public:
@@ -22,6 +24,7 @@ public:
 	void setDirection(glm::vec3 dir);
 	void setPosition(glm::vec3 pos);
 	void setShot(bool isShot);
+
 
 
 private:

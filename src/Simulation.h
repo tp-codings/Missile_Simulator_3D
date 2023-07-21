@@ -95,6 +95,7 @@ private:
 	vector<Planes*>crashingPlanes;
 	vector<Missile*>missiles;
 	vector<Torret*> torrets;
+	vector<Torret*> torretsWithoutRocket;
 
 	Camera camera;
 

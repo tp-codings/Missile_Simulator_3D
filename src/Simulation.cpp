@@ -313,7 +313,7 @@ void Simulation::initVariables()
 	this->timeFactor = 1.0f;
 
 
-	int amount = 20;
+	int amount = 25;
 	//Planes
 	for (int i = 0; i < amount; i++) {
 		for (int j = 0; j < amount; j++) {
@@ -324,7 +324,7 @@ void Simulation::initVariables()
 
 	for (int i = 0; i < amount; i++) {
 		for (int j = 0; j < amount; j++) {
-			glm::vec3 randomPos = glm::vec3(0.0 + j * (rand() % 500 - 250), 1.5, i * (rand() % 500 - 250));
+			glm::vec3 randomPos = glm::vec3(0.0 + j * 5, 1.5, 0.0 + i * 5);
 			this->missiles.push_back(new Missile(randomPos, glm::vec3(0.0, 1.0, 0.001), 0, RED_ORANGE));
 			this->torrets.push_back(new Torret(randomPos));
 		}
@@ -472,9 +472,8 @@ void Simulation::updateSimulation()
 	}
 	if (this->missiles.size() > 0)
 	{
-		for (size_t i = 0; i < missiles.size(); ++i) {
-			missiles[i]->update(this->deltaTime * this->timeFactor);
-			this->torrets[i]->update(this->deltaTime);
+		for (size_t i = 0; i < this->missiles.size(); ++i) {
+			this->missiles[i]->update(this->deltaTime * this->timeFactor);
 
 			if (this->planes.size() > 0) {
 			
@@ -495,16 +494,17 @@ void Simulation::updateSimulation()
 					this->missiles[i]->setDirection(glm::vec3(this->missiles[i]->getDirection().x + direction.x*0.02, this->missiles[i]->getDirection().y + direction.y * 0.02, this->missiles[i]->getDirection().z + direction.z * 0.02));
 				}
 
-				//irgendwann sind weniger missiles als torrets... muss über IDs gehen
-				if (!this->torrets[i]->getShot()) {
-					this->torrets[i]->setDirection(glm::vec3(this->torrets[i]->getDirection().x + this->missiles[i]->getDirection().x * 1.1, 0.0f, this->torrets[i]->getDirection().z + this->missiles[i]->getDirection().z * 1.1));
-				}
-
 				else if (nearestDistance <= 50){
 					this->missiles[i]->setDirection(glm::vec3(this->missiles[i]->getDirection().x + direction.x * 0.08, this->missiles[i]->getDirection().y + direction.y * 0.08, this->missiles[i]->getDirection().z + direction.z * 0.08));
 				}
 
 			}
+		}
+	}
+	for (size_t i = 0; i < this->torrets.size(); ++i) {
+		this->torrets[i]->update(this->deltaTime);
+		if (!this->torrets[i]->getShot()) {
+			this->torrets[i]->setDirection(glm::vec3(this->torrets[i]->getDirection().x + this->missiles[i]->getDirection().x * 1.1, 0.0f, this->torrets[i]->getDirection().z + this->missiles[i]->getDirection().z * 1.1));
 		}
 	}
 
@@ -636,7 +636,9 @@ void Simulation::updateErasing()
 
 	//Missiles
 	for (auto it = eraseMissiles.rbegin(); it != eraseMissiles.rend(); ++it) {
+		this->torretsWithoutRocket.push_back(this->torrets[*it]);
 		this->missiles.erase(this->missiles.begin() + *it);
+		this->torrets.erase(this->torrets.begin() + *it);
 	}
 	this->eraseMissiles.clear();
 
@@ -711,6 +713,12 @@ void Simulation::DrawTorrets()
 	this->torretShader.setVec3("viewPos", this->camera.Position);
 
 	for (auto i : torrets) {
+		this->torret->Translate(i->getPosition());
+		this->torret->Rotate(i->getRotationAngle(), i->getRotationAxis());
+		this->torret->Draw(&this->torretShader, this->projection, this->view, i->getColor());
+	}
+
+	for (auto i : torretsWithoutRocket) {
 		this->torret->Translate(i->getPosition());
 		this->torret->Rotate(i->getRotationAngle(), i->getRotationAxis());
 		this->torret->Draw(&this->torretShader, this->projection, this->view, i->getColor());
