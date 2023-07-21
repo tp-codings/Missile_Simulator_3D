@@ -4,7 +4,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-
+#include "Missile.h"
 
 class Torret
 {
@@ -25,6 +25,8 @@ public:
 	void setPosition(glm::vec3 pos);
 	void setShot(bool isShot);
 
+	Missile* getMissile();
+	void deleteMissile();
 
 
 private:
@@ -36,6 +38,8 @@ private:
 	float rotationAngle;
 
 	bool shot;
+
+	Missile* missile;
 
 };
 

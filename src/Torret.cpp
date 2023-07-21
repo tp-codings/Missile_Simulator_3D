@@ -11,7 +11,7 @@ Torret::Torret(glm::vec3 pos, glm::vec3 color)
     this->color = color;
     this->shot = false;
 
-
+    this->missile = new Missile(pos, glm::vec3(0.0, 1.0, 0.001), 0);
     // Berechnung der Rotationsachse und des Rotationswinkels
     glm::vec3 standardDirection(1.0f, 0.0f, 0.0f);
     this->rotationAngle = glm::acos(glm::dot(standardDirection, this->direction));
@@ -21,7 +21,9 @@ void Torret::update(float deltaTime)
 {
     glm::vec3 standardDirection(1.0f, 0.0f, 0.0f);
     this->rotationAngle = glm::acos(glm::dot(standardDirection, glm::normalize(this->direction)));
-
+    if (this->missile != nullptr) {
+        this->missile->update(deltaTime);
+    }
 
 }
 
@@ -69,4 +71,19 @@ void Torret::setPosition(glm::vec3 pos)
 void Torret::setShot(bool isShot)
 {
     this->shot = isShot;
+    this->missile->setVelocity(120);
+}
+
+Missile* Torret::getMissile()
+{
+    if (this->missile != nullptr) {
+        return this->missile;
+    }
+    else 
+        return nullptr;
+}
+
+void Torret::deleteMissile()
+{
+    delete(this->missile);
 }

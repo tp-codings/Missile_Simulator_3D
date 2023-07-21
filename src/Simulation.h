@@ -194,6 +194,9 @@ private:
 	//Updates------------------------------------------------------------------------------
 
 	void updateSimulation();
+	void updatePlanes();
+	void updateMissiles();
+	void updateTorrets();
 	std::tuple<int, float> updateNearestPlane(Missile* missile, vector<Planes*> planes);
 	void updateHitPlane();
 	void updateHitMissile();
