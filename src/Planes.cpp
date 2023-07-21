@@ -44,10 +44,6 @@ glm::vec3 Planes::getStartDirection()
     return this->startDirection;
 }
 
-glm::vec3 Planes::getTrajectory()
-{
-    return this->direction;
-}
 
 float Planes::getVelocity()
 {

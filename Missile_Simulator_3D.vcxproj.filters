@@ -60,6 +60,9 @@
     <ClCompile Include="src\Missile.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="src\Torret.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Engine.h">
@@ -72,6 +75,9 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\Missile.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Torret.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
@@ -122,6 +128,12 @@
       <Filter>Ressourcendateien</Filter>
     </None>
     <None Include="Shader\missile.fs">
+      <Filter>Ressourcendateien</Filter>
+    </None>
+    <None Include="Shader\torret.vs">
+      <Filter>Ressourcendateien</Filter>
+    </None>
+    <None Include="Shader\torret.fs">
       <Filter>Ressourcendateien</Filter>
     </None>
   </ItemGroup>

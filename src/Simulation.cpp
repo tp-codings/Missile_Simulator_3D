@@ -273,6 +273,7 @@ void Simulation::initShader()
 	this->groundShader = Shader("Shader/ground.vs", "Shader/ground.fs");
 	this->planeShader = Shader("Shader/plane.vs", "Shader/plane.fs");
 	this->missileShader = Shader("Shader/missile.vs", "Shader/missile.fs");
+	this->torretShader = Shader("Shader/torret.vs", "Shader/torret.fs");
 }
 
 void Simulation::initVariables()
@@ -312,17 +313,20 @@ void Simulation::initVariables()
 	this->timeFactor = 1.0f;
 
 
-	int amount = 1;
+	int amount = 20;
 	//Planes
-	for (int i = 0; i < 2; i++) {
+	for (int i = 0; i < amount; i++) {
 		for (int j = 0; j < amount; j++) {
-			this->planes.push_back(new Planes(glm::vec3(-1000.0 + j* (rand() % 10 + 1), 400.0+ j * (rand() % 10 + 1), i * (rand() % 200 - 100)), glm::vec3(1.0, 0.0, 0.1), 70, glm::vec3(0.1)));
+			this->planes.push_back(new Planes(glm::vec3(j* (rand() % 200 + -100), 400.0+ j * (rand() % 10 + 1), -1000.0 + i * (rand() % 20 - 100)), glm::vec3(0.001, 0.0, 1.00), 70, glm::vec3(0.1)));
 		}
 	}
 	//Missiles
-	for (int i = 0; i < 2; i++) {
+
+	for (int i = 0; i < amount; i++) {
 		for (int j = 0; j < amount; j++) {
-			this->missiles.push_back(new Missile(glm::vec3(0.0 + j * (rand() % 200 + 1), 3.0, i * (rand() % 200 + 1)), glm::vec3(0.0, 1.0, 0.1), 0, RED_ORANGE));
+			glm::vec3 randomPos = glm::vec3(0.0 + j * (rand() % 500 - 250), 1.5, i * (rand() % 500 - 250));
+			this->missiles.push_back(new Missile(randomPos, glm::vec3(0.0, 1.0, 0.001), 0, RED_ORANGE));
+			this->torrets.push_back(new Torret(randomPos));
 		}
 	}
 	//Test
@@ -337,6 +341,7 @@ void Simulation::initModels()
 	this->missile = new ModelHandler(R"(resources\models\missile\missile.obj)");
 	this->missile->Scale(1.0f);
 	this->torret = new ModelHandler(R"(resources\models\torret\torret.obj)");
+	this->torret->Scale(1.0f);
 
 }
 
@@ -467,33 +472,42 @@ void Simulation::updateSimulation()
 	}
 	if (this->missiles.size() > 0)
 	{
-		for (auto i : this->missiles) {
-			i->update(this->deltaTime * this->timeFactor);
+		for (size_t i = 0; i < missiles.size(); ++i) {
+			missiles[i]->update(this->deltaTime * this->timeFactor);
+			this->torrets[i]->update(this->deltaTime);
+
 			if (this->planes.size() > 0) {
 			
 				int nearest;
 				float nearestDistance;
-				std::tuple<int, float> result = this->updateNearestPlane(i, planes);
+				std::tuple<int, float> result = this->updateNearestPlane(missiles[i], planes);
 				nearest = std::get<0>(result);
 				nearestDistance = std::get<1>(result);
-				glm::vec3 direction = glm::normalize(planes[nearest]->getPosition() - i->getPosition());
+				glm::vec3 direction = glm::normalize(planes[nearest]->getPosition() - missiles[i]->getPosition());
 
 				if (nearestDistance < 800) {
-					i->setVelocity(150);
+					this->missiles[i]->setVelocity(150);
+					this->torrets[i]->setShot(true);
 				}
 
 				if (nearestDistance > 50 && nearestDistance < 1000)
 				{
-					i->setDirection(glm::vec3(i->getDirection().x + direction.x*0.02, i->getDirection().y + direction.y * 0.02, i->getDirection().z + direction.z * 0.02));
+					this->missiles[i]->setDirection(glm::vec3(this->missiles[i]->getDirection().x + direction.x*0.02, this->missiles[i]->getDirection().y + direction.y * 0.02, this->missiles[i]->getDirection().z + direction.z * 0.02));
+				}
+
+				//irgendwann sind weniger missiles als torrets... muss über IDs gehen
+				if (!this->torrets[i]->getShot()) {
+					this->torrets[i]->setDirection(glm::vec3(this->torrets[i]->getDirection().x + this->missiles[i]->getDirection().x * 1.1, 0.0f, this->torrets[i]->getDirection().z + this->missiles[i]->getDirection().z * 1.1));
 				}
 
 				else if (nearestDistance <= 50){
-					i->setDirection(glm::vec3(i->getDirection().x + direction.x * 0.08, i->getDirection().y + direction.y * 0.08, i->getDirection().z + direction.z * 0.08));
+					this->missiles[i]->setDirection(glm::vec3(this->missiles[i]->getDirection().x + direction.x * 0.08, this->missiles[i]->getDirection().y + direction.y * 0.08, this->missiles[i]->getDirection().z + direction.z * 0.08));
 				}
 
 			}
 		}
 	}
+
 	this->updateCrashingPlanes();
 	this->updateHitPlane();
 	this->updateHitMissile();
@@ -537,8 +551,8 @@ void Simulation::updateHitPlane()
 					planes[j]->setCrashRotationSpeed(rand() % 10 + - 5);
 					this->crashingPlanes.push_back(planes[j]);
 				}
-				this->eraseMissiles.push_back(i);
-				this->erasePlanes.push_back(j);
+				this->eraseMissiles.insert(i);
+				this->erasePlanes.insert(j);
 			}
 		}
 	}
@@ -553,8 +567,8 @@ void Simulation::updateHitMissile()
 			float distance = sqrt(connectionVector.x * connectionVector.x + connectionVector.y * connectionVector.y + connectionVector.z * connectionVector.z);
 
 			if (distance <= radius) {
-				this->eraseMissiles.push_back(i);
-				this->eraseMissiles.push_back(j);
+				this->eraseMissiles.insert(i);
+				this->eraseMissiles.insert(j);
 				this->missilesSelfDestruct++;
 			}
 		}
@@ -581,8 +595,8 @@ void Simulation::updatePlaneHitsPlane()
 					planes[j]->setCrashRotationSpeed(rand() % 10 + -5);
 					this->crashingPlanes.push_back(planes[j]);
 				}
-				this->erasePlanes.push_back(i);
-				this->erasePlanes.push_back(j);
+				this->erasePlanes.insert(i);
+				this->erasePlanes.insert(j);
 				this->planesSelfDestruct++;
 			}
 		}
@@ -603,10 +617,10 @@ void Simulation::updateCrashingPlanes()
 			}
 			int explodeProb = rand() % 1000 + 1;
 			if (explodeProb == 1) {
-				this->eraseCrashedPlanes.push_back(i);
+				this->eraseCrashedPlanes.insert(i);
 			}
 			if (crashingPlanes[i]->getPosition().y < 0) {
-				this->eraseCrashedPlanes.push_back(i);
+				this->eraseCrashedPlanes.insert(i);
 			}
 		}
 	}
@@ -615,26 +629,22 @@ void Simulation::updateCrashingPlanes()
 void Simulation::updateErasing()
 {
 	//Crashed Planes
-	for (size_t i = 0; i < this->eraseCrashedPlanes.size(); i++) {
-		this->crashingPlanes[eraseCrashedPlanes[i]] = this->crashingPlanes.back();
-		this->crashingPlanes.pop_back();
+	for (auto it = eraseCrashedPlanes.rbegin(); it != eraseCrashedPlanes.rend(); ++it) {
+		this->crashingPlanes.erase(this->crashingPlanes.begin() + *it);
 	}
 	this->eraseCrashedPlanes.clear();
 
 	//Missiles
-	for (size_t i = 0; i < this->eraseMissiles.size(); i++) {
-		this->missiles[eraseMissiles[i]] = this->missiles.back();
-		this->missiles.pop_back();
+	for (auto it = eraseMissiles.rbegin(); it != eraseMissiles.rend(); ++it) {
+		this->missiles.erase(this->missiles.begin() + *it);
 	}
 	this->eraseMissiles.clear();
 
 	//Planes
-	for (size_t i = 0; i < this->erasePlanes.size(); i++) {
-		this->planes[erasePlanes[i]] = this->planes.back();
-		this->planes.pop_back();
+	for (auto it = erasePlanes.rbegin(); it != erasePlanes.rend(); ++it) {
+		this->planes.erase(this->planes.begin() + *it);
 	}
 	this->erasePlanes.clear();
-
 }
 
 //Rendering------------------------------------------------------------------------------
@@ -645,6 +655,7 @@ void Simulation::DrawSimulation()
 	this->DrawGround();
 	this->DrawPlanes();
 	this->DrawMissiles();
+	this->DrawTorrets();
 	
 	glBindVertexArray(0);
 }
@@ -691,6 +702,18 @@ void Simulation::DrawMissiles()
 		this->missile->Translate(i->getPosition());
 		this->missile->Rotate(i->getRotationAngle(), i->getRotationAxis());
 		this->missile->Draw(&this->missileShader, this->projection, this->view, i->getColor());
+	}
+}
+
+void Simulation::DrawTorrets()
+{
+	this->torretShader.use();
+	this->torretShader.setVec3("viewPos", this->camera.Position);
+
+	for (auto i : torrets) {
+		this->torret->Translate(i->getPosition());
+		this->torret->Rotate(i->getRotationAngle(), i->getRotationAxis());
+		this->torret->Draw(&this->torretShader, this->projection, this->view, i->getColor());
 	}
 }
 

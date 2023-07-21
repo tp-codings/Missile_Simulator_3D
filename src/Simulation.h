@@ -22,8 +22,11 @@
 #include <ModelHandler/ModelHandler.h>
 #include <SkyBox/Skybox.h>
 
+#include <set>
+
 #include "Planes.h"
 #include "Missile.h"
+#include "Torret.h"
 
 
 class Simulation
@@ -57,6 +60,7 @@ private:
 	Shader planeShader;
 
 	Shader missileShader;
+	Shader torretShader;
 
 	//Matrizen
 	glm::mat4 projection;
@@ -77,9 +81,9 @@ private:
 	int planesSelfDestruct = 0;
 	string debug = " ";
 
-	vector<int> eraseCrashedPlanes;
-	vector<int> erasePlanes;
-	vector<int> eraseMissiles;
+	set<int> eraseCrashedPlanes;
+	set<int> erasePlanes;
+	set<int> eraseMissiles;
 
 	//World objects
 
@@ -90,6 +94,7 @@ private:
 	vector<Planes*>planes;
 	vector<Planes*>crashingPlanes;
 	vector<Missile*>missiles;
+	vector<Torret*> torrets;
 
 	Camera camera;
 
@@ -201,6 +206,7 @@ private:
 	void DrawGround();
 	void DrawPlanes();
 	void DrawMissiles();
+	void DrawTorrets();
 	void DrawSettings();
 	void DrawScreen();
 	void DrawText();
