@@ -63,6 +63,15 @@
     <ClCompile Include="src\Torret.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="src\Particle.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ParticleRenderer.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ParticleMaster.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Engine.h">
@@ -78,6 +87,15 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\Torret.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Particle.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ParticleRenderer.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ParticleMaster.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
@@ -134,6 +152,12 @@
       <Filter>Ressourcendateien</Filter>
     </None>
     <None Include="Shader\torret.fs">
+      <Filter>Ressourcendateien</Filter>
+    </None>
+    <None Include="Shader\particle.vs">
+      <Filter>Ressourcendateien</Filter>
+    </None>
+    <None Include="Shader\particle.fs">
       <Filter>Ressourcendateien</Filter>
     </None>
   </ItemGroup>

@@ -148,6 +148,9 @@
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\Missile.cpp" />
     <ClCompile Include="src\Missile_Simulator_3D.cpp" />
+    <ClCompile Include="src\Particle.cpp" />
+    <ClCompile Include="src\ParticleMaster.cpp" />
+    <ClCompile Include="src\ParticleRenderer.cpp" />
     <ClCompile Include="src\Planes.cpp" />
     <ClCompile Include="src\Simulation.cpp" />
     <ClCompile Include="src\stb_handler.cpp" />
@@ -156,6 +159,9 @@
   <ItemGroup>
     <ClInclude Include="src\Engine.h" />
     <ClInclude Include="src\Missile.h" />
+    <ClInclude Include="src\Particle.h" />
+    <ClInclude Include="src\ParticleMaster.h" />
+    <ClInclude Include="src\ParticleRenderer.h" />
     <ClInclude Include="src\Planes.h" />
     <ClInclude Include="src\Simulation.h" />
     <ClInclude Include="src\Torret.h" />
@@ -169,6 +175,8 @@
     <None Include="Shader\ground.vs" />
     <None Include="Shader\missile.fs" />
     <None Include="Shader\missile.vs" />
+    <None Include="Shader\particle.fs" />
+    <None Include="Shader\particle.vs" />
     <None Include="Shader\plane.fs" />
     <None Include="Shader\plane.vs" />
     <None Include="Shader\screen.fs" />

@@ -28,6 +28,8 @@
 #include "Missile.h"
 #include "Torret.h"
 
+#include "ParticleMaster.h"
+
 
 class Simulation
 {
@@ -98,6 +100,9 @@ private:
 	vector<Torret*> torretsWithoutRocket;
 
 	Camera camera;
+
+	//Particlesystem
+	ParticleMaster *particleMaster;
 
 	//Settings
 	float cameraSpeed;

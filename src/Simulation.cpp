@@ -309,11 +309,14 @@ void Simulation::initVariables()
 	this->cityBox = new Skybox(this->city);
 	this->skyBoxChoice = 1;
 
+	//Particles
+	this->particleMaster = new ParticleMaster();
+
 	//Timing
 	this->timeFactor = 1.0f;
 
 
-	int amountPlanes = 25;
+	int amountPlanes = 5;
 	//Planes
 	for (int i = 0; i < amountPlanes; i++) {
 		for (int j = 0; j < amountPlanes; j++) {
@@ -321,7 +324,7 @@ void Simulation::initVariables()
 		}
 	}
 	//Torrets
-	int amnountTorrets = 25;
+	int amnountTorrets = 5;
 	for (int i = 0; i < amnountTorrets; i++) {
 		for (int j = 0; j < amnountTorrets; j++) {
 			glm::vec3 randomPos = glm::vec3(-600 + j * 50, 1.5, 0.0 + i * 50);
@@ -474,6 +477,13 @@ void Simulation::updateSimulation()
 	this->updateHitMissile();
 	this->updateErasing();
 
+	if (glfwGetKey(this->window, GLFW_KEY_I) == GLFW_PRESS)
+	{
+		this->debug = to_string(glfwGetTime());
+		this->particleMaster->addParticle(new Particle(glm::vec3(5.0f, 5.0f, 5.0f), glm::vec3(0, 3, 0), 1, 4, 0, 1));
+	}
+
+	this->particleMaster->update(this->deltaTime*this->timeFactor);
 
 
 	this->updatePlaneHitsPlane();
@@ -688,6 +698,7 @@ void Simulation::DrawSimulation()
 	this->DrawTorrets();
 	this->DrawPlanes();
 	this->DrawMissiles();
+	this->particleMaster->render(this->projection, this->camera);
 	
 	glBindVertexArray(0);
 }
@@ -870,7 +881,7 @@ void Simulation::DrawText()
 	this->textRenderer->Draw(this->textShader, "Missiles: " + std::to_string(this->missiles.size()), this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 5 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 	this->textRenderer->Draw(this->textShader, "MissilesSelfDestruct: " + std::to_string(this->missilesSelfDestruct), this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 6 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 	this->textRenderer->Draw(this->textShader, "PlanesSelfDestruct: " + std::to_string(this->planesSelfDestruct), this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 7 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-	this->textRenderer->Draw(this->textShader, "Debug: " + to_string(this->missiles.size()), this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 8 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+	this->textRenderer->Draw(this->textShader, "Debug: " + this->debug, this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 8 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
 void Simulation::DrawSkyBox()
