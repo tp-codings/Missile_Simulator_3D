@@ -32,3 +32,8 @@ void ParticleMaster::addParticle(Particle* particle)
 {
     this->particles.push_back(particle);
 }
+
+int ParticleMaster::getParticlesAlive()
+{
+    return this->particles.size();;
+}

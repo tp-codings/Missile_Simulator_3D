@@ -12,6 +12,8 @@ public:
 	void render(glm::mat4 projection, Camera& camera);
 	void addParticle(Particle* particle);
 
+	int getParticlesAlive();
+
 private:
 	std::vector<Particle*> particles;
 	ParticleRenderer renderer;
