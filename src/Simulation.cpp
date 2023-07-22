@@ -324,7 +324,7 @@ void Simulation::initVariables()
 		}
 	}
 	//Torrets
-	int amnountTorrets = 5;
+	int amnountTorrets = 15;
 	for (int i = 0; i < amnountTorrets; i++) {
 		for (int j = 0; j < amnountTorrets; j++) {
 			glm::vec3 randomPos = glm::vec3(-600 + j * 50, 1.5, 0.0 + i * 50);
@@ -490,6 +490,8 @@ void Simulation::updatePlanes()
 	for (auto i : this->planes) {
 		i->update(this->deltaTime * this->timeFactor);
 		i->setDirection(glm::vec3(i->getDirection().x + rotSpeedX, i->getDirection().y + rotSpeedY, i->getDirection().z + rotSpeedZ));
+		this->particleMaster->addParticle(new Particle(i->getPosition(), -glm::normalize(i->getDirection()), 0.05, 0.2, 0, 0.5));
+
 	}
 }
 
@@ -516,9 +518,9 @@ void Simulation::updateMissiles()
 			else if (nearestDistance <= 50) {
 				this->missiles[i]->setDirection(glm::vec3(this->missiles[i]->getDirection().x + direction.x * 0.08, this->missiles[i]->getDirection().y + direction.y * 0.08, this->missiles[i]->getDirection().z + direction.z * 0.08));
 			}
-			this->particleMaster->addParticle(new Particle(this->missiles[i]->getPosition(), -glm::normalize(this->missiles[i]->getDirection()), 0.05, 1, 0, 0.5));
 
 		}
+		this->particleMaster->addParticle(new Particle(this->missiles[i]->getPosition(), -glm::normalize(this->missiles[i]->getDirection()), 0.05, 1, 0, 0.5));
 	}
 
 }
@@ -722,12 +724,27 @@ void Simulation::DrawPlanes()
 	for (auto i : planes) {
 		this->plane->Translate(i->getPosition());
 		this->plane->Rotate(i->getRotationAngle(), i->getRotationAxis());
+		//this->plane->Rotate(glfwGetTime() * i->getCrahsRotationSpeed(), i->getDirection());
+
 		this->plane->Draw(&this->planeShader, this->projection, this->view, i->getColor());
 	}
 	for (auto i : crashingPlanes) {
 		this->plane->Translate(i->getPosition());
+
+		glm::mat4 rotation = glm::mat4(1.0f);
+
+		rotation = glm::rotate(rotation, (float)glfwGetTime() * i->getCrahsRotationSpeed(), glm::vec3(1.0, 0.0, 0.0));
+		//rotation = glm::rotate(rotation, i->getRotationAngle(), i->getRotationAxis());
+
+
+		glm::vec3 rotationAxis;
+		float rotationAngle;
+		glm::axisAngle(rotation, rotationAxis, rotationAngle);
+		cout << rotationAngle << endl;
+		this->plane->Rotate(rotationAngle, rotationAxis);
+
 		//this->plane->Rotate(i->getRotationAngle(), i->getRotationAxis());
-		this->plane->Rotate(glfwGetTime()*i->getCrahsRotationSpeed(), i->getDirection());
+		//this->plane->Rotate(glfwGetTime()*i->getCrahsRotationSpeed(), glm::vec3(1.0, 0.0, 0.0));
 		this->plane->Draw(&this->planeShader, this->projection, this->view, i->getColor());
 	}
 

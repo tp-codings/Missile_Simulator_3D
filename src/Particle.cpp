@@ -22,6 +22,16 @@ float Particle::getScale()
 	return this->scale;
 }
 
+float Particle::getElapsedTime()
+{
+	return this->elapsedTime;
+}
+
+float Particle::getLifeLength()
+{
+	return this->lifeLength;
+}
+
 bool Particle::update(float deltaTime)
 {
 	this->velocity.y += GRAVITY * this->gravityEffect * deltaTime;

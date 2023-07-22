@@ -10,7 +10,10 @@ public:
 	glm::vec3 getPosition();
 	float getRotation();
 	float getScale();
+	float getElapsedTime();
+	float getLifeLength();
 	bool update(float deltaTime);
+
 
 private:
 	glm::vec3 position;
