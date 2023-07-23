@@ -83,6 +83,7 @@ void Simulation::update(float deltaTime, int FPS, Camera camera)
 	this->projection = glm::perspective(glm::radians(camera.Zoom), (float)this->WINDOW_WIDTH / (float)this->WINDOW_HEIGHT, 0.1f, 10000.0f);
 	this->view = camera.GetViewMatrix();
 
+	//Update Timing
 	this->deltaTime = deltaTime;
 	this->FPS = FPS;
 	this->camera = camera;
@@ -93,8 +94,6 @@ void Simulation::update(float deltaTime, int FPS, Camera camera)
 	{
 		this->updateSimulation();
 	}
-
-
 }
 
 void Simulation::render()
@@ -154,20 +153,20 @@ void Simulation::initVertices()
 	float gVertices[] = {
 		// positions          // normals           // texture coords
 		// Bottom face
-		-DIMENSION, -0.5f, -DIMENSION,  0.0f, -1.0f,  0.0f,  0.0f,  0.0f,
-		 DIMENSION, -0.5f, -DIMENSION,  0.0f, -1.0f,  0.0f,  1.0f,  0.0f,
-		 DIMENSION, -0.5f,  DIMENSION,  0.0f, -1.0f,  0.0f,  1.0f,  1.0f,
-		 DIMENSION, -0.5f,  DIMENSION,  0.0f, -1.0f,  0.0f,  1.0f,  1.0f,
-		-DIMENSION, -0.5f,  DIMENSION,  0.0f, -1.0f,  0.0f,  0.0f,  1.0f,
-		-DIMENSION, -0.5f, -DIMENSION,  0.0f, -1.0f,  0.0f,  0.0f,  1.0f,
+		-DIMENSION, -0.5f, -DIMENSION,  0.0f, 1.0f,  0.0f,  0.0f,  0.0f,
+		 DIMENSION, -0.5f, -DIMENSION,  0.0f, 1.0f,  0.0f,  1.0f,  0.0f,
+		 DIMENSION, -0.5f,  DIMENSION,  0.0f, 1.0f,  0.0f,  1.0f,  1.0f,
+		 DIMENSION, -0.5f,  DIMENSION,  0.0f, 1.0f,  0.0f,  1.0f,  1.0f,
+		-DIMENSION, -0.5f,  DIMENSION,  0.0f, 1.0f,  0.0f,  0.0f,  1.0f,
+		-DIMENSION, -0.5f, -DIMENSION,  0.0f, 1.0f,  0.0f,  0.0f,  1.0f,
 
 		// Top face
-		-DIMENSION,  0.5f, -DIMENSION,  0.0f,  1.0f,  0.0f,  0.0f,  0.0f,
-		 DIMENSION,  0.5f, -DIMENSION,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,
-		 DIMENSION,  0.5f,  DIMENSION,  0.0f,  1.0f,  0.0f,  1.0f,  1.0f,
-		 DIMENSION,  0.5f,  DIMENSION,  0.0f,  1.0f,  0.0f,  1.0f,  1.0f,
-		-DIMENSION,  0.5f,  DIMENSION,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f,
-		-DIMENSION,  0.5f, -DIMENSION,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f,
+		-DIMENSION,  0.5f, -DIMENSION,  0.0f,  -1.0f,  0.0f,  0.0f,  0.0f,
+		 DIMENSION,  0.5f, -DIMENSION,  0.0f,  -1.0f,  0.0f,  1.0f,  0.0f,
+		 DIMENSION,  0.5f,  DIMENSION,  0.0f,  -1.0f,  0.0f,  1.0f,  1.0f,
+		 DIMENSION,  0.5f,  DIMENSION,  0.0f,  -1.0f,  0.0f,  1.0f,  1.0f,
+		-DIMENSION,  0.5f,  DIMENSION,  0.0f,  -1.0f,  0.0f,  0.0f,  1.0f,
+		-DIMENSION,  0.5f, -DIMENSION,  0.0f,  -1.0f,  0.0f,  0.0f,  1.0f,
 
 		// Front face
 		-DIMENSION, -0.5f, -DIMENSION,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
@@ -242,7 +241,6 @@ void Simulation::initBuffer()
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6* sizeof(float)));
 	glEnableVertexAttribArray(2);
 
-
 	//Screen Framebuffer
 	glGenFramebuffers(1, &this->framebuffer);
 	glBindFramebuffer(GL_FRAMEBUFFER, this->framebuffer);
@@ -278,73 +276,100 @@ void Simulation::initShader()
 
 void Simulation::initVariables()
 {
-	//Settings
+	this->initSettings();
+	this->initText();
+	this->initMatrices();
+	this->initSkybox();
+	this->initParticleSystem();
+	this->initPlanes();
+	this->initTorrets();
+	this->initGunTower();
+}
+
+void Simulation::initSettings()
+{
 	this->cameraSpeed = 150.0f;
-
-	//Textrendering
-	this->textRenderer = new TextRenderer(10, this->WINDOW_WIDTH, this->WINDOW_HEIGHT);
-	this->fontSize = 10;
-
-	//Settingbooleans
 	this->start = false;
 	this->viewMode = true;
 	this->dirLightColor = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
 	this->dirLightPos = glm::vec3(glm::vec3(-0.5, 0.7, -1.0) * 40.f);
-
-	//Projection matrices
-	this->projection = glm::mat4(1.0f);
-	this->view = glm::mat4(1.0f);
-
-	//Key pressed booleans
 	this->startKeyPressed = false;
 	this->settingsKeyPressed = false;
 	this->shadingKeyPressed = false;
-
+	this->shootGunTower = false;
 	this->shadingChoice = 0;
+	this->timeFactor = 1.0f;
+}
 
-	//Skybox
+void Simulation::initText()
+{
+	this->textRenderer = new TextRenderer(10, this->WINDOW_WIDTH, this->WINDOW_HEIGHT);
+	this->fontSize = 10;
+}
+
+void Simulation::initMatrices()
+{
+	this->projection = glm::mat4(1.0f);
+	this->view = glm::mat4(1.0f);
+}
+
+void Simulation::initSkybox()
+{
 	this->oceanBox = new Skybox(this->ocean);
 	this->spaceBox = new Skybox(this->space);
 	this->forestBox = new Skybox(this->forest);
 	this->cityBox = new Skybox(this->city);
 	this->skyBoxChoice = 1;
+}
 
-	//Particles
+void Simulation::initParticleSystem()
+{
 	this->particleMaster = new ParticleMaster();
+}
 
-	//Timing
-	this->timeFactor = 1.0f;
-
-
-	int amountPlanes = 5;
-	//Planes
+void Simulation::initPlanes()
+{
+	int amountPlanes = 4;
 	for (int i = 0; i < amountPlanes; i++) {
 		for (int j = 0; j < amountPlanes; j++) {
-			this->planes.push_back(new Planes(glm::vec3(j* (rand() % 200 + -100), 400.0+ j * (rand() % 10 + 1), -1000.0 + i * (rand() % 20 - 100)), glm::vec3(0.001, 0.0, 1.00), 70, glm::vec3(0.1)));
+			this->planes.push_back(new Planes(glm::vec3(j * (rand() % 200 + -100), 400.0 + j * (rand() % 10 + 1), -1000.0 + i * (rand() % 20 - 100)), glm::vec3(0.001, 0.0, 1.00), 70, glm::vec3(0.1)));
 		}
 	}
-	//Torrets
-	int amnountTorrets = 15;
+	this->rotSpeedX = 0.0f;
+	this->rotSpeedY = 0.0f;
+	this->rotSpeedZ = 0.0f;
+}
+
+void Simulation::initTorrets()
+{
+	int amnountTorrets = 8;
 	for (int i = 0; i < amnountTorrets; i++) {
 		for (int j = 0; j < amnountTorrets; j++) {
 			glm::vec3 randomPos = glm::vec3(-600 + j * 50, 1.5, 0.0 + i * 50);
 			this->torrets.push_back(new Torret(randomPos));
 		}
 	}
-	//Test
+}
 
+void Simulation::initGunTower()
+{
+	int amountgunTower = 2;
+	for (int i = 0; i < amountgunTower; i++) {
+		for (int j = 0; j < amountgunTower; j++) {
+			glm::vec3 randomPos = glm::vec3(0.0 + j * 50, 1.5, 0.0 + i * 50);
+			this->gunTower.push_back(new GunTower(randomPos, 8.0f));
+		}
+	}
 }
 
 void Simulation::initModels()
 {
-	//Initialize Models
 	this->plane = new ModelHandler(R"(resources\models\plane\plane.obj)");
 	this->plane->Scale(1.0f);
 	this->missile = new ModelHandler(R"(resources\models\missile\missile.obj)");
 	this->missile->Scale(1.0f);
 	this->torret = new ModelHandler(R"(resources\models\torret\torret.obj)");
 	this->torret->Scale(1.0f);
-
 }
 
 //Inputhandling------------------------------------------------------------------------------
@@ -422,11 +447,10 @@ void Simulation::processInput(float deltaTime)
 		}
 	}
 
-
 	if (glfwGetKey(this->window, GLFW_KEY_LEFT) == GLFW_PRESS) {
 		rotSpeedZ = 0.0f;
 		rotSpeedY = 0.0f;
-		rotSpeedX = -0.05f; // Setzen Sie nur die Drehgeschwindigkeit in x-Richtung
+		rotSpeedX = -0.05f; 
 	}
 	else if (glfwGetKey(this->window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
 		rotSpeedZ = 0.0f;
@@ -437,7 +461,7 @@ void Simulation::processInput(float deltaTime)
 	if (glfwGetKey(this->window, GLFW_KEY_UP) == GLFW_PRESS) {
 		rotSpeedZ = 0.0f;
 		rotSpeedX = 0.0f;
-		rotSpeedY = -0.05f; // Setzen Sie nur die Drehgeschwindigkeit in y-Richtung
+		rotSpeedY = -0.05f; 
 	}
 	else if (glfwGetKey(this->window, GLFW_KEY_DOWN) == GLFW_PRESS) {
 		rotSpeedZ = 0.0f;
@@ -448,13 +472,19 @@ void Simulation::processInput(float deltaTime)
 	if (glfwGetKey(this->window, GLFW_KEY_E) == GLFW_PRESS) {
 		rotSpeedX = 0.0f;
 		rotSpeedY = 0.0f;
-		rotSpeedZ = 0.05f; // Setzen Sie nur die Drehgeschwindigkeit in z-Richtung
+		rotSpeedZ = 0.05f; 
 	}
 	else if (glfwGetKey(this->window, GLFW_KEY_Q) == GLFW_PRESS) {
 		rotSpeedX = 0.0f;
 		rotSpeedY = 0.0f;
 		rotSpeedZ = -0.05f;
 	} 
+	if (glfwGetKey(this->window, GLFW_KEY_K) == GLFW_PRESS) {
+		this->shootGunTower = true;
+	}
+	else {
+		this->shootGunTower = false;
+	}
 }
 
 //Helper------------------------------------------------------------------------------
@@ -464,6 +494,18 @@ int Simulation::random(int range, int start)
 	return rand() % range + start;
 }
 
+void Simulation::explosion(glm::vec3 pos, glm::vec3 direction, int spreadDiversity, float spreadFactor, int amount, int maxDuration, float gravityImpact = 0.001f, float scale = 0.5f)
+{
+	for (int k = 0; k < amount; k++) {
+		spreadDiversity += rand() % (int)(spreadDiversity / 5) - spreadDiversity / 10;
+		this->particleMaster->addParticle(new Particle(
+			pos,
+			glm::vec3(spreadFactor * (rand() % spreadDiversity - (spreadDiversity / 2)), spreadFactor * (rand() % spreadDiversity - (spreadDiversity / 2)), spreadFactor * (rand() % spreadDiversity - (spreadDiversity / 2)))+direction,
+			gravityImpact, (rand() % 5*maxDuration + 1) / maxDuration, 0, scale, "EXPLOSION"));
+
+	}
+}
+
 //Updates------------------------------------------------------------------------------
 
 void Simulation::updateSimulation()
@@ -471,18 +513,16 @@ void Simulation::updateSimulation()
 	this->updatePlanes();
 	this->updateTorrets();
 	this->updateMissiles();
+	this->updateGunTower();
 
 	this->updateCrashingPlanes();
 	this->updateHitPlane();
 	this->updateHitMissile();
 	this->updateErasing();
-
-
+	this->updatePlaneHitsPlane();
 
 	this->particleMaster->update(this->deltaTime*this->timeFactor);
 
-
-	this->updatePlaneHitsPlane();
 }
 
 void Simulation::updatePlanes()
@@ -490,14 +530,15 @@ void Simulation::updatePlanes()
 	for (auto i : this->planes) {
 		i->update(this->deltaTime * this->timeFactor);
 		i->setDirection(glm::vec3(i->getDirection().x + rotSpeedX, i->getDirection().y + rotSpeedY, i->getDirection().z + rotSpeedZ));
-		this->particleMaster->addParticle(new Particle(i->getPosition(), -glm::normalize(i->getDirection()), 0.05, 0.2, 0, 0.5));
 
+		int spreadFactor = 5;
+		float spread = 0.1;
+		this->particleMaster->addParticle(new Particle(i->getPosition()-10.0f*i->getDirection(), 0.2f * -glm::normalize(glm::vec3(i->getDirection().x + spread * (rand() % spreadFactor - (spreadFactor / 2)), i->getDirection().y + spread * (rand() % spreadFactor - (spreadFactor / 2)), i->getDirection().z + spread * (rand() % spreadFactor - (spreadFactor / 2)))), 0.001, (rand() % 40 + 10) / 20, 0, 0.5, "TAIL"));
 	}
 }
 
 void Simulation::updateMissiles()
 {
-
 	for (size_t i = 0; i < this->missiles.size(); ++i) {
 		this->missiles[i]->update(this->deltaTime * this->timeFactor);
 
@@ -512,17 +553,28 @@ void Simulation::updateMissiles()
 
 			if (nearestDistance > 50 && nearestDistance < 1000)
 			{
-				this->missiles[i]->setDirection(glm::vec3(this->missiles[i]->getDirection().x + direction.x * 0.02, this->missiles[i]->getDirection().y + direction.y * 0.02, this->missiles[i]->getDirection().z + direction.z * 0.02));
+				float acc = 2.0f*this->deltaTime;
+				this->missiles[i]->setDirection(glm::vec3(this->missiles[i]->getDirection().x + direction.x * acc, this->missiles[i]->getDirection().y + direction.y * acc, this->missiles[i]->getDirection().z + direction.z * acc));
 			}
 
 			else if (nearestDistance <= 50) {
-				this->missiles[i]->setDirection(glm::vec3(this->missiles[i]->getDirection().x + direction.x * 0.08, this->missiles[i]->getDirection().y + direction.y * 0.08, this->missiles[i]->getDirection().z + direction.z * 0.08));
+				float acc = 4.0f*this->deltaTime;
+				this->missiles[i]->setDirection(glm::vec3(this->missiles[i]->getDirection().x + direction.x * acc, this->missiles[i]->getDirection().y + direction.y * acc, this->missiles[i]->getDirection().z + direction.z * acc));
 			}
+		}
+		int spreadFactor = 5;
+		float spread = 0.05;
+		this->particleMaster->addParticle(new Particle(
+			this->missiles[i]->getPosition()-this->missiles[i]->getDirection(),
+			0.2f*-glm::normalize(glm::vec3(this->missiles[i]->getDirection().x + spread*(rand()% spreadFactor - (spreadFactor/2)), this->missiles[i]->getDirection().y + spread*(rand() % spreadFactor - (spreadFactor / 2)), this->missiles[i]->getDirection().z + spread*(rand() % spreadFactor - (spreadFactor / 2)) / 10)), 
+			0.01, (rand()%40+10)/20, 0, 0.5, "TAIL"));
+
+		if (missiles[i]->getPosition().y < 0) {
+			this->eraseMissiles.insert(i);
+			this->explosion(this->missiles[i]->getPosition(), -this->missiles[i]->getDirection(), 1000, 0.001, 150, 70, 0.09);
 
 		}
-		this->particleMaster->addParticle(new Particle(this->missiles[i]->getPosition(), -glm::normalize(this->missiles[i]->getDirection()), 0.05, 1, 0, 0.5));
 	}
-
 }
 
 void Simulation::updateTorrets()
@@ -532,29 +584,74 @@ void Simulation::updateTorrets()
 		int nearest;
 		float nearestDistance = 1001;
 		glm::vec3 direction;
+
 		if (!this->torrets[i]->getShot() && this->planes.size()>0) {
 			std::tuple<int, float> result = this->updateNearestPlane(torrets[i]->getMissile(), planes);
 			nearest = std::get<0>(result);
 			nearestDistance = std::get<1>(result);
 
 			direction = glm::normalize(planes[nearest]->getPosition() - this->torrets[i]->getPosition());
-
 		}
-
 
 		if (nearestDistance < 1000) {
 			if (!this->torrets[i]->getShot()) {
-				this->torrets[i]->setDirection(glm::vec3(this->torrets[i]->getDirection().x + direction.x * 0.1, 0.0f, this->torrets[i]->getDirection().z + direction.z * 0.1));
-				this->torrets[i]->getMissile()->setDirection(glm::vec3(this->torrets[i]->getMissile()->getDirection().x + 0.1 * direction.x, this->torrets[i]->getMissile()->getDirection().y + 0.1 * direction.y, this->torrets[i]->getMissile()->getDirection().z + 0.1 * direction.z));
+				float rotSpeed = 0.1f;
+				this->torrets[i]->setDirection(glm::vec3(this->torrets[i]->getDirection().x + direction.x * rotSpeed, 0.0f, this->torrets[i]->getDirection().z + direction.z * rotSpeed));
+				this->torrets[i]->getMissile()->setDirection(glm::vec3(this->torrets[i]->getMissile()->getDirection().x + rotSpeed * direction.x, this->torrets[i]->getMissile()->getDirection().y + rotSpeed * direction.y, this->torrets[i]->getMissile()->getDirection().z + rotSpeed * direction.z));
 			}
-		this->torrets[i]->update(this->deltaTime);
+			this->torrets[i]->update(this->deltaTime*this->timeFactor);
 		}
-
 
 		if (nearestDistance < 800 && this->planes.size()>0) {
 			this->torrets[i]->setShot(true);
 			this->missiles.push_back(this->torrets[i]->getMissile());
 		}
+	}
+}
+
+void Simulation::updateGunTower()
+{
+	for (size_t i = 0; i < this->gunTower.size(); ++i) {
+
+		int nearest;
+		float nearestDistance = 1001;
+		glm::vec3 direction;
+		float rotSpeed = 0.1f;
+
+		if (this->planes.size() > 0) {
+			std::tuple<int, float> result = this->updateNearestPlane(gunTower[i]->getTower(), planes);
+			nearest = std::get<0>(result);
+			nearestDistance = std::get<1>(result);
+
+			direction = glm::normalize(planes[nearest]->getPosition() - this->gunTower[i]->getPosition());
+			float holdUpFactor = 0.3f;
+			glm::vec3 shootDirection = direction + this->planes[nearest]->getDirection() * holdUpFactor;
+
+			this->gunTower[i]->setDirection(glm::vec3(this->gunTower[i]->getDirection().x + shootDirection.x * rotSpeed, 0.0f, this->gunTower[i]->getDirection().z + shootDirection.z * rotSpeed));
+			this->gunTower[i]->getTower()->setDirection(glm::vec3(this->gunTower[i]->getTower()->getDirection().x + rotSpeed * shootDirection.x, this->gunTower[i]->getTower()->getDirection().y + rotSpeed * shootDirection.y, this->gunTower[i]->getTower()->getDirection().z + rotSpeed * shootDirection.z));
+
+			if (this->shootGunTower) {
+
+				for (int l = 0; l < (int)this->gunTower[i]->getSpeed(); l++) {
+					Particle* p = new Particle(
+						this->gunTower[i]->getPosition() + glm::normalize(shootDirection) * (float)l,
+						gunTower[i]->getSpeed() * glm::normalize(shootDirection),
+						0.001f,
+						5.0f,
+						0.0f,
+						1.5f,
+						"TAIL");
+					this->particleMaster->addParticle(p);
+					this->particles.push_back(p);
+				}
+				this->explosion(this->gunTower[i]->getTower()->getPosition()+shootDirection, glm::vec3(0.0f), 1000, 0.0001, 5, 10, 0.01, 0.02);
+			}
+		}
+		else {
+			this->gunTower[i]->setDirection(glm::vec3(this->gunTower[i]->getTower()->getDirection().x + rotSpeed * 0.0f, this->gunTower[i]->getTower()->getDirection().y + rotSpeed * 0.0f, this->gunTower[i]->getTower()->getDirection().z + rotSpeed * -1.0f));
+			this->gunTower[i]->getTower()->setDirection(glm::vec3(this->gunTower[i]->getTower()->getDirection().x + rotSpeed * 0.0f, this->gunTower[i]->getTower()->getDirection().y + rotSpeed * 0.0f, this->gunTower[i]->getTower()->getDirection().z + rotSpeed * -1.0f));
+		}
+		this->gunTower[i]->update(this->deltaTime * this->timeFactor);
 	}
 }
 
@@ -593,6 +690,25 @@ void Simulation::updateHitPlane()
 				}
 				this->eraseMissiles.insert(i);
 				this->erasePlanes.insert(j);
+				this->explosion(this->planes[j]->getPosition(), this->planes[j]->getDirection(), 1000, 0.002, 1000, 100);
+			}
+		}
+	}
+	radius = 5;
+	for (size_t i = 0; i < particles.size(); ++i) {
+		for (size_t j = 0; j < planes.size(); ++j) {
+			Particle* p = particles[i];
+			glm::vec3 connectionVector = planes[j]->getPosition() - p->getPosition();
+			float distance = sqrt(connectionVector.x * connectionVector.x + connectionVector.y * connectionVector.y + connectionVector.z * connectionVector.z);
+
+			if (distance <= radius) {
+				int crashProb = rand() % 2 + 1;
+				if (crashProb == 1) {
+					planes[j]->setCrashRotationSpeed(rand() % 10 + -5);
+					this->crashingPlanes.push_back(planes[j]);
+				}
+				this->erasePlanes.insert(j);
+				this->explosion(this->planes[j]->getPosition(), this->planes[j]->getDirection(), 1000, 0.002, 100, 100);
 			}
 		}
 	}
@@ -610,27 +726,22 @@ void Simulation::updateHitMissile()
 				this->eraseMissiles.insert(i);
 				this->eraseMissiles.insert(j);
 				this->missilesSelfDestruct++;
+				this->explosion(this->missiles[i]->getPosition(), this->missiles[i]->getDirection(), 1000, 0.001, 150, 70);
 			}
 		}
 	}
 }
 
-//buggt noch
 void Simulation::updatePlaneHitsPlane()
 {
 	float radius = 5;
-	for (size_t i = 0; i < planes.size(); ++i) {
+	for (size_t i = 0; i < crashingPlanes.size(); ++i) {
 		for (size_t j = i + 1; j < planes.size(); ++j) {
-			glm::vec3 connectionVector = planes[j]->getPosition() - planes[i]->getPosition();
+			glm::vec3 connectionVector = planes[j]->getPosition() - crashingPlanes[i]->getPosition();
 			float distance = sqrt(connectionVector.x * connectionVector.x + connectionVector.y * connectionVector.y + connectionVector.z * connectionVector.z);
 
 			if (distance <= radius) {
 				int crashProb = rand() % 2 + 1;
-				if (crashProb == 1) {
-					planes[i]->setCrashRotationSpeed(rand() % 10 + -5);
-					this->crashingPlanes.push_back(planes[j]);
-				}
-				crashProb = rand() % 2 + 1;
 				if (crashProb == 1) {
 					planes[j]->setCrashRotationSpeed(rand() % 10 + -5);
 					this->crashingPlanes.push_back(planes[j]);
@@ -638,6 +749,8 @@ void Simulation::updatePlaneHitsPlane()
 				this->erasePlanes.insert(i);
 				this->erasePlanes.insert(j);
 				this->planesSelfDestruct++;
+				this->explosion(this->planes[j]->getPosition(), this->planes[j]->getDirection(), 1000, 0.002, 1000, 100);
+
 			}
 		}
 	}
@@ -645,23 +758,24 @@ void Simulation::updatePlaneHitsPlane()
 
 void Simulation::updateCrashingPlanes()
 {
-	if (this->crashingPlanes.size() > 0) {
-		this->debug = "here";
-		for (size_t i = 0; i < this->crashingPlanes.size(); i++) {
-			this->crashingPlanes[i]->update(this->deltaTime * this->timeFactor);
-			if (this->crashingPlanes[i]->getDirection().y > -0.9) {
-				this->crashingPlanes[i]->setDirection(glm::vec3(this->crashingPlanes[i]->getDirection().x, this->crashingPlanes[i]->getDirection().y - 0.003, this->crashingPlanes[i]->getDirection().z));
-			}
-			else {
-				this->crashingPlanes[i]->setDirection(glm::vec3(this->crashingPlanes[i]->getDirection().x, -0.9, this->crashingPlanes[i]->getDirection().z));
-			}
-			int explodeProb = rand() % 1000 + 1;
-			if (explodeProb == 1) {
-				this->eraseCrashedPlanes.insert(i);
-			}
-			if (crashingPlanes[i]->getPosition().y < 0) {
-				this->eraseCrashedPlanes.insert(i);
-			}
+	for (size_t i = 0; i < this->crashingPlanes.size(); i++) {
+		this->crashingPlanes[i]->update(this->deltaTime * this->timeFactor);
+
+		if (this->crashingPlanes[i]->getDirection().y > -0.9) {
+			this->crashingPlanes[i]->setDirection(glm::vec3(this->crashingPlanes[i]->getDirection().x, this->crashingPlanes[i]->getDirection().y - 0.003, this->crashingPlanes[i]->getDirection().z));
+		}
+		else {
+			this->crashingPlanes[i]->setDirection(glm::vec3(this->crashingPlanes[i]->getDirection().x, -0.9, this->crashingPlanes[i]->getDirection().z));
+		}
+		int explodeProb = rand() % 1000 + 1;
+		if (explodeProb == 1) {
+			this->eraseCrashedPlanes.insert(i);
+			this->explosion(this->crashingPlanes[i]->getPosition(), this->crashingPlanes[i]->getDirection(), 1000, 0.002, 1000, 100);
+		}
+		if (crashingPlanes[i]->getPosition().y < 0) {
+			this->eraseCrashedPlanes.insert(i);
+			this->explosion(this->crashingPlanes[i]->getPosition(), -this->crashingPlanes[i]->getDirection(), 1000, 0.002, 1000, 100, 0.09);
+
 		}
 	}
 }
@@ -690,12 +804,12 @@ void Simulation::updateErasing()
 
 //Rendering------------------------------------------------------------------------------
 
-
 void Simulation::DrawSimulation()
 {
 	this->DrawGround();
 	this->DrawTorrets();
 	this->DrawPlanes();
+	this->DrawGunTower();
 	this->DrawMissiles();
 	this->particleMaster->render(this->projection, this->camera);
 	
@@ -731,19 +845,7 @@ void Simulation::DrawPlanes()
 	for (auto i : crashingPlanes) {
 		this->plane->Translate(i->getPosition());
 
-		glm::mat4 rotation = glm::mat4(1.0f);
-
-		rotation = glm::rotate(rotation, (float)glfwGetTime() * i->getCrahsRotationSpeed(), glm::vec3(1.0, 0.0, 0.0));
-		//rotation = glm::rotate(rotation, i->getRotationAngle(), i->getRotationAxis());
-
-
-		glm::vec3 rotationAxis;
-		float rotationAngle;
-		glm::axisAngle(rotation, rotationAxis, rotationAngle);
-		cout << rotationAngle << endl;
-		this->plane->Rotate(rotationAngle, rotationAxis);
-
-		//this->plane->Rotate(i->getRotationAngle(), i->getRotationAxis());
+		this->plane->Rotate(i->getRotationAngle(), i->getRotationAxis());
 		//this->plane->Rotate(glfwGetTime()*i->getCrahsRotationSpeed(), glm::vec3(1.0, 0.0, 0.0));
 		this->plane->Draw(&this->planeShader, this->projection, this->view, i->getColor());
 	}
@@ -775,7 +877,7 @@ void Simulation::DrawTorrets()
 		if (!i->getShot()) {
 			this->missileShader.use();
 			this->missileShader.setVec3("viewPos", this->camera.Position);
-			this->missile->Translate(i->getMissile()->getPosition());
+			this->missile->Translate(i->getPosition());
 
 			this->missile->Rotate(i->getMissile()->getRotationAngle(), i->getMissile()->getRotationAxis());
 			this->missile->Draw(&this->missileShader, this->projection, this->view, i->getColor());
@@ -783,6 +885,22 @@ void Simulation::DrawTorrets()
 	}
 
 
+}
+
+void Simulation::DrawGunTower()
+{
+	for (auto i : gunTower) {
+		this->torret->Translate(i->getPosition());
+		this->torret->Rotate(i->getRotationAngle(), i->getRotationAxis());
+		this->torret->Draw(&this->torretShader, this->projection, this->view, i->getColor());
+
+		this->missileShader.use();
+		this->missileShader.setVec3("viewPos", this->camera.Position);
+		this->missile->Translate(i->getPosition());
+
+		this->missile->Rotate(i->getTower()->getRotationAngle(), i->getTower()->getRotationAxis());
+		this->missile->Draw(&this->missileShader, this->projection, this->view, i->getColor());
+	}
 }
 
 void Simulation::DrawSettings()

@@ -72,6 +72,9 @@
     <ClCompile Include="src\ParticleMaster.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="src\GunTower.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Engine.h">
@@ -96,6 +99,9 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\ParticleMaster.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GunTower.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
@@ -158,6 +164,12 @@
       <Filter>Ressourcendateien</Filter>
     </None>
     <None Include="Shader\particle.fs">
+      <Filter>Ressourcendateien</Filter>
+    </None>
+    <None Include="Shader\explosion.fs">
+      <Filter>Ressourcendateien</Filter>
+    </None>
+    <None Include="Shader\explosion.vs">
       <Filter>Ressourcendateien</Filter>
     </None>
   </ItemGroup>

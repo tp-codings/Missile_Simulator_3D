@@ -3,7 +3,8 @@
 ParticleRenderer::ParticleRenderer()
 {
 	this->init();
-	this->shader = Shader("Shader/particle.vs", "Shader/particle.fs");
+	this->tailShader = Shader("Shader/particle.vs", "Shader/particle.fs");
+	this->explosionShader = Shader("Shader/explosion.vs", "Shader/explosion.fs");
 }
 
 void ParticleRenderer::render(std::vector<Particle*>& particles, glm::mat4 projection, Camera& camera)
@@ -15,12 +16,21 @@ void ParticleRenderer::render(std::vector<Particle*>& particles, glm::mat4 proje
 		
 		this->updateModelViewMatrix(particles[i]->getPosition(), particles[i]->getRotation(), particles[i]->getScale(), view);
 
-		//Set uniforms
-		this->shader.use();
-		this->shader.setMat4("model", this->model);
-		this->shader.setMat4("projection", projection);
-		this->shader.setFloat("elapsedTime", particles[i]->getElapsedTime());
-		this->shader.setFloat("lifeLength", particles[i]->getLifeLength());
+		if (particles[i]->getType() == "TAIL") {
+			//Set uniforms
+			this->tailShader.use();
+			this->tailShader.setMat4("model", this->model);
+			this->tailShader.setMat4("projection", projection);
+			this->tailShader.setFloat("elapsedTime", particles[i]->getElapsedTime());
+			this->tailShader.setFloat("lifeLength", particles[i]->getLifeLength());
+		}
+		else {
+			this->explosionShader.use();
+			this->explosionShader.setMat4("model", this->model);
+			this->explosionShader.setMat4("projection", projection);
+			this->explosionShader.setFloat("elapsedTime", particles[i]->getElapsedTime());
+			this->explosionShader.setFloat("lifeLength", particles[i]->getLifeLength());
+		}
 
 		glBindVertexArray(this->VAO);
 		glDrawArrays(GL_TRIANGLES, 0, 6);

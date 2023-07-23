@@ -28,7 +28,7 @@
 #include "Planes.h"
 #include "Missile.h"
 #include "Torret.h"
-
+#include "GunTower.h"
 #include "ParticleMaster.h"
 
 
@@ -56,12 +56,9 @@ private:
 	//Shader
 	Shader screenShader;
 	Shader textShader;
-
 	Shader cubeMapShader;
-
 	Shader groundShader;
 	Shader planeShader;
-
 	Shader missileShader;
 	Shader torretShader;
 
@@ -69,27 +66,22 @@ private:
 	glm::mat4 projection;
 	glm::mat4 view;
 	
-
 	//TIMING
 	float deltaTime;
 	float FPS;
 	float timeFactor;
 
-	//Test
-	float rotSpeedX = 0.0f;
-	float rotSpeedY = 0.0f;
-	float rotSpeedZ = 0.0f;
-
+	//Debug
 	int missilesSelfDestruct = 0;
 	int planesSelfDestruct = 0;
 	string debug = " ";
 
+	//Erase Marker
 	set<int> eraseCrashedPlanes;
 	set<int> erasePlanes;
 	set<int> eraseMissiles;
 
 	//World objects
-
 	ModelHandler* plane;
 	ModelHandler* missile;
 	ModelHandler* torret;
@@ -98,7 +90,9 @@ private:
 	vector<Planes*>crashingPlanes;
 	vector<Missile*>missiles;
 	vector<Torret*> torrets;
-	vector<Torret*> torretsWithoutRocket;
+	vector<GunTower*> gunTower;
+
+	vector<Particle*> particles;
 
 	Camera camera;
 
@@ -111,12 +105,17 @@ private:
 	bool viewMode;
 	bool start;
 
-	ImVec4 dirLightColor;
-	glm::vec3 dirLightPos;
-
 	bool startKeyPressed;
 	bool settingsKeyPressed;
 	bool shadingKeyPressed;
+	bool shootGunTower;
+
+	ImVec4 dirLightColor;
+	glm::vec3 dirLightPos;
+
+	float rotSpeedX;
+	float rotSpeedY;
+	float rotSpeedZ;
 
 	//Buffer
 	unsigned int screenVAO;
@@ -130,7 +129,6 @@ private:
 
 	//Vertices
 	float* quadVertices;
-
 	float* groundVertices;
 
 	//Skybox
@@ -178,14 +176,21 @@ private:
 			R"(resources\textures\skybox\city_2_back.jpg)"
 	};
 
-
-
 	//Inits------------------------------------------------------------------------------
 
 	void initVertices();
 	void initBuffer();
 	void initShader();
 	void initVariables();
+
+	void initSettings();
+	void initText();
+	void initMatrices();
+	void initSkybox();
+	void initParticleSystem();
+	void initPlanes();
+	void initTorrets();
+	void initGunTower();
 	void initModels();
 
 	//Input------------------------------------------------------------------------------
@@ -195,7 +200,7 @@ private:
 	//Helper------------------------------------------------------------------------------
 
 	int random(int range, int start);
-
+	void explosion(glm::vec3 pos, glm::vec3 direction, int spreadDiversity, float spreadFactor, int amount, int maxDuration, float gravityImpact, float scale);
 
 	//Updates------------------------------------------------------------------------------
 
@@ -203,6 +208,7 @@ private:
 	void updatePlanes();
 	void updateMissiles();
 	void updateTorrets();
+	void updateGunTower();
 	std::tuple<int, float> updateNearestPlane(Missile* missile, vector<Planes*> planes);
 	void updateHitPlane();
 	void updateHitMissile();
@@ -217,6 +223,7 @@ private:
 	void DrawPlanes();
 	void DrawMissiles();
 	void DrawTorrets();
+	void DrawGunTower();
 	void DrawSettings();
 	void DrawScreen();
 	void DrawText();

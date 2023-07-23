@@ -18,7 +18,10 @@ private:
 
 	unsigned int VAO;
 	unsigned int VBO;
-	Shader shader;
+
+	Shader tailShader;
+	Shader explosionShader;
+
 
 	glm::mat4 model;
 

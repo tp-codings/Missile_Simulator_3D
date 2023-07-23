@@ -7,7 +7,7 @@ in vec3 FragPos;
 
 out vec4 FragColor;
 
-vec3 vColor = vec3(0.2, 0.5, 0.09);
+vec3 vColor;
 vec3 lightPos = vec3(0.0, 5000.0, 0.0);
 vec3 lightColor = vec3(1.0);
 float shininess = 64.f;
@@ -15,7 +15,15 @@ float shininess = 64.f;
 uniform vec3 viewPos;
 
 
+
 void main(){
+
+        vColor = vec3(0.85, 0.7, 0.4);
+
+        float brownSpots = sin(FragPos.x * 0.03) * cos(FragPos.z*0.03);
+        float strength = 0.2;
+        vColor = mix(vColor, vec3(0.7, 0.5, 0.2), brownSpots * strength);
+        vColor += vec3(0.8);
 
         float ambientStrength = 0.2;
     

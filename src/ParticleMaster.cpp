@@ -37,3 +37,4 @@ int ParticleMaster::getParticlesAlive()
 {
     return this->particles.size();;
 }
+
