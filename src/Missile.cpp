@@ -3,7 +3,7 @@
 #include <iostream>
 
 
-Missile::Missile(glm::vec3 startPos, glm::vec3 startDirection, float startVelocity, glm::vec3 color)
+Missile::Missile(glm::vec3 startPos, glm::vec3 startDirection, glm::vec3 startVelocity, glm::vec3 color)
 {
     this->position = startPos;
     this->startPosition = startPos;
@@ -11,6 +11,8 @@ Missile::Missile(glm::vec3 startPos, glm::vec3 startDirection, float startVeloci
     this->direction = glm::normalize(startDirection);
     this->velocity = startVelocity;
     this->color = color;
+    this->timer = 0.0f;
+    this->shot = false;
 
     // Berechnung der Rotationsachse und des Rotationswinkels
     glm::vec3 standardDirection(0.0f, 1.0f, 0.0f);
@@ -24,6 +26,9 @@ void Missile::update(float deltaTime)
     glm::vec3 standardDirection(0.0f, 1.0f, 0.0f);
     this->rotationAxis = glm::cross(standardDirection, glm::normalize(this->direction));
     this->rotationAngle = glm::acos(glm::dot(standardDirection, glm::normalize(this->direction)));
+    if (this->shot) {
+        this->timer += deltaTime;
+    }
 }
 
 glm::vec3 Missile::getPosition()
@@ -46,9 +51,14 @@ glm::vec3 Missile::getTrajectory()
     return this->direction;
 }
 
-float Missile::getVelocity()
+glm::vec3 Missile::getVelocity()
 {
     return this->velocity;
+}
+
+float Missile::getTimer()
+{
+    return this->timer;
 }
 
 glm::vec3 Missile::getColor()
@@ -71,7 +81,7 @@ glm::vec3 Missile::getRotationAxis()
     return this->rotationAxis;
 }
 
-void Missile::setVelocity(float vel)
+void Missile::setVelocity(glm::vec3 vel)
 {
     this->velocity = vel;
 }
@@ -84,4 +94,9 @@ void Missile::setDirection(glm::vec3 dir)
 void Missile::setPosition(glm::vec3 pos)
 {
     this->position = pos;
+}
+
+void Missile::setShot(bool shot)
+{
+    this->shot = shot;
 }

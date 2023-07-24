@@ -75,6 +75,7 @@ private:
 	int missilesSelfDestruct = 0;
 	int planesSelfDestruct = 0;
 	string debug = " ";
+	bool shot;
 
 	//Erase Marker
 	set<int> eraseCrashedPlanes;
@@ -88,8 +89,14 @@ private:
 
 	vector<Planes*>planes;
 	vector<Planes*>crashingPlanes;
+
 	vector<Missile*>missiles;
+
+	vector<Missile*>cruiseMissiles;
+
 	vector<Torret*> torrets;
+	vector<Torret*> missileTruck;
+
 	vector<GunTower*> gunTower;
 
 	vector<Particle*> particles;
@@ -109,6 +116,7 @@ private:
 	bool settingsKeyPressed;
 	bool shadingKeyPressed;
 	bool shootGunTower;
+	bool shootMissileTruck;
 
 	ImVec4 dirLightColor;
 	glm::vec3 dirLightPos;
@@ -212,6 +220,7 @@ private:
 	std::tuple<int, float> updateNearestPlane(Missile* missile, vector<Planes*> planes);
 	void updateHitPlane();
 	void updateHitMissile();
+	void updateCruiseMissile();
 	void updatePlaneHitsPlane();
 	void updateCrashingPlanes();
 	void updateErasing();

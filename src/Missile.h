@@ -6,7 +6,7 @@
 class Missile
 {
 public:
-	Missile(glm::vec3 startPos, glm::vec3 startDirection, float startVelocity, glm::vec3 color = glm::vec3(0.2, 0.2, 0.2));
+	Missile(glm::vec3 startPos, glm::vec3 startDirection, glm::vec3 startVelocity, glm::vec3 color = glm::vec3(0.2, 0.2, 0.2));
 
 	void update(float deltaTime);
 
@@ -20,12 +20,14 @@ public:
 	float getRotationAngle();
 	glm::vec3 getRotationAxis();
 
-	float getVelocity();
+	glm::vec3 getVelocity();
 
+	float getTimer();
 
-	void setVelocity(float vel);
+	void setVelocity(glm::vec3 vel);
 	void setDirection(glm::vec3 dir);
 	void setPosition(glm::vec3 pos);
+	void setShot(bool shot);
 
 private:
 	glm::vec3 direction;
@@ -37,6 +39,9 @@ private:
 	glm::vec3 rotationAxis;
 	float rotationAngle;
 
-	float velocity;
+	glm::vec3 velocity;
+
+	bool shot;
+	float timer;
 };
 

@@ -12,7 +12,7 @@ GunTower::GunTower(glm::vec3 pos, float speed, glm::vec3 color)
     this->color = color;
     this->shot = false;
 
-    this->barrel = new Missile(pos, glm::vec3(0.0, 1.0, 0.001), 0);
+    this->barrel = new Missile(pos, glm::vec3(0.0, 1.0, 0.001), glm::vec3(0.0));
     // Berechnung der Rotationsachse und des Rotationswinkels
     glm::vec3 standardDirection(1.0f, 0.0f, 0.0f);
     this->rotationAngle = glm::acos(glm::dot(standardDirection, this->direction));

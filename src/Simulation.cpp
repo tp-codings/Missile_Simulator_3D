@@ -297,8 +297,10 @@ void Simulation::initSettings()
 	this->settingsKeyPressed = false;
 	this->shadingKeyPressed = false;
 	this->shootGunTower = false;
+	this->shootMissileTruck = false;
 	this->shadingChoice = 0;
 	this->timeFactor = 1.0f;
+	this->shot = false;
 }
 
 void Simulation::initText()
@@ -342,11 +344,18 @@ void Simulation::initPlanes()
 
 void Simulation::initTorrets()
 {
-	int amnountTorrets = 8;
+	int amnountTorrets = 3;
 	for (int i = 0; i < amnountTorrets; i++) {
 		for (int j = 0; j < amnountTorrets; j++) {
 			glm::vec3 randomPos = glm::vec3(-600 + j * 50, 1.5, 0.0 + i * 50);
 			this->torrets.push_back(new Torret(randomPos));
+		}
+	}
+	amnountTorrets = 1;
+	for (int i = 0; i < amnountTorrets; i++) {
+		for (int j = 0; j < amnountTorrets; j++) {
+			glm::vec3 randomPos = glm::vec3(-200 + j * 50, 1.5, 0.0 + i * 50);
+			this->missileTruck.push_back(new Torret(randomPos));
 		}
 	}
 }
@@ -485,6 +494,10 @@ void Simulation::processInput(float deltaTime)
 	else {
 		this->shootGunTower = false;
 	}
+	if (glfwGetKey(this->window, GLFW_KEY_P) == GLFW_PRESS && !this->shootMissileTruck) {
+		this->shootMissileTruck = true;
+	}
+
 }
 
 //Helper------------------------------------------------------------------------------
@@ -512,6 +525,7 @@ void Simulation::updateSimulation()
 {
 	this->updatePlanes();
 	this->updateTorrets();
+	this->updateCruiseMissile();
 	this->updateMissiles();
 	this->updateGunTower();
 
@@ -576,6 +590,55 @@ void Simulation::updateMissiles()
 		}
 	}
 }
+void Simulation::updateCruiseMissile()
+{
+	for (size_t i = 0; i < this->cruiseMissiles.size(); ++i) {
+		this->cruiseMissiles[i]->update(this->deltaTime * this->timeFactor);
+		int nearest;
+		float nearestDistance = 1001;
+		std::tuple<int, float> result;
+		glm::vec3 direction;
+
+		if (this->planes.size() > 0) {
+			result = this->updateNearestPlane(cruiseMissiles[i], planes);
+			nearest = std::get<0>(result);
+			nearestDistance = std::get<1>(result);
+			direction = glm::normalize(planes[nearest]->getPosition() - cruiseMissiles[i]->getPosition());
+		}
+
+		if (this->cruiseMissiles[i]->getTimer() < 2.0f) {
+			float acc = 2.0f * this->deltaTime;
+			this->cruiseMissiles[i]->setVelocity(glm::vec3(0.0f, 12.0f, 0.0f)-glm::vec3(0.0f, 10*this->cruiseMissiles[i]->getTimer(), 0.0f));
+			this->cruiseMissiles[i]->setDirection(glm::vec3(this->cruiseMissiles[i]->getDirection().x + direction.x * acc, this->cruiseMissiles[i]->getDirection().y + direction.y * acc, this->cruiseMissiles[i]->getDirection().z + direction.z * acc));
+		}
+
+		else {
+			this->cruiseMissiles[i]->setVelocity(glm::vec3(150.0f));
+			if (nearestDistance > 50)
+			{
+				float acc = 2.0f * this->deltaTime;
+				this->cruiseMissiles[i]->setDirection(glm::vec3(this->cruiseMissiles[i]->getDirection().x + direction.x * acc, this->cruiseMissiles[i]->getDirection().y + direction.y * acc, this->cruiseMissiles[i]->getDirection().z + direction.z * acc));
+			}
+
+			else if (nearestDistance <= 50) {
+				float acc = 4.0f * this->deltaTime;
+				this->cruiseMissiles[i]->setDirection(glm::vec3(this->cruiseMissiles[i]->getDirection().x + direction.x * acc, this->cruiseMissiles[i]->getDirection().y + direction.y * acc, this->cruiseMissiles[i]->getDirection().z + direction.z * acc));
+			}
+			int spreadFactor = 5;
+			float spread = 0.05;
+			this->particleMaster->addParticle(new Particle(
+				this->cruiseMissiles[i]->getPosition() - this->cruiseMissiles[i]->getDirection(),
+				0.2f * -glm::normalize(glm::vec3(this->cruiseMissiles[i]->getDirection().x + spread * (rand() % spreadFactor - (spreadFactor / 2)), this->cruiseMissiles[i]->getDirection().y + spread * (rand() % spreadFactor - (spreadFactor / 2)), this->cruiseMissiles[i]->getDirection().z + spread * (rand() % spreadFactor - (spreadFactor / 2)) / 10)),
+				0.01, (rand() % 40 + 10) / 20, 0, 0.5, "TAIL"));
+		}
+
+		//if (s400[i]->getPosition().y < 0) {
+		//	this->eraseMissiles.insert(i);
+		//	this->explosion(this->missiles[i]->getPosition(), -this->missiles[i]->getDirection(), 1000, 0.001, 150, 70, 0.09);
+
+		//}
+	}
+}
 
 void Simulation::updateTorrets()
 {
@@ -605,6 +668,15 @@ void Simulation::updateTorrets()
 		if (nearestDistance < 800 && this->planes.size()>0) {
 			this->torrets[i]->setShot(true);
 			this->missiles.push_back(this->torrets[i]->getMissile());
+		}
+	}
+
+	for (size_t i = 0; i < this->missileTruck.size(); ++i) {
+		this->missileTruck[i]->update(this->deltaTime);
+		if (this->shootMissileTruck && this->planes.size()>0 && !this->shot) {
+			this->missileTruck[i]->setShot(true);
+			this->cruiseMissiles.push_back(this->missileTruck[i]->getMissile());
+			this->shot = true;
 		}
 	}
 }
@@ -862,6 +934,11 @@ void Simulation::DrawMissiles()
 		this->missile->Rotate(i->getRotationAngle(), i->getRotationAxis());
 		this->missile->Draw(&this->missileShader, this->projection, this->view, i->getColor());
 	}
+	for (auto i : cruiseMissiles) {
+		this->missile->Translate(i->getPosition());
+		this->missile->Rotate(i->getRotationAngle(), i->getRotationAxis());
+		this->missile->Draw(&this->missileShader, this->projection, this->view, i->getColor());
+	}
 }
 
 void Simulation::DrawTorrets()
@@ -884,6 +961,20 @@ void Simulation::DrawTorrets()
 		}
 	}
 
+	for (auto i : missileTruck) {
+		this->torret->Translate(i->getPosition());
+		this->torret->Rotate(i->getRotationAngle(), i->getRotationAxis());
+		this->torret->Draw(&this->torretShader, this->projection, this->view, i->getColor());
+
+		if (!i->getShot()) {
+			this->missileShader.use();
+			this->missileShader.setVec3("viewPos", this->camera.Position);
+			this->missile->Translate(i->getPosition());
+
+			this->missile->Rotate(i->getMissile()->getRotationAngle(), i->getMissile()->getRotationAxis());
+			this->missile->Draw(&this->missileShader, this->projection, this->view, i->getColor());
+		}
+	}
 
 }
 
