@@ -347,15 +347,15 @@ void Simulation::initTorrets()
 	int amnountTorrets = 2;
 	for (int i = 0; i < amnountTorrets; i++) {
 		for (int j = 0; j < amnountTorrets; j++) {
-			glm::vec3 randomPos = glm::vec3(-600 + j * 50, 1.5, 0.0 + i * 50);
+			glm::vec3 randomPos = glm::vec3(-600 + j * 50, 0.0f, 0.0f + i * 50);
 			this->torrets.push_back(new Torret(randomPos));
 		}
 	}
 	amnountTorrets = 2;
 	for (int i = 0; i < amnountTorrets; i++) {
 		for (int j = 0; j < amnountTorrets; j++) {
-			glm::vec3 randomPos = glm::vec3(-200 + j * 50, 1.5, 0.0 + i * 50);
-			this->missileTruck.push_back(new Torret(randomPos));
+			glm::vec3 randomPos = glm::vec3(-200 + j * 50, 0.0f, 0.0f + i * 50);
+			this->missileTrucks.push_back(new Torret(randomPos));
 		}
 	}
 }
@@ -365,8 +365,8 @@ void Simulation::initGunTower()
 	int amountgunTower = 2;
 	for (int i = 0; i < amountgunTower; i++) {
 		for (int j = 0; j < amountgunTower; j++) {
-			glm::vec3 randomPos = glm::vec3(0.0 + j * 50, 1.5, 0.0 + i * 50);
-			this->gunTower.push_back(new GunTower(randomPos, 8.0f));
+			glm::vec3 randomPos = glm::vec3(0.0 + j * 50, 0.0f, 0.0f + i * 50);
+			this->gunTowers.push_back(new GunTower(randomPos, 15.0f));
 		}
 	}
 }
@@ -379,6 +379,14 @@ void Simulation::initModels()
 	this->missile->Scale(1.0f);
 	this->torret = new ModelHandler(R"(resources\models\torret\torret.obj)");
 	this->torret->Scale(1.0f);
+	this->missileTruck = new ModelHandler(R"(resources\models\missileTruck\missileTruck.obj)");
+	this->missileTruck->Scale(1.0f);
+	this->s400 = new ModelHandler(R"(resources\models\missile\s400.obj)");
+	this->s400->Scale(1.0f);
+	this->gunTower = new ModelHandler(R"(resources\models\gunTower\gunTower.obj)");
+	this->gunTower->Scale(1.0f);
+	this->barrel = new ModelHandler(R"(resources\models\gunTower\barrel.obj)");
+	this->barrel->Scale(1.0f);
 }
 
 //Inputhandling------------------------------------------------------------------------------
@@ -671,11 +679,12 @@ void Simulation::updateTorrets()
 		}
 	}
 
-	for (size_t i = 0; i < this->missileTruck.size(); ++i) {
-		this->missileTruck[i]->update(this->deltaTime);
+	for (size_t i = 0; i < this->missileTrucks.size(); ++i) {
+		this->missileTrucks[i]->update(this->deltaTime);
 		if (this->shootMissileTruck && this->planes.size()>0 && !this->shot) {
-			this->missileTruck[i]->setShot(true);
-			this->cruiseMissiles.push_back(this->missileTruck[i]->getMissile());
+			this->missileTrucks[i]->setShot(true);
+			this->cruiseMissiles.push_back(this->missileTrucks[i]->getMissile());
+			this->explosion(this->missileTrucks[i]->getPosition() + glm::vec3(0.0f, 4.13f, 0.0f), glm::vec3(0.0f), 1000.0f, 0.0001, 5, 5, 0.01, 0.32);
 		}
 	}
 	if (this->shootMissileTruck) {
@@ -685,7 +694,7 @@ void Simulation::updateTorrets()
 
 void Simulation::updateGunTower()
 {
-	for (size_t i = 0; i < this->gunTower.size(); ++i) {
+	for (size_t i = 0; i < this->gunTowers.size(); ++i) {
 
 		int nearest;
 		float nearestDistance = 1001;
@@ -693,39 +702,39 @@ void Simulation::updateGunTower()
 		float rotSpeed = 0.1f;
 
 		if (this->planes.size() > 0) {
-			std::tuple<int, float> result = this->updateNearestPlane(gunTower[i]->getTower(), planes);
+			std::tuple<int, float> result = this->updateNearestPlane(gunTowers[i]->getTower(), planes);
 			nearest = std::get<0>(result);
 			nearestDistance = std::get<1>(result);
 
-			direction = glm::normalize(planes[nearest]->getPosition() - this->gunTower[i]->getPosition());
-			float holdUpFactor = 0.3f;
+			direction = glm::normalize(planes[nearest]->getPosition() - this->gunTowers[i]->getPosition());
+			float holdUpFactor = 0.2f;
 			glm::vec3 shootDirection = direction + this->planes[nearest]->getDirection() * holdUpFactor;
 
-			this->gunTower[i]->setDirection(glm::vec3(this->gunTower[i]->getDirection().x + shootDirection.x * rotSpeed, 0.0f, this->gunTower[i]->getDirection().z + shootDirection.z * rotSpeed));
-			this->gunTower[i]->getTower()->setDirection(glm::vec3(this->gunTower[i]->getTower()->getDirection().x + rotSpeed * shootDirection.x, this->gunTower[i]->getTower()->getDirection().y + rotSpeed * shootDirection.y, this->gunTower[i]->getTower()->getDirection().z + rotSpeed * shootDirection.z));
+			this->gunTowers[i]->setDirection(glm::vec3(this->gunTowers[i]->getDirection().x + shootDirection.x * rotSpeed, 0.0f, this->gunTowers[i]->getDirection().z + shootDirection.z * rotSpeed));
+			this->gunTowers[i]->getTower()->setDirection(glm::vec3(this->gunTowers[i]->getTower()->getDirection().x + rotSpeed * shootDirection.x, this->gunTowers[i]->getTower()->getDirection().y + rotSpeed * shootDirection.y, this->gunTowers[i]->getTower()->getDirection().z + rotSpeed * shootDirection.z));
 
 			if (this->shootGunTower) {
 
-				for (int l = 0; l < (int)this->gunTower[i]->getSpeed(); l++) {
+				for (int l = 0; l < (int)this->gunTowers[i]->getSpeed(); l++) {
 					Particle* p = new Particle(
-						this->gunTower[i]->getPosition() + glm::normalize(shootDirection) * (float)l,
-						gunTower[i]->getSpeed() * glm::normalize(shootDirection),
+						this->gunTowers[i]->getPosition() + glm::normalize(shootDirection) * (float)l,
+						gunTowers[i]->getSpeed() * glm::normalize(shootDirection),
 						0.001f,
 						5.0f,
 						0.0f,
-						1.5f,
+						0.5f,
 						"TAIL");
 					this->particleMaster->addParticle(p);
 					this->particles.push_back(p);
 				}
-				this->explosion(this->gunTower[i]->getTower()->getPosition()+shootDirection, glm::vec3(0.0f), 1000, 0.0001, 5, 10, 0.01, 0.02);
+				this->explosion(this->gunTowers[i]->getTower()->getPosition()+shootDirection, glm::vec3(0.0f), 1000, 0.0001, 5, 10, 0.01, 0.02);
 			}
 		}
 		else {
-			this->gunTower[i]->setDirection(glm::vec3(this->gunTower[i]->getTower()->getDirection().x + rotSpeed * 0.0f, this->gunTower[i]->getTower()->getDirection().y + rotSpeed * 0.0f, this->gunTower[i]->getTower()->getDirection().z + rotSpeed * -1.0f));
-			this->gunTower[i]->getTower()->setDirection(glm::vec3(this->gunTower[i]->getTower()->getDirection().x + rotSpeed * 0.0f, this->gunTower[i]->getTower()->getDirection().y + rotSpeed * 0.0f, this->gunTower[i]->getTower()->getDirection().z + rotSpeed * -1.0f));
+			this->gunTowers[i]->setDirection(glm::vec3(this->gunTowers[i]->getTower()->getDirection().x + rotSpeed * 0.0f, this->gunTowers[i]->getTower()->getDirection().y + rotSpeed * 0.0f, this->gunTowers[i]->getTower()->getDirection().z + rotSpeed * -1.0f));
+			this->gunTowers[i]->getTower()->setDirection(glm::vec3(this->gunTowers[i]->getTower()->getDirection().x + rotSpeed * 0.0f, this->gunTowers[i]->getTower()->getDirection().y + rotSpeed * 0.0f, this->gunTowers[i]->getTower()->getDirection().z + rotSpeed * -1.0f));
 		}
-		this->gunTower[i]->update(this->deltaTime * this->timeFactor);
+		this->gunTowers[i]->update(this->deltaTime * this->timeFactor);
 	}
 }
 
@@ -919,7 +928,7 @@ void Simulation::DrawGround()
 {
 	this->groundShader.use();
 	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+	model = glm::translate(model, glm::vec3(0.0f, -1.0f, 0.0f));
 	this->groundShader.setMat4("model", model);
 	this->groundShader.setMat4("view", this->view);
 	this->groundShader.setMat4("projection", this->projection);
@@ -962,9 +971,9 @@ void Simulation::DrawMissiles()
 		this->missile->Draw(&this->missileShader, this->projection, this->view, i->getColor());
 	}
 	for (auto i : cruiseMissiles) {
-		this->missile->Translate(i->getPosition());
-		this->missile->Rotate(i->getRotationAngle(), i->getRotationAxis());
-		this->missile->Draw(&this->missileShader, this->projection, this->view, i->getColor());
+		this->s400->Translate(i->getPosition());
+		this->s400->Rotate(i->getRotationAngle(), i->getRotationAxis());
+		this->s400->Draw(&this->missileShader, this->projection, this->view, i->getColor());
 	}
 }
 
@@ -981,25 +990,25 @@ void Simulation::DrawTorrets()
 		if (!i->getShot()) {
 			this->missileShader.use();
 			this->missileShader.setVec3("viewPos", this->camera.Position);
-			this->missile->Translate(i->getPosition());
 
+			this->missile->Translate(i->getPosition());
 			this->missile->Rotate(i->getMissile()->getRotationAngle(), i->getMissile()->getRotationAxis());
 			this->missile->Draw(&this->missileShader, this->projection, this->view, i->getColor());
 		}
 	}
 
-	for (auto i : missileTruck) {
-		this->torret->Translate(i->getPosition());
-		this->torret->Rotate(i->getRotationAngle(), i->getRotationAxis());
-		this->torret->Draw(&this->torretShader, this->projection, this->view, i->getColor());
+	for (auto i : missileTrucks) {
+		this->missileTruck->Translate(i->getPosition());
+		this->missileTruck->Rotate(i->getRotationAngle(), i->getRotationAxis());
+		this->missileTruck->Draw(&this->torretShader, this->projection, this->view, i->getColor());
 
 		if (!i->getShot()) {
 			this->missileShader.use();
 			this->missileShader.setVec3("viewPos", this->camera.Position);
-			this->missile->Translate(i->getPosition());
 
-			this->missile->Rotate(i->getMissile()->getRotationAngle(), i->getMissile()->getRotationAxis());
-			this->missile->Draw(&this->missileShader, this->projection, this->view, i->getColor());
+			this->s400->Translate(i->getPosition());
+			this->s400->Rotate(i->getMissile()->getRotationAngle(), i->getMissile()->getRotationAxis());
+			this->s400->Draw(&this->missileShader, this->projection, this->view, i->getColor());
 		}
 	}
 
@@ -1007,17 +1016,17 @@ void Simulation::DrawTorrets()
 
 void Simulation::DrawGunTower()
 {
-	for (auto i : gunTower) {
-		this->torret->Translate(i->getPosition());
-		this->torret->Rotate(i->getRotationAngle(), i->getRotationAxis());
-		this->torret->Draw(&this->torretShader, this->projection, this->view, i->getColor());
+	for (auto i : gunTowers) {
+		this->gunTower->Translate(i->getPosition());
+		this->gunTower->Rotate(i->getRotationAngle(), i->getRotationAxis());
+		this->gunTower->Draw(&this->torretShader, this->projection, this->view, i->getColor());
 
 		this->missileShader.use();
 		this->missileShader.setVec3("viewPos", this->camera.Position);
-		this->missile->Translate(i->getPosition());
 
-		this->missile->Rotate(i->getTower()->getRotationAngle(), i->getTower()->getRotationAxis());
-		this->missile->Draw(&this->missileShader, this->projection, this->view, i->getColor());
+		this->barrel->Translate(i->getPosition());
+		this->barrel->Rotate(i->getTower()->getRotationAngle(), i->getTower()->getRotationAxis());
+		this->barrel->Draw(&this->missileShader, this->projection, this->view, i->getColor());
 	}
 }
 

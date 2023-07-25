@@ -87,6 +87,10 @@ private:
 	ModelHandler* plane;
 	ModelHandler* missile;
 	ModelHandler* torret;
+	ModelHandler* missileTruck;
+	ModelHandler* s400;
+	ModelHandler* gunTower;
+	ModelHandler* barrel;
 
 	vector<Planes*>planes;
 	vector<Planes*>crashingPlanes;
@@ -96,9 +100,9 @@ private:
 	vector<Missile*>cruiseMissiles;
 
 	vector<Torret*> torrets;
-	vector<Torret*> missileTruck;
+	vector<Torret*> missileTrucks;
 
-	vector<GunTower*> gunTower;
+	vector<GunTower*> gunTowers;
 
 	vector<Particle*> particles;
 
