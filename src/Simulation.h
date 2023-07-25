@@ -81,6 +81,7 @@ private:
 	set<int> eraseCrashedPlanes;
 	set<int> erasePlanes;
 	set<int> eraseMissiles;
+	set<int> eraseCruiseMissiles;
 
 	//World objects
 	ModelHandler* plane;

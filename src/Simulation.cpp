@@ -331,7 +331,7 @@ void Simulation::initParticleSystem()
 
 void Simulation::initPlanes()
 {
-	int amountPlanes = 4;
+	int amountPlanes = 6;
 	for (int i = 0; i < amountPlanes; i++) {
 		for (int j = 0; j < amountPlanes; j++) {
 			this->planes.push_back(new Planes(glm::vec3(j * (rand() % 200 + -100), 400.0 + j * (rand() % 10 + 1), -1000.0 + i * (rand() % 20 - 100)), glm::vec3(0.001, 0.0, 1.00), 70, glm::vec3(0.1)));
@@ -344,14 +344,14 @@ void Simulation::initPlanes()
 
 void Simulation::initTorrets()
 {
-	int amnountTorrets = 3;
+	int amnountTorrets = 2;
 	for (int i = 0; i < amnountTorrets; i++) {
 		for (int j = 0; j < amnountTorrets; j++) {
 			glm::vec3 randomPos = glm::vec3(-600 + j * 50, 1.5, 0.0 + i * 50);
 			this->torrets.push_back(new Torret(randomPos));
 		}
 	}
-	amnountTorrets = 1;
+	amnountTorrets = 2;
 	for (int i = 0; i < amnountTorrets; i++) {
 		for (int j = 0; j < amnountTorrets; j++) {
 			glm::vec3 randomPos = glm::vec3(-200 + j * 50, 1.5, 0.0 + i * 50);
@@ -567,12 +567,12 @@ void Simulation::updateMissiles()
 
 			if (nearestDistance > 50 && nearestDistance < 1000)
 			{
-				float acc = 2.0f*this->deltaTime;
+				float acc = 3.0f*this->deltaTime;
 				this->missiles[i]->setDirection(glm::vec3(this->missiles[i]->getDirection().x + direction.x * acc, this->missiles[i]->getDirection().y + direction.y * acc, this->missiles[i]->getDirection().z + direction.z * acc));
 			}
 
 			else if (nearestDistance <= 50) {
-				float acc = 4.0f*this->deltaTime;
+				float acc = 100.0f*this->deltaTime;
 				this->missiles[i]->setDirection(glm::vec3(this->missiles[i]->getDirection().x + direction.x * acc, this->missiles[i]->getDirection().y + direction.y * acc, this->missiles[i]->getDirection().z + direction.z * acc));
 			}
 		}
@@ -597,7 +597,7 @@ void Simulation::updateCruiseMissile()
 		int nearest;
 		float nearestDistance = 1001;
 		std::tuple<int, float> result;
-		glm::vec3 direction;
+		glm::vec3 direction = this->cruiseMissiles[i]->getDirection();
 
 		if (this->planes.size() > 0) {
 			result = this->updateNearestPlane(cruiseMissiles[i], planes);
@@ -609,19 +609,20 @@ void Simulation::updateCruiseMissile()
 		if (this->cruiseMissiles[i]->getTimer() < 2.0f) {
 			float acc = 2.0f * this->deltaTime;
 			this->cruiseMissiles[i]->setVelocity(glm::vec3(0.0f, 12.0f, 0.0f)-glm::vec3(0.0f, 10*this->cruiseMissiles[i]->getTimer(), 0.0f));
-			this->cruiseMissiles[i]->setDirection(glm::vec3(this->cruiseMissiles[i]->getDirection().x + direction.x * acc, this->cruiseMissiles[i]->getDirection().y + direction.y * acc, this->cruiseMissiles[i]->getDirection().z + direction.z * acc));
+			//this->cruiseMissiles[i]->setDirection(glm::vec3(this->cruiseMissiles[i]->getDirection().x + direction.x * acc, this->cruiseMissiles[i]->getDirection().y + direction.y * acc, this->cruiseMissiles[i]->getDirection().z + direction.z * acc));
 		}
 
 		else {
-			this->cruiseMissiles[i]->setVelocity(glm::vec3(150.0f));
+			this->cruiseMissiles[i]->setMaxVelocity(glm::vec3(300.0f));
+			this->cruiseMissiles[i]->setAcceleration(glm::vec3(40.f));
 			if (nearestDistance > 50)
 			{
-				float acc = 2.0f * this->deltaTime;
+				float acc = 4.0f * this->deltaTime;
 				this->cruiseMissiles[i]->setDirection(glm::vec3(this->cruiseMissiles[i]->getDirection().x + direction.x * acc, this->cruiseMissiles[i]->getDirection().y + direction.y * acc, this->cruiseMissiles[i]->getDirection().z + direction.z * acc));
 			}
 
 			else if (nearestDistance <= 50) {
-				float acc = 4.0f * this->deltaTime;
+				float acc = 100.0f * this->deltaTime;
 				this->cruiseMissiles[i]->setDirection(glm::vec3(this->cruiseMissiles[i]->getDirection().x + direction.x * acc, this->cruiseMissiles[i]->getDirection().y + direction.y * acc, this->cruiseMissiles[i]->getDirection().z + direction.z * acc));
 			}
 			int spreadFactor = 5;
@@ -632,11 +633,10 @@ void Simulation::updateCruiseMissile()
 				0.01, (rand() % 40 + 10) / 20, 0, 0.5, "TAIL"));
 		}
 
-		//if (s400[i]->getPosition().y < 0) {
-		//	this->eraseMissiles.insert(i);
-		//	this->explosion(this->missiles[i]->getPosition(), -this->missiles[i]->getDirection(), 1000, 0.001, 150, 70, 0.09);
-
-		//}
+		if (this->cruiseMissiles[i]->getPosition().y < 0) {
+			this->eraseCruiseMissiles.insert(i);
+			this->explosion(this->cruiseMissiles[i]->getPosition(), -this->cruiseMissiles[i]->getDirection(), 1000, 0.001, 150, 70, 0.09);
+		}
 	}
 }
 
@@ -676,8 +676,10 @@ void Simulation::updateTorrets()
 		if (this->shootMissileTruck && this->planes.size()>0 && !this->shot) {
 			this->missileTruck[i]->setShot(true);
 			this->cruiseMissiles.push_back(this->missileTruck[i]->getMissile());
-			this->shot = true;
 		}
+	}
+	if (this->shootMissileTruck) {
+		this->shot = true;
 	}
 }
 
@@ -761,6 +763,25 @@ void Simulation::updateHitPlane()
 					this->crashingPlanes.push_back(planes[j]);
 				}
 				this->eraseMissiles.insert(i);
+				this->erasePlanes.insert(j);
+				this->explosion(this->planes[j]->getPosition(), this->planes[j]->getDirection(), 1000, 0.002, 1000, 100);
+			}
+		}
+	}
+	radius = 5;
+	for (size_t i = 0; i < cruiseMissiles.size(); ++i) {
+		for (size_t j = 0; j < planes.size(); ++j) {
+
+			glm::vec3 connectionVector = planes[j]->getPosition() - cruiseMissiles[i]->getPosition();
+			float distance = sqrt(connectionVector.x * connectionVector.x + connectionVector.y * connectionVector.y + connectionVector.z * connectionVector.z);
+
+			if (distance <= radius) {
+				int crashProb = rand() % 2 + 1;
+				if (crashProb == 1) {
+					planes[j]->setCrashRotationSpeed(rand() % 10 + -5);
+					this->crashingPlanes.push_back(planes[j]);
+				}
+				this->eraseCruiseMissiles.insert(i);
 				this->erasePlanes.insert(j);
 				this->explosion(this->planes[j]->getPosition(), this->planes[j]->getDirection(), 1000, 0.002, 1000, 100);
 			}
@@ -866,6 +887,12 @@ void Simulation::updateErasing()
 
 	}
 	this->eraseMissiles.clear();
+
+	for (auto it = eraseCruiseMissiles.rbegin(); it != eraseCruiseMissiles.rend(); ++it) {
+		this->cruiseMissiles.erase(this->cruiseMissiles.begin() + *it);
+
+	}
+	this->eraseCruiseMissiles.clear();
 
 	//Planes
 	for (auto it = erasePlanes.rbegin(); it != erasePlanes.rend(); ++it) {
