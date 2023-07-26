@@ -18,6 +18,7 @@ public:
 	glm::vec3 getDirection();
 	glm::vec3 getAcceleration();
 	glm::vec3 getMaxVelocity();
+	glm::vec3 getAccAcc();
 
 	float getRotationAngle();
 	glm::vec3 getRotationAxis();
@@ -31,6 +32,7 @@ public:
 	void setDirection(glm::vec3 dir);
 	void setPosition(glm::vec3 pos);
 	void setAcceleration(glm::vec3 acc);
+	void setAccAcc(glm::vec3 accacc);
 	void setShot(bool shot);
 
 	float calcVecLength(glm::vec3 vec);
@@ -48,6 +50,7 @@ private:
 	glm::vec3 velocity;
 	glm::vec3 maxVelocity;
 	glm::vec3 acceleration;
+	glm::vec3 accacc;
 
 	bool shot;
 	float timer;

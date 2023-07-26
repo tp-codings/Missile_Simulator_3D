@@ -19,13 +19,17 @@ Missile::Missile(glm::vec3 startPos, glm::vec3 startDirection, glm::vec3 startVe
     glm::vec3 standardDirection(0.0f, 1.0f, 0.0f);
     this->rotationAxis = glm::cross(standardDirection, this->direction);
     this->rotationAngle = glm::acos(glm::dot(standardDirection, this->direction));
+    this->acceleration = glm::vec3(0.0f);
+    this->accacc = glm::vec3(0.0f);
 }
 
 void Missile::update(float deltaTime)
 {
     if (this->calcVecLength(this->velocity) < this->calcVecLength(this->maxVelocity)) {
+        this->acceleration += this->accacc * deltaTime;
         this->velocity += this->acceleration * deltaTime;
     }
+
     this->position += this->velocity * this->direction * deltaTime;
     glm::vec3 standardDirection(0.0f, 1.0f, 0.0f);
     this->rotationAxis = glm::cross(standardDirection, glm::normalize(this->direction));
@@ -85,6 +89,11 @@ glm::vec3 Missile::getMaxVelocity()
     return this->maxVelocity;
 }
 
+glm::vec3 Missile::getAccAcc()
+{
+    return this->accacc;
+}
+
 float Missile::getRotationAngle()
 {
     return this->rotationAngle;
@@ -118,6 +127,11 @@ void Missile::setPosition(glm::vec3 pos)
 void Missile::setAcceleration(glm::vec3 acc)
 {
     this->acceleration = acc;
+}
+
+void Missile::setAccAcc(glm::vec3 accacc)
+{
+    this->accacc = accacc;
 }
 
 void Missile::setShot(bool shot)

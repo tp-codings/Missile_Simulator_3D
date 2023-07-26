@@ -72,7 +72,7 @@ void Torret::setShot(bool isShot)
 {
     this->shot = isShot;
     this->missile->setShot(isShot);
-    this->missile->setAcceleration(glm::vec3(50.0f));
+    this->missile->setAccAcc(glm::vec3(50.0f));
     this->missile->setMaxVelocity(glm::vec3(120));
 }
 
