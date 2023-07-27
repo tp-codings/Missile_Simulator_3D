@@ -21,6 +21,7 @@ public:
 	ParticleTextureHandler getTexture();
 
 
+
 private:
 	glm::vec3 position;
 	glm::vec3 velocity;
@@ -32,5 +33,10 @@ private:
 	std::string type;
 
 	ParticleTextureHandler texture;
+
+	glm::vec2 texOffset1;
+	glm::vec2 texOffset2;
+
+	float blendFactor;
 };
 
