@@ -1,9 +1,14 @@
 #version 330 core
 
+in vec2 textureCoords;
+
 uniform float elapsedTime;
 uniform float lifeLength;
+uniform sampler2D particleTexture;
 
 out vec4 FragColor;
+
+
 
 void main()
 {
@@ -22,4 +27,5 @@ void main()
 
     // Setze die FragColor auf den berechneten Farbwert
     FragColor = vec4(finalColor, 1.0);
+    FragColor = texture(particleTexture, textureCoords);
 }

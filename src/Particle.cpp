@@ -1,8 +1,8 @@
 #include "Particle.h"
 #define GRAVITY -10
 
-Particle::Particle(glm::vec3 position, glm::vec3 velocity, float gravityEffect, float lifeLength, float rotation, float scale, std::string type):
-	position(position), velocity(velocity), gravityEffect(gravityEffect), lifeLength(lifeLength), rotation(rotation), scale(scale), type(type)
+Particle::Particle(ParticleTextureHandler texture, glm::vec3 position, glm::vec3 velocity, float gravityEffect, float lifeLength, float rotation, float scale, std::string type):
+	texture(texture), position(position), velocity(velocity), gravityEffect(gravityEffect), lifeLength(lifeLength), rotation(rotation), scale(scale), type(type)
 {
 	this->elapsedTime = 0.0f;
 }
@@ -45,4 +45,9 @@ bool Particle::update(float deltaTime)
 	this->elapsedTime += deltaTime;
 
 	return elapsedTime < this->lifeLength;
+}
+
+ParticleTextureHandler Particle::getTexture()
+{
+	return this->texture;
 }

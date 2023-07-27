@@ -1,8 +1,10 @@
 #pragma once
 #include <vector>
+#include <unordered_map>
 #include "Particle.h"
 #include "ParticleRenderer.h"
 #include <Camera/camera.h>
+#include "ParticleTextureHandler.h"
 
 class ParticleMaster
 {
@@ -15,7 +17,11 @@ public:
 	int getParticlesAlive();
 
 private:
-	std::vector<Particle*> particles;
+
+
+	std::unordered_map<ParticleTextureHandler, std::vector<Particle*>> particles;
+
+
 	ParticleRenderer renderer;
 
 

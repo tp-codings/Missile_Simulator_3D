@@ -4,10 +4,12 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <string>
 
+#include "ParticleTextureHandler.h"
+
 class Particle
 {
 public:
-	Particle(glm::vec3 position, glm::vec3 velocity, float gravityEffect, float lifeLength, float rotation, float scale, std::string type);
+	Particle(ParticleTextureHandler texture, glm::vec3 position, glm::vec3 velocity, float gravityEffect, float lifeLength, float rotation, float scale, std::string type);
 	glm::vec3 getPosition();
 	float getRotation();
 	float getScale();
@@ -15,6 +17,8 @@ public:
 	float getLifeLength();
 	std::string getType();
 	bool update(float deltaTime);
+
+	ParticleTextureHandler getTexture();
 
 
 private:
@@ -26,5 +30,7 @@ private:
 	float scale;
 	float elapsedTime;
 	std::string type;
+
+	ParticleTextureHandler texture;
 };
 

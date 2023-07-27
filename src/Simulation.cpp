@@ -519,10 +519,10 @@ void Simulation::explosion(glm::vec3 pos, glm::vec3 direction, int spreadDiversi
 {
 	for (int k = 0; k < amount; k++) {
 		spreadDiversity += rand() % (int)(spreadDiversity / 5) - spreadDiversity / 10;
-		this->particleMaster->addParticle(new Particle(
-			pos,
-			glm::vec3(spreadFactor * (rand() % spreadDiversity - (spreadDiversity / 2)), spreadFactor * (rand() % spreadDiversity - (spreadDiversity / 2)), spreadFactor * (rand() % spreadDiversity - (spreadDiversity / 2)))+direction,
-			gravityImpact, (rand() % 5*maxDuration + 1) / maxDuration, 0, scale, "EXPLOSION"));
+		//this->particleMaster->addParticle(new Particle(
+		//	pos,
+		//	glm::vec3(spreadFactor * (rand() % spreadDiversity - (spreadDiversity / 2)), spreadFactor * (rand() % spreadDiversity - (spreadDiversity / 2)), spreadFactor * (rand() % spreadDiversity - (spreadDiversity / 2)))+direction,
+		//	gravityImpact, (rand() % 5*maxDuration + 1) / maxDuration, 0, scale, "EXPLOSION"));
 
 	}
 }
@@ -555,7 +555,7 @@ void Simulation::updatePlanes()
 
 		int spreadFactor = 5;
 		float spread = 0.1;
-		this->particleMaster->addParticle(new Particle(i->getPosition()-10.0f*i->getDirection(), 0.2f * -glm::normalize(glm::vec3(i->getDirection().x + spread * (rand() % spreadFactor - (spreadFactor / 2)), i->getDirection().y + spread * (rand() % spreadFactor - (spreadFactor / 2)), i->getDirection().z + spread * (rand() % spreadFactor - (spreadFactor / 2)))), 0.001, (rand() % 40 + 10) / 20, 0, 0.5, "TAIL"));
+		//this->particleMaster->addParticle(new Particle(i->getPosition()-10.0f*i->getDirection(), 0.2f * -glm::normalize(glm::vec3(i->getDirection().x + spread * (rand() % spreadFactor - (spreadFactor / 2)), i->getDirection().y + spread * (rand() % spreadFactor - (spreadFactor / 2)), i->getDirection().z + spread * (rand() % spreadFactor - (spreadFactor / 2)))), 0.001, (rand() % 40 + 10) / 20, 0, 0.5, "TAIL"));
 	}
 }
 
@@ -573,28 +573,34 @@ void Simulation::updateMissiles()
 			nearestDistance = std::get<1>(result);
 			glm::vec3 direction = glm::normalize(planes[nearest]->getPosition() - missiles[i]->getPosition());
 
-			if (nearestDistance > 50 && nearestDistance < 1000)
-			{
-				float acc = 3.0f*this->deltaTime*this->timeFactor;
-				this->missiles[i]->setDirection(glm::vec3(this->missiles[i]->getDirection().x + direction.x * acc, this->missiles[i]->getDirection().y + direction.y * acc, this->missiles[i]->getDirection().z + direction.z * acc));
-			}
+			float angleToTarget = glm::angle(glm::normalize(this->missiles[i]->getDirection()), direction);
+			if (angleToTarget < 0.9) {
+				if (nearestDistance > 50 && nearestDistance < 1000)
+				{
+					float acc = 3.0f * this->deltaTime * this->timeFactor;
+					this->missiles[i]->setDirection(glm::vec3(this->missiles[i]->getDirection().x + direction.x * acc, this->missiles[i]->getDirection().y + direction.y * acc, this->missiles[i]->getDirection().z + direction.z * acc));
+				}
 
-			else if (nearestDistance <= 50) {
-				float acc = 100.0f*this->deltaTime*this->timeFactor;
-				this->missiles[i]->setDirection(glm::vec3(this->missiles[i]->getDirection().x + direction.x * acc, this->missiles[i]->getDirection().y + direction.y * acc, this->missiles[i]->getDirection().z + direction.z * acc));
+				else if (nearestDistance <= 50) {
+					float acc = 8.0f * this->deltaTime * this->timeFactor;
+					this->missiles[i]->setDirection(glm::vec3(this->missiles[i]->getDirection().x + direction.x * acc, this->missiles[i]->getDirection().y + direction.y * acc, this->missiles[i]->getDirection().z + direction.z * acc));
+				}
 			}
 		}
 		int spreadFactor = 5;
 		float spread = 0.05;
-		this->particleMaster->addParticle(new Particle(
-			this->missiles[i]->getPosition()-this->missiles[i]->getDirection(),
-			0.2f*-glm::normalize(glm::vec3(this->missiles[i]->getDirection().x + spread*(rand()% spreadFactor - (spreadFactor/2)), this->missiles[i]->getDirection().y + spread*(rand() % spreadFactor - (spreadFactor / 2)), this->missiles[i]->getDirection().z + spread*(rand() % spreadFactor - (spreadFactor / 2)) / 10)), 
-			0.01, (rand()%40+10)/20, 0, 0.5, "TAIL"));
+		//this->particleMaster->addParticle(new Particle(
+		//	this->missiles[i]->getPosition()-this->missiles[i]->getDirection(),
+		//	0.2f*-glm::normalize(glm::vec3(this->missiles[i]->getDirection().x + spread*(rand()% spreadFactor - (spreadFactor/2)), this->missiles[i]->getDirection().y + spread*(rand() % spreadFactor - (spreadFactor / 2)), this->missiles[i]->getDirection().z + spread*(rand() % spreadFactor - (spreadFactor / 2)) / 10)), 
+		//	0.01, (rand()%40+10)/20, 0, 0.5, "TAIL"));
 
 		if (missiles[i]->getPosition().y < 0) {
 			this->eraseMissiles.insert(i);
 			this->explosion(this->missiles[i]->getPosition(), -this->missiles[i]->getDirection(), 1000, 0.001, 150, 70, 0.09);
-
+		}
+		if (this->missiles[i]->getTimer() > 35.0f) {
+			this->eraseMissiles.insert(i);
+			this->explosion(this->missiles[i]->getPosition(), this->missiles[i]->getDirection(), 1000, 0.001, 150, 70, 0.09);
 		}
 	}
 }
@@ -620,7 +626,6 @@ void Simulation::updateCruiseMissile()
 			this->cruiseMissiles[i]->setVelocity(glm::vec3(0.0f, 14.0f, 0.0f)-glm::vec3(0.0f, 10*this->cruiseMissiles[i]->getTimer(), 0.0f));
 			this->cruiseMissiles[i]->setMaxVelocity(glm::vec3(300.0f));
 			//this->cruiseMissiles[i]->setDirection(glm::vec3(this->cruiseMissiles[i]->getDirection().x + direction.x * acc, this->cruiseMissiles[i]->getDirection().y + direction.y * acc, this->cruiseMissiles[i]->getDirection().z + direction.z * acc));
-
 		}
 
 		else {
@@ -638,20 +643,24 @@ void Simulation::updateCruiseMissile()
 			else {
 				this->cruiseMissiles[i]->setAcceleration(glm::vec3(this->cruiseMissiles[i]->getAcceleration().z));
 
-				if (nearestDistance > 50)
-				{
-					float acc = 4.0f * this->deltaTime*this->timeFactor;
-					this->cruiseMissiles[i]->setDirection(glm::vec3(this->cruiseMissiles[i]->getDirection().x + direction.x * acc, this->cruiseMissiles[i]->getDirection().y + direction.y * acc, this->cruiseMissiles[i]->getDirection().z + direction.z * acc));
-				}
+				float angleToTarget = glm::angle(glm::normalize(this->cruiseMissiles[i]->getDirection()), direction);
+				if (angleToTarget < 0.9) {
+					if (nearestDistance > 50)
+					{
+						float acc = 4.0f * this->deltaTime*this->timeFactor;
+						this->cruiseMissiles[i]->setDirection(glm::vec3(this->cruiseMissiles[i]->getDirection().x + direction.x * acc, this->cruiseMissiles[i]->getDirection().y + direction.y * acc, this->cruiseMissiles[i]->getDirection().z + direction.z * acc));
+					}
 
-				else if (nearestDistance <= 50) {
-					float acc = 100.0f * this->deltaTime*this->timeFactor;
-					this->cruiseMissiles[i]->setDirection(glm::vec3(this->cruiseMissiles[i]->getDirection().x + direction.x * acc, this->cruiseMissiles[i]->getDirection().y + direction.y * acc, this->cruiseMissiles[i]->getDirection().z + direction.z * acc));
+					else if (nearestDistance <= 50) {
+						float acc = 8.0f * this->deltaTime*this->timeFactor;
+						this->cruiseMissiles[i]->setDirection(glm::vec3(this->cruiseMissiles[i]->getDirection().x + direction.x * acc, this->cruiseMissiles[i]->getDirection().y + direction.y * acc, this->cruiseMissiles[i]->getDirection().z + direction.z * acc));
+					}
 				}
 			}
 			int spreadFactor = 5;
 			float spread = 0.05;
 			this->particleMaster->addParticle(new Particle(
+				ParticleTextureHandler(this->loadTexture(R"(resources/textures/awesomeface.png)"), 1),
 				this->cruiseMissiles[i]->getPosition() - this->cruiseMissiles[i]->getDirection(),
 				0.2f * -glm::normalize(glm::vec3(this->cruiseMissiles[i]->getDirection().x + spread * (rand() % spreadFactor - (spreadFactor / 2)), this->cruiseMissiles[i]->getDirection().y + spread * (rand() % spreadFactor - (spreadFactor / 2)), this->cruiseMissiles[i]->getDirection().z + spread * (rand() % spreadFactor - (spreadFactor / 2)) / 10)),
 				0.01, (rand() % 40 + 10) / 20, 0, 0.5, "TAIL"));
@@ -660,6 +669,10 @@ void Simulation::updateCruiseMissile()
 		if (this->cruiseMissiles[i]->getPosition().y < 0) {
 			this->eraseCruiseMissiles.insert(i);
 			this->explosion(this->cruiseMissiles[i]->getPosition(), -this->cruiseMissiles[i]->getDirection(), 1000, 0.001, 150, 70, 0.09);
+		}
+		if (this->cruiseMissiles[i]->getTimer() > 35.0f) {
+			this->eraseCruiseMissiles.insert(i);
+			this->explosion(this->cruiseMissiles[i]->getPosition(), this->cruiseMissiles[i]->getDirection(), 1000, 0.001, 150, 70, 0.09);
 		}
 	}
 }
@@ -733,16 +746,16 @@ void Simulation::updateGunTower()
 			if (this->shootGunTower) {
 
 				for (int l = 0; l < (int)this->gunTowers[i]->getSpeed(); l++) {
-					Particle* p = new Particle(
-						this->gunTowers[i]->getPosition() + glm::normalize(shootDirection) * (float)l,
-						gunTowers[i]->getSpeed() * glm::normalize(shootDirection),
-						0.1f,
-						5.0f,
-						0.0f,
-						0.5f,
-						"TAIL");
-					this->particleMaster->addParticle(p);
-					this->particles.push_back(p);
+					//Particle* p = new Particle(
+					//	this->gunTowers[i]->getPosition() + glm::normalize(shootDirection) * (float)l,
+					//	gunTowers[i]->getSpeed() * glm::normalize(shootDirection),
+					//	0.1f,
+					//	5.0f,
+					//	0.0f,
+					//	0.5f,
+					//	"TAIL");
+					//this->particleMaster->addParticle(p);
+					//this->particles.push_back(p);
 				}
 				this->explosion(this->gunTowers[i]->getTower()->getPosition()+shootDirection, glm::vec3(0.0f), 1000, 0.0001, 5, 10, 0.01, 0.02);
 			}
@@ -1028,6 +1041,50 @@ void Simulation::DrawTorrets()
 			this->s400->Draw(&this->missileShader, this->projection, this->view, i->getColor());
 		}
 	}
+
+}
+
+unsigned int Simulation::loadTexture(const char* path)
+{
+	unsigned int textureID;
+	glGenTextures(1, &textureID);
+
+	int width, height, nrComponents;
+	unsigned char* data = stbi_load(path, &width, &height, &nrComponents, 0);
+	if (data)
+	{
+		GLenum format;
+		if (nrComponents == 1)
+			format = GL_RED;
+		else if (nrComponents == 3)
+			format = GL_RGB;
+		else if (nrComponents == 4)
+			format = GL_RGBA;
+
+		glBindTexture(GL_TEXTURE_2D, textureID);
+		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		if (format = GL_RGBA)
+		{
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		}
+
+		stbi_image_free(data);
+	}
+	else
+	{
+		std::cout << "Texture failed to load at path: " << path << std::endl;
+		stbi_image_free(data);
+	}
+
+	return textureID;
 
 }
 

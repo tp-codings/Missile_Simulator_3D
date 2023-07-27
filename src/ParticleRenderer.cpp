@@ -7,35 +7,42 @@ ParticleRenderer::ParticleRenderer()
 	this->explosionShader = Shader("Shader/explosion.vs", "Shader/explosion.fs");
 }
 
-void ParticleRenderer::render(std::vector<Particle*>& particles, glm::mat4 projection, Camera& camera)
+void ParticleRenderer::render(std::unordered_map<ParticleTextureHandler, std::vector<Particle*>>& particles, glm::mat4 projection, Camera& camera)
 {
 	
 	glm::mat4 view = camera.GetViewMatrix();
 
-	for (int i = 0; i < particles.size(); i++) {
-		
-		this->updateModelViewMatrix(particles[i]->getPosition(), particles[i]->getRotation(), particles[i]->getScale(), view);
+	for (auto it = particles.begin(); it != particles.end(); ++it) {
+		ParticleTextureHandler texture = it->first;
+		std::vector<Particle*> particleList = it->second;
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texture.getTextureID());
 
-		if (particles[i]->getType() == "TAIL") {
-			//Set uniforms
-			this->tailShader.use();
-			this->tailShader.setMat4("model", this->model);
-			this->tailShader.setMat4("projection", projection);
-			this->tailShader.setFloat("elapsedTime", particles[i]->getElapsedTime());
-			this->tailShader.setFloat("lifeLength", particles[i]->getLifeLength());
-		}
-		else {
-			this->explosionShader.use();
-			this->explosionShader.setMat4("model", this->model);
-			this->explosionShader.setMat4("projection", projection);
-			this->explosionShader.setFloat("elapsedTime", particles[i]->getElapsedTime());
-			this->explosionShader.setFloat("lifeLength", particles[i]->getLifeLength());
-		}
+		for (Particle* p : particleList) {
 
-		glBindVertexArray(this->VAO);
-		glDrawArrays(GL_TRIANGLES, 0, 6);
-		glBindVertexArray(0);
-		//Maybe depthmask und blend
+			this->updateModelViewMatrix(p->getPosition(), p->getRotation(), p->getScale(), view);
+
+			if (p->getType() == "TAIL") {
+				//Set uniforms
+				this->tailShader.use();
+				this->tailShader.setMat4("model", this->model);
+				this->tailShader.setMat4("projection", projection);
+				this->tailShader.setFloat("elapsedTime", p->getElapsedTime());
+				this->tailShader.setFloat("lifeLength", p->getLifeLength());
+			}
+			else {
+				this->explosionShader.use();
+				this->explosionShader.setMat4("model", this->model);
+				this->explosionShader.setMat4("projection", projection);
+				this->explosionShader.setFloat("elapsedTime", p->getElapsedTime());
+				this->explosionShader.setFloat("lifeLength", p->getLifeLength());
+			}
+
+			glBindVertexArray(this->VAO);
+			glDrawArrays(GL_TRIANGLES, 0, 6);
+			glBindVertexArray(0);
+			//Maybe depthmask und blend
+		}
 	}
 }
 

@@ -6,6 +6,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/matrix_interpolation.hpp>
+#include <glm/gtx/vector_angle.hpp>
 
 #include <Shader/shader.h>
 #include <Camera/camera.h>
@@ -30,6 +31,7 @@
 #include "Torret.h"
 #include "GunTower.h"
 #include "ParticleMaster.h"
+#include "ParticleTextureHandler.h"
 
 
 class Simulation
@@ -214,6 +216,7 @@ private:
 
 	int random(int range, int start);
 	void explosion(glm::vec3 pos, glm::vec3 direction, int spreadDiversity, float spreadFactor, int amount, int maxDuration, float gravityImpact, float scale);
+	unsigned int loadTexture(const char* path);
 
 	//Updates------------------------------------------------------------------------------
 

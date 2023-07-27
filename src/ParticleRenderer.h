@@ -1,4 +1,5 @@
 #pragma once
+#include <unordered_map>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -6,12 +7,13 @@
 #include <vector>
 #include "Particle.h"
 #include <Camera/camera.h>
+#include "ParticleTextureHandler.h"
 
 class ParticleRenderer
 {
 public:
 	ParticleRenderer();
-	void render(std::vector<Particle*> &particles, glm::mat4 projection, Camera &camera);
+	void render(std::unordered_map<ParticleTextureHandler, std::vector<Particle*>>& particles, glm::mat4 projection, Camera& camera);
 
 private:
 	float* quadVertices;
