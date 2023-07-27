@@ -572,16 +572,18 @@ void Simulation::updateMissiles()
 			nearest = std::get<0>(result);
 			nearestDistance = std::get<1>(result);
 			glm::vec3 direction = glm::normalize(planes[nearest]->getPosition() - missiles[i]->getPosition());
+			float angleToTarget = glm::angle(glm::normalize(this->missiles[i]->getDirection()), direction);
+			if (angleToTarget < 0.9) {
+				if (nearestDistance > 50 && nearestDistance < 1000)
+				{
+					float acc = 3.0f * this->deltaTime * this->timeFactor;
+					this->missiles[i]->setDirection(glm::vec3(this->missiles[i]->getDirection().x + direction.x * acc, this->missiles[i]->getDirection().y + direction.y * acc, this->missiles[i]->getDirection().z + direction.z * acc));
+				}
 
-			if (nearestDistance > 50 && nearestDistance < 1000)
-			{
-				float acc = 3.0f*this->deltaTime*this->timeFactor;
-				this->missiles[i]->setDirection(glm::vec3(this->missiles[i]->getDirection().x + direction.x * acc, this->missiles[i]->getDirection().y + direction.y * acc, this->missiles[i]->getDirection().z + direction.z * acc));
-			}
-
-			else if (nearestDistance <= 50) {
-				float acc = 100.0f*this->deltaTime*this->timeFactor;
-				this->missiles[i]->setDirection(glm::vec3(this->missiles[i]->getDirection().x + direction.x * acc, this->missiles[i]->getDirection().y + direction.y * acc, this->missiles[i]->getDirection().z + direction.z * acc));
+				else if (nearestDistance <= 50) {
+					float acc = 8.0f * this->deltaTime * this->timeFactor;
+					this->missiles[i]->setDirection(glm::vec3(this->missiles[i]->getDirection().x + direction.x * acc, this->missiles[i]->getDirection().y + direction.y * acc, this->missiles[i]->getDirection().z + direction.z * acc));
+				}
 			}
 		}
 		int spreadFactor = 5;
@@ -637,16 +639,18 @@ void Simulation::updateCruiseMissile()
 
 			else {
 				this->cruiseMissiles[i]->setAcceleration(glm::vec3(this->cruiseMissiles[i]->getAcceleration().z));
+				float angleToTarget = glm::angle(glm::normalize(this->cruiseMissiles[i]->getDirection()), direction);
+				if (angleToTarget < 0.9) {
+					if (nearestDistance > 50)
+					{
+						float acc = 4.0f * this->deltaTime * this->timeFactor;
+						this->cruiseMissiles[i]->setDirection(glm::vec3(this->cruiseMissiles[i]->getDirection().x + direction.x * acc, this->cruiseMissiles[i]->getDirection().y + direction.y * acc, this->cruiseMissiles[i]->getDirection().z + direction.z * acc));
+					}
 
-				if (nearestDistance > 50)
-				{
-					float acc = 4.0f * this->deltaTime*this->timeFactor;
-					this->cruiseMissiles[i]->setDirection(glm::vec3(this->cruiseMissiles[i]->getDirection().x + direction.x * acc, this->cruiseMissiles[i]->getDirection().y + direction.y * acc, this->cruiseMissiles[i]->getDirection().z + direction.z * acc));
-				}
-
-				else if (nearestDistance <= 50) {
-					float acc = 100.0f * this->deltaTime*this->timeFactor;
-					this->cruiseMissiles[i]->setDirection(glm::vec3(this->cruiseMissiles[i]->getDirection().x + direction.x * acc, this->cruiseMissiles[i]->getDirection().y + direction.y * acc, this->cruiseMissiles[i]->getDirection().z + direction.z * acc));
+					else if (nearestDistance <= 50) {
+						float acc = 8.0f * this->deltaTime * this->timeFactor;
+						this->cruiseMissiles[i]->setDirection(glm::vec3(this->cruiseMissiles[i]->getDirection().x + direction.x * acc, this->cruiseMissiles[i]->getDirection().y + direction.y * acc, this->cruiseMissiles[i]->getDirection().z + direction.z * acc));
+					}
 				}
 			}
 			int spreadFactor = 5;
