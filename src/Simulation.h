@@ -116,6 +116,7 @@ private:
 
 	//Texturen
 	unsigned int star;
+	unsigned int particleAtlas;
 
 	//Settings
 	float cameraSpeed;

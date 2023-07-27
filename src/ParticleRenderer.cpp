@@ -31,6 +31,11 @@ void ParticleRenderer::render(std::unordered_map<int, std::vector<Particle*>>& p
 				this->tailShader.setMat4("projection", projection);
 				this->tailShader.setFloat("elapsedTime", p->getElapsedTime());
 				this->tailShader.setFloat("lifeLength", p->getLifeLength());
+				this->tailShader.setVec2("texOffset1", p->getTexOffset1());
+				this->tailShader.setVec2("texOffset2", p->getTexOffset2());
+				this->tailShader.setVec2("texCoordInfo", glm::vec2(p->getTexture().getNumberOfRows(), p->getBlendFactor()));
+				//if(p->getTexture().getNumberOfRows() == 4)
+				//	std::cout << p->getTexOffset1().x << " " << p->getTexOffset1().y << std::endl;
 			}
 			else {
 				this->explosionShader.use();
@@ -53,13 +58,13 @@ void ParticleRenderer::init()
 {
 	float qVertices[] = {
 		// positions // texCoords
-		-1.0f,  1.0f,  0.0f, 1.0f,
-		-1.0f, -1.0f,  0.0f, 0.0f,
-		 1.0f, -1.0f,  1.0f, 0.0f,
+		-0.5f,  0.5f,  0.0f, 0.5f,
+		-0.5f, -0.5f,  0.0f, 0.0f,
+		 0.5f, -0.5f,  0.5f, 0.0f,
 
-		-1.0f,  1.0f,  0.0f, 1.0f,
-		 1.0f, -1.0f,  1.0f, 0.0f,
-		 1.0f,  1.0f,  1.0f, 1.0f
+		-0.5f,  0.5f,  0.0f, 0.5f,
+		 0.5f, -0.5f,  0.5f, 0.0f,
+		 0.5f,  0.5f,  0.5f, 0.5f
 	};
 	this->quadVertices = new float[6 * 4];
 
@@ -103,7 +108,7 @@ void ParticleRenderer::updateModelViewMatrix(glm::vec3 position, float rotation,
 void ParticleRenderer::prepareRendering()
 {
 	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_MIN);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDepthMask(false);
 }
 

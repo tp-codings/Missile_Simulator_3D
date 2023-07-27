@@ -309,6 +309,7 @@ void Simulation::initSettings()
 void Simulation::initTextures()
 {
 	this->star = this->loadTextures(R"(resources/textures/particleStar.png)");
+	this->particleAtlas = this->loadTextures(R"(resources/textures/particleAtlas.png)");
 
 }
 void Simulation::initText()
@@ -339,7 +340,7 @@ void Simulation::initParticleSystem()
 
 void Simulation::initPlanes()
 {
-	int amountPlanes = 6;
+	int amountPlanes = 2;
 	for (int i = 0; i < amountPlanes; i++) {
 		for (int j = 0; j < amountPlanes; j++) {
 			this->planes.push_back(new Planes(glm::vec3(j * (rand() % 200 + -100), 400.0 + j * (rand() % 10 + 1), -1000.0 + i * (rand() % 20 - 100)), glm::vec3(0.001, 0.0, 1.00), 70, glm::vec3(0.1)));
@@ -352,17 +353,17 @@ void Simulation::initPlanes()
 
 void Simulation::initTorrets()
 {
-	int amnountTorrets = 2;
+	int amnountTorrets = 1;
 	for (int i = 0; i < amnountTorrets; i++) {
 		for (int j = 0; j < amnountTorrets; j++) {
-			glm::vec3 randomPos = glm::vec3(-600 + j * 50, 0.0f, 0.0f + i * 50);
+			glm::vec3 randomPos = glm::vec3(-10 + j * 50, 0.0f, 0.0f + i * 50);
 			this->torrets.push_back(new Torret(randomPos));
 		}
 	}
-	amnountTorrets = 2;
+	amnountTorrets = 1;
 	for (int i = 0; i < amnountTorrets; i++) {
 		for (int j = 0; j < amnountTorrets; j++) {
-			glm::vec3 randomPos = glm::vec3(-200 + j * 50, 0.0f, 0.0f + i * 50);
+			glm::vec3 randomPos = glm::vec3(-0 + j * 50, 0.0f, 0.0f + i * 50);
 			this->missileTrucks.push_back(new Torret(randomPos));
 		}
 	}
@@ -370,10 +371,10 @@ void Simulation::initTorrets()
 
 void Simulation::initGunTower()
 {
-	int amountgunTower = 2;
+	int amountgunTower = 1;
 	for (int i = 0; i < amountgunTower; i++) {
 		for (int j = 0; j < amountgunTower; j++) {
-			glm::vec3 randomPos = glm::vec3(0.0 + j * 50, 0.0f, 0.0f + i * 50);
+			glm::vec3 randomPos = glm::vec3(10.0 + j * 50, 0.0f, 0.0f + i * 50);
 			this->gunTowers.push_back(new GunTower(randomPos, 15.0f));
 		}
 	}
@@ -528,10 +529,10 @@ void Simulation::explosion(glm::vec3 pos, glm::vec3 direction, int spreadDiversi
 	for (int k = 0; k < amount; k++) {
 		spreadDiversity += rand() % (int)(spreadDiversity / 5) - spreadDiversity / 10;
 		this->particleMaster->addParticle(new Particle(
-			ParticleTextureHandler(this->star, 1),
+			ParticleTextureHandler(this->particleAtlas, 4),
 			pos,
 			glm::vec3(spreadFactor * (rand() % spreadDiversity - (spreadDiversity / 2)), spreadFactor * (rand() % spreadDiversity - (spreadDiversity / 2)), spreadFactor * (rand() % spreadDiversity - (spreadDiversity / 2)))+direction,
-			gravityImpact, (rand() % 5*maxDuration + 1) / maxDuration, 0, scale, "EXPLOSION"));
+			gravityImpact, (rand() % 5*maxDuration + 1) / maxDuration, 0, scale, "TAIL"));
 
 	}
 }
@@ -595,7 +596,6 @@ void Simulation::updateSimulation()
 	this->updatePlaneHitsPlane();
 
 	this->particleMaster->update(this->deltaTime*this->timeFactor);
-
 }
 
 void Simulation::updatePlanes()
@@ -606,7 +606,7 @@ void Simulation::updatePlanes()
 
 		int spreadFactor = 5;
 		float spread = 0.1;
-		this->particleMaster->addParticle(new Particle(ParticleTextureHandler(this->star, 1),i->getPosition()-10.0f*i->getDirection(), 0.2f * -glm::normalize(glm::vec3(i->getDirection().x + spread * (rand() % spreadFactor - (spreadFactor / 2)), i->getDirection().y + spread * (rand() % spreadFactor - (spreadFactor / 2)), i->getDirection().z + spread * (rand() % spreadFactor - (spreadFactor / 2)))), 0.001, (rand() % 40 + 10) / 20, 0, 0.5, "TAIL"));
+		this->particleMaster->addParticle(new Particle(ParticleTextureHandler(this->particleAtlas, 4),i->getPosition()-10.0f*i->getDirection(), 0.2f * -glm::normalize(glm::vec3(i->getDirection().x + spread * (rand() % spreadFactor - (spreadFactor / 2)), i->getDirection().y + spread * (rand() % spreadFactor - (spreadFactor / 2)), i->getDirection().z + spread * (rand() % spreadFactor - (spreadFactor / 2)))), 0.001, (rand() % 40 + 10) / 20, 0, 0.5, "TAIL"));
 	}
 }
 
@@ -640,10 +640,10 @@ void Simulation::updateMissiles()
 		}
 		int spreadFactor = 5;
 		float spread = 0.05;
-		this->particleMaster->addParticle(new Particle(ParticleTextureHandler(this->star, 1),
+		this->particleMaster->addParticle(new Particle(ParticleTextureHandler(this->particleAtlas, 4),
 			this->missiles[i]->getPosition()-this->missiles[i]->getDirection(),
 			0.2f*-glm::normalize(glm::vec3(this->missiles[i]->getDirection().x + spread*(rand()% spreadFactor - (spreadFactor/2)), this->missiles[i]->getDirection().y + spread*(rand() % spreadFactor - (spreadFactor / 2)), this->missiles[i]->getDirection().z + spread*(rand() % spreadFactor - (spreadFactor / 2)) / 10)), 
-			0.01, (rand()%40+10)/20, 0, 0.5, "TAIL"));
+			0.01, (rand()%40+10)/20, 0, 1.0, "TAIL"));
 
 		if (missiles[i]->getPosition().y < 0) {
 			this->eraseMissiles.insert(i);
@@ -677,7 +677,7 @@ void Simulation::updateCruiseMissile()
 			this->cruiseMissiles[i]->setAccAcc(glm::vec3(0.0f));
 			float acc = 2.0f * this->deltaTime*this->timeFactor;
 			this->cruiseMissiles[i]->setVelocity(glm::vec3(0.0f, 14.0f, 0.0f)-glm::vec3(0.0f, 10*this->cruiseMissiles[i]->getTimer(), 0.0f));
-			this->cruiseMissiles[i]->setMaxVelocity(glm::vec3(300.0f));
+			this->cruiseMissiles[i]->setMaxVelocity(glm::vec3(200.0f));
 			//this->cruiseMissiles[i]->setDirection(glm::vec3(this->cruiseMissiles[i]->getDirection().x + direction.x * acc, this->cruiseMissiles[i]->getDirection().y + direction.y * acc, this->cruiseMissiles[i]->getDirection().z + direction.z * acc));
 		}
 
@@ -712,20 +712,22 @@ void Simulation::updateCruiseMissile()
 			}
 			int spreadFactor = 5;
 			float spread = 0.05;
-			this->particleMaster->addParticle(new Particle(
-				ParticleTextureHandler(this->star, 1),
-				this->cruiseMissiles[i]->getPosition() - this->cruiseMissiles[i]->getDirection(),
-				0.2f * -glm::normalize(glm::vec3(this->cruiseMissiles[i]->getDirection().x + spread * (rand() % spreadFactor - (spreadFactor / 2)), this->cruiseMissiles[i]->getDirection().y + spread * (rand() % spreadFactor - (spreadFactor / 2)), this->cruiseMissiles[i]->getDirection().z + spread * (rand() % spreadFactor - (spreadFactor / 2)) / 10)),
-				0.01, (rand() % 40 + 10) / 20, 0, 0.5, "TAIL"));
+			for (int m = 1; m < 25; m++) {
+				this->particleMaster->addParticle(new Particle(
+					ParticleTextureHandler(this->particleAtlas, 4),
+					this->cruiseMissiles[i]->getPosition() - glm::normalize(this->cruiseMissiles[i]->getDirection()),
+					0.2f * -glm::normalize(glm::vec3(this->cruiseMissiles[i]->getDirection().x + spread * (rand() % spreadFactor - (spreadFactor / 2)), this->cruiseMissiles[i]->getDirection().y + spread * (rand() % spreadFactor - (spreadFactor / 2)), this->cruiseMissiles[i]->getDirection().z + spread * (rand() % spreadFactor - (spreadFactor / 2)) / 10)),
+					0.01, (rand() % 40 + 10) / 20, 0, 1.5, "TAIL"));
+			}
 		}
 
 		if (this->cruiseMissiles[i]->getPosition().y < 0) {
 			this->eraseCruiseMissiles.insert(i);
-			this->explosion(this->cruiseMissiles[i]->getPosition(), -this->cruiseMissiles[i]->getDirection(), 1000, 0.001, 150, 70, 0.09);
+			this->explosion(this->cruiseMissiles[i]->getPosition(), -this->cruiseMissiles[i]->getDirection(), 1000, 0.001, 150, 70, 0.09, 2.0f);
 		}
 		if (this->cruiseMissiles[i]->getTimer() > 35.0f) {
 			this->eraseCruiseMissiles.insert(i);
-			this->explosion(this->cruiseMissiles[i]->getPosition(), this->cruiseMissiles[i]->getDirection(), 1000, 0.001, 150, 70, 0.09);
+			this->explosion(this->cruiseMissiles[i]->getPosition(), this->cruiseMissiles[i]->getDirection(), 1000, 0.001, 150, 70, 0.09, 2.0f);
 		}
 	}
 }
@@ -856,7 +858,7 @@ void Simulation::updateHitPlane()
 				}
 				this->eraseMissiles.insert(i);
 				this->erasePlanes.insert(j);
-				this->explosion(this->planes[j]->getPosition(), this->planes[j]->getDirection(), 1000, 0.002, 1000, 100);
+				this->explosion(this->planes[j]->getPosition(), this->planes[j]->getDirection(), 1000, 0.001, 1000, 100, 0.001f, 3.0f);
 			}
 		}
 	}
@@ -875,7 +877,7 @@ void Simulation::updateHitPlane()
 				}
 				this->eraseCruiseMissiles.insert(i);
 				this->erasePlanes.insert(j);
-				this->explosion(this->planes[j]->getPosition(), this->planes[j]->getDirection(), 1000, 0.002, 1000, 100);
+				this->explosion(this->planes[j]->getPosition(), this->planes[j]->getDirection(), 1000, 0.001, 1000, 100, 0.001f, 3.0f);
 			}
 		}
 	}
@@ -893,7 +895,7 @@ void Simulation::updateHitPlane()
 					this->crashingPlanes.push_back(planes[j]);
 				}
 				this->erasePlanes.insert(j);
-				this->explosion(this->planes[j]->getPosition(), this->planes[j]->getDirection(), 1000, 0.002, 100, 100);
+				this->explosion(this->planes[j]->getPosition(), this->planes[j]->getDirection(), 1000, 0.001, 100, 100, 0.001f, 3.0f);
 			}
 		}
 	}
@@ -911,7 +913,7 @@ void Simulation::updateHitMissile()
 				this->eraseMissiles.insert(i);
 				this->eraseMissiles.insert(j);
 				this->missilesSelfDestruct++;
-				this->explosion(this->missiles[i]->getPosition(), this->missiles[i]->getDirection(), 1000, 0.001, 150, 70);
+				this->explosion(this->missiles[i]->getPosition(), this->missiles[i]->getDirection(), 1000, 0.001, 150, 70, 0.001f, 2.0f);
 			}
 		}
 	}
@@ -934,7 +936,7 @@ void Simulation::updatePlaneHitsPlane()
 				this->erasePlanes.insert(i);
 				this->erasePlanes.insert(j);
 				this->planesSelfDestruct++;
-				this->explosion(this->planes[j]->getPosition(), this->planes[j]->getDirection(), 1000, 0.002, 1000, 100);
+				this->explosion(this->planes[j]->getPosition(), this->planes[j]->getDirection(), 1000, 0.002, 1000, 100, 0.001f, 5.0f);
 
 			}
 		}
@@ -955,11 +957,11 @@ void Simulation::updateCrashingPlanes()
 		int explodeProb = rand() % 1000 + 1;
 		if (explodeProb == 1) {
 			this->eraseCrashedPlanes.insert(i);
-			this->explosion(this->crashingPlanes[i]->getPosition(), this->crashingPlanes[i]->getDirection(), 1000, 0.002, 1000, 100);
+			this->explosion(this->crashingPlanes[i]->getPosition(), this->crashingPlanes[i]->getDirection(), 1000, 0.002, 1000, 100, 0.001f, 3.0f);
 		}
 		if (crashingPlanes[i]->getPosition().y < 0) {
 			this->eraseCrashedPlanes.insert(i);
-			this->explosion(this->crashingPlanes[i]->getPosition(), -this->crashingPlanes[i]->getDirection(), 1000, 0.002, 1000, 100, 0.09);
+			this->explosion(this->crashingPlanes[i]->getPosition(), -this->crashingPlanes[i]->getDirection(), 1000, 0.002, 1000, 100, 0.09, 3.0f);
 
 		}
 	}

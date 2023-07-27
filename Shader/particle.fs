@@ -1,6 +1,8 @@
 #version 330 core
 
-in vec2 textureCoords;
+in vec2 textureCoords1;
+in vec2 textureCoords2;
+in float blend;
 
 uniform float elapsedTime;
 uniform float lifeLength;
@@ -27,5 +29,10 @@ void main()
 
     // Setze die FragColor auf den berechneten Farbwert
     FragColor = vec4(finalColor, 1.0);
-    FragColor = texture(particleTexture, textureCoords);
+
+
+    vec4 color1 = texture(particleTexture, textureCoords1);
+    vec4 color2 = texture(particleTexture, textureCoords2);
+
+    FragColor = mix(color1, color2, blend);
 }

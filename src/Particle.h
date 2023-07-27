@@ -19,6 +19,9 @@ public:
 	bool update(float deltaTime);
 
 	ParticleTextureHandler getTexture();
+	glm::vec2 getTexOffset1();
+	glm::vec2 getTexOffset2();
+	float getBlendFactor();
 
 
 
@@ -38,5 +41,9 @@ private:
 	glm::vec2 texOffset2;
 
 	float blendFactor;
+
+	void updateTextureCoordInfo();
+
+	void setTextureOffset(glm::vec2* offset, int index);
 };
 
