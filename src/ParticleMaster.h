@@ -18,8 +18,7 @@ public:
 
 private:
 
-
-	std::unordered_map<ParticleTextureHandler, std::vector<Particle*>> particles;
+	std::unordered_map<int, std::vector<Particle*>> particles;
 
 
 	ParticleRenderer renderer;

@@ -112,6 +112,8 @@ void Simulation::render()
 
 	this->DrawSkyBox();
 
+	this->particleMaster->render(this->projection, this->camera);
+
 	this->DrawScreen();
 
 	this->DrawText();
@@ -277,6 +279,7 @@ void Simulation::initShader()
 void Simulation::initVariables()
 {
 	this->initSettings();
+	this->initTextures();
 	this->initText();
 	this->initMatrices();
 	this->initSkybox();
@@ -303,6 +306,11 @@ void Simulation::initSettings()
 	this->shot = false;
 }
 
+void Simulation::initTextures()
+{
+	this->star = this->loadTextures(R"(resources/textures/particleStar.png)");
+
+}
 void Simulation::initText()
 {
 	this->textRenderer = new TextRenderer(10, this->WINDOW_WIDTH, this->WINDOW_HEIGHT);
@@ -519,14 +527,57 @@ void Simulation::explosion(glm::vec3 pos, glm::vec3 direction, int spreadDiversi
 {
 	for (int k = 0; k < amount; k++) {
 		spreadDiversity += rand() % (int)(spreadDiversity / 5) - spreadDiversity / 10;
-		//this->particleMaster->addParticle(new Particle(
-		//	pos,
-		//	glm::vec3(spreadFactor * (rand() % spreadDiversity - (spreadDiversity / 2)), spreadFactor * (rand() % spreadDiversity - (spreadDiversity / 2)), spreadFactor * (rand() % spreadDiversity - (spreadDiversity / 2)))+direction,
-		//	gravityImpact, (rand() % 5*maxDuration + 1) / maxDuration, 0, scale, "EXPLOSION"));
+		this->particleMaster->addParticle(new Particle(
+			ParticleTextureHandler(this->star, 1),
+			pos,
+			glm::vec3(spreadFactor * (rand() % spreadDiversity - (spreadDiversity / 2)), spreadFactor * (rand() % spreadDiversity - (spreadDiversity / 2)), spreadFactor * (rand() % spreadDiversity - (spreadDiversity / 2)))+direction,
+			gravityImpact, (rand() % 5*maxDuration + 1) / maxDuration, 0, scale, "EXPLOSION"));
 
 	}
 }
+unsigned int Simulation::loadTextures(const char* path)
+{
+	unsigned int textureID;
+	glGenTextures(1, &textureID);
 
+	int width, height, nrComponents;
+	unsigned char* data = stbi_load(path, &width, &height, &nrComponents, 0);
+	if (data)
+	{
+		GLenum format;
+		if (nrComponents == 1)
+			format = GL_RED;
+		else if (nrComponents == 3)
+			format = GL_RGB;
+		else if (nrComponents == 4)
+			format = GL_RGBA;
+
+		glBindTexture(GL_TEXTURE_2D, textureID);
+		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		if (format = GL_RGBA)
+		{
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		}
+
+		stbi_image_free(data);
+	}
+	else
+	{
+		std::cout << "Texture failed to load at path: " << path << std::endl;
+		stbi_image_free(data);
+	}
+
+	return textureID;
+
+}
 //Updates------------------------------------------------------------------------------
 
 void Simulation::updateSimulation()
@@ -555,7 +606,7 @@ void Simulation::updatePlanes()
 
 		int spreadFactor = 5;
 		float spread = 0.1;
-		//this->particleMaster->addParticle(new Particle(i->getPosition()-10.0f*i->getDirection(), 0.2f * -glm::normalize(glm::vec3(i->getDirection().x + spread * (rand() % spreadFactor - (spreadFactor / 2)), i->getDirection().y + spread * (rand() % spreadFactor - (spreadFactor / 2)), i->getDirection().z + spread * (rand() % spreadFactor - (spreadFactor / 2)))), 0.001, (rand() % 40 + 10) / 20, 0, 0.5, "TAIL"));
+		this->particleMaster->addParticle(new Particle(ParticleTextureHandler(this->star, 1),i->getPosition()-10.0f*i->getDirection(), 0.2f * -glm::normalize(glm::vec3(i->getDirection().x + spread * (rand() % spreadFactor - (spreadFactor / 2)), i->getDirection().y + spread * (rand() % spreadFactor - (spreadFactor / 2)), i->getDirection().z + spread * (rand() % spreadFactor - (spreadFactor / 2)))), 0.001, (rand() % 40 + 10) / 20, 0, 0.5, "TAIL"));
 	}
 }
 
@@ -589,10 +640,10 @@ void Simulation::updateMissiles()
 		}
 		int spreadFactor = 5;
 		float spread = 0.05;
-		//this->particleMaster->addParticle(new Particle(
-		//	this->missiles[i]->getPosition()-this->missiles[i]->getDirection(),
-		//	0.2f*-glm::normalize(glm::vec3(this->missiles[i]->getDirection().x + spread*(rand()% spreadFactor - (spreadFactor/2)), this->missiles[i]->getDirection().y + spread*(rand() % spreadFactor - (spreadFactor / 2)), this->missiles[i]->getDirection().z + spread*(rand() % spreadFactor - (spreadFactor / 2)) / 10)), 
-		//	0.01, (rand()%40+10)/20, 0, 0.5, "TAIL"));
+		this->particleMaster->addParticle(new Particle(ParticleTextureHandler(this->star, 1),
+			this->missiles[i]->getPosition()-this->missiles[i]->getDirection(),
+			0.2f*-glm::normalize(glm::vec3(this->missiles[i]->getDirection().x + spread*(rand()% spreadFactor - (spreadFactor/2)), this->missiles[i]->getDirection().y + spread*(rand() % spreadFactor - (spreadFactor / 2)), this->missiles[i]->getDirection().z + spread*(rand() % spreadFactor - (spreadFactor / 2)) / 10)), 
+			0.01, (rand()%40+10)/20, 0, 0.5, "TAIL"));
 
 		if (missiles[i]->getPosition().y < 0) {
 			this->eraseMissiles.insert(i);
@@ -604,8 +655,10 @@ void Simulation::updateMissiles()
 		}
 	}
 }
+
 void Simulation::updateCruiseMissile()
 {
+
 	for (size_t i = 0; i < this->cruiseMissiles.size(); ++i) {
 		this->cruiseMissiles[i]->update(this->deltaTime * this->timeFactor);
 		int nearest;
@@ -660,7 +713,7 @@ void Simulation::updateCruiseMissile()
 			int spreadFactor = 5;
 			float spread = 0.05;
 			this->particleMaster->addParticle(new Particle(
-				ParticleTextureHandler(this->loadTexture(R"(resources/textures/awesomeface.png)"), 1),
+				ParticleTextureHandler(this->star, 1),
 				this->cruiseMissiles[i]->getPosition() - this->cruiseMissiles[i]->getDirection(),
 				0.2f * -glm::normalize(glm::vec3(this->cruiseMissiles[i]->getDirection().x + spread * (rand() % spreadFactor - (spreadFactor / 2)), this->cruiseMissiles[i]->getDirection().y + spread * (rand() % spreadFactor - (spreadFactor / 2)), this->cruiseMissiles[i]->getDirection().z + spread * (rand() % spreadFactor - (spreadFactor / 2)) / 10)),
 				0.01, (rand() % 40 + 10) / 20, 0, 0.5, "TAIL"));
@@ -746,16 +799,16 @@ void Simulation::updateGunTower()
 			if (this->shootGunTower) {
 
 				for (int l = 0; l < (int)this->gunTowers[i]->getSpeed(); l++) {
-					//Particle* p = new Particle(
-					//	this->gunTowers[i]->getPosition() + glm::normalize(shootDirection) * (float)l,
-					//	gunTowers[i]->getSpeed() * glm::normalize(shootDirection),
-					//	0.1f,
-					//	5.0f,
-					//	0.0f,
-					//	0.5f,
-					//	"TAIL");
-					//this->particleMaster->addParticle(p);
-					//this->particles.push_back(p);
+					Particle* p = new Particle(ParticleTextureHandler(this->star, 1),
+						this->gunTowers[i]->getPosition() + glm::normalize(shootDirection) * (float)l,
+						gunTowers[i]->getSpeed() * glm::normalize(shootDirection),
+						0.1f,
+						5.0f,
+						0.0f,
+						0.5f,
+						"TAIL");
+					this->particleMaster->addParticle(p);
+					this->particles.push_back(p);
 				}
 				this->explosion(this->gunTowers[i]->getTower()->getPosition()+shootDirection, glm::vec3(0.0f), 1000, 0.0001, 5, 10, 0.01, 0.02);
 			}
@@ -949,7 +1002,6 @@ void Simulation::DrawSimulation()
 	this->DrawPlanes();
 	this->DrawGunTower();
 	this->DrawMissiles();
-	this->particleMaster->render(this->projection, this->camera);
 	
 	glBindVertexArray(0);
 }
@@ -1044,49 +1096,7 @@ void Simulation::DrawTorrets()
 
 }
 
-unsigned int Simulation::loadTexture(const char* path)
-{
-	unsigned int textureID;
-	glGenTextures(1, &textureID);
 
-	int width, height, nrComponents;
-	unsigned char* data = stbi_load(path, &width, &height, &nrComponents, 0);
-	if (data)
-	{
-		GLenum format;
-		if (nrComponents == 1)
-			format = GL_RED;
-		else if (nrComponents == 3)
-			format = GL_RGB;
-		else if (nrComponents == 4)
-			format = GL_RGBA;
-
-		glBindTexture(GL_TEXTURE_2D, textureID);
-		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-		glGenerateMipmap(GL_TEXTURE_2D);
-
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-		if (format = GL_RGBA)
-		{
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		}
-
-		stbi_image_free(data);
-	}
-	else
-	{
-		std::cout << "Texture failed to load at path: " << path << std::endl;
-		stbi_image_free(data);
-	}
-
-	return textureID;
-
-}
 
 void Simulation::DrawGunTower()
 {

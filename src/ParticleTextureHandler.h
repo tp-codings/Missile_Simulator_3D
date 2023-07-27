@@ -7,8 +7,12 @@ public:
 	int getTextureID();
 	int getNumberOfRows();
 
+	bool operator==(const ParticleTextureHandler other) const {
+		return (ID == other.ID) && (rows == other.rows);
+	}
+
 private:
-	int ID;
-	int rows;
+	const int ID;
+	const int rows;
 };
 

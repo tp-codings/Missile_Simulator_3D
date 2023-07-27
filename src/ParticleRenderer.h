@@ -13,7 +13,9 @@ class ParticleRenderer
 {
 public:
 	ParticleRenderer();
-	void render(std::unordered_map<ParticleTextureHandler, std::vector<Particle*>>& particles, glm::mat4 projection, Camera& camera);
+
+	void render(std::unordered_map<int, std::vector<Particle*>>& particles, glm::mat4 projection, Camera& camera);
+
 
 private:
 	float* quadVertices;
@@ -29,5 +31,7 @@ private:
 
 	void init();
 	void updateModelViewMatrix(glm::vec3 position, float rotation, float scale, glm::mat4 view);
+	void prepareRendering();
+	void finishRendering();
 };
 

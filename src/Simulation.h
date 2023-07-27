@@ -79,6 +79,7 @@ private:
 	string debug = " ";
 	bool shot;
 
+
 	//Erase Marker
 	set<int> eraseCrashedPlanes;
 	set<int> erasePlanes;
@@ -112,6 +113,9 @@ private:
 
 	//Particlesystem
 	ParticleMaster *particleMaster;
+
+	//Texturen
+	unsigned int star;
 
 	//Settings
 	float cameraSpeed;
@@ -197,6 +201,7 @@ private:
 	void initBuffer();
 	void initShader();
 	void initVariables();
+	void initTextures();
 
 	void initSettings();
 	void initText();
@@ -216,7 +221,7 @@ private:
 
 	int random(int range, int start);
 	void explosion(glm::vec3 pos, glm::vec3 direction, int spreadDiversity, float spreadFactor, int amount, int maxDuration, float gravityImpact, float scale);
-	unsigned int loadTexture(const char* path);
+	unsigned int loadTextures(const char* path);
 
 	//Updates------------------------------------------------------------------------------
 

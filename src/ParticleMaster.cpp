@@ -6,6 +6,7 @@ ParticleMaster::ParticleMaster()
 	this->renderer = ParticleRenderer();
 }
 
+
 void ParticleMaster::update(float deltaTime)
 {
     auto mapIterator = this->particles.begin();
@@ -49,12 +50,12 @@ void ParticleMaster::render(glm::mat4 projection, Camera& camera)
 void ParticleMaster::addParticle(Particle* particle)
 {
     // Finde die Liste der Partikel, die mit dem Texture*-Objekt verbunden sind
-    std::vector<Particle*>& particleList = this->particles[particle->getTexture()];
+    std::vector<Particle*>& particleList = this->particles[particle->getTexture().getTextureID()];
 
     // Wenn die Liste noch nicht existiert, füge eine neue Liste hinzu
     if (particleList.empty()) {
         particleList = std::vector<Particle*>();
-        this->particles[particle->getTexture()] = particleList;
+        this->particles[particle->getTexture().getTextureID()] = particleList;
     }
 
     // Füge das Particle zur Liste hinzu

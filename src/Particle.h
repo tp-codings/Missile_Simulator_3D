@@ -9,7 +9,7 @@
 class Particle
 {
 public:
-	Particle(ParticleTextureHandler texture, glm::vec3 position, glm::vec3 velocity, float gravityEffect, float lifeLength, float rotation, float scale, std::string type);
+	Particle(ParticleTextureHandler particleTexture, glm::vec3 position, glm::vec3 velocity, float gravityEffect, float lifeLength, float rotation, float scale, std::string type);
 	glm::vec3 getPosition();
 	float getRotation();
 	float getScale();

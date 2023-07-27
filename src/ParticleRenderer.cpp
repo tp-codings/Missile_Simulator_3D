@@ -1,4 +1,5 @@
 #include "ParticleRenderer.h"
+#include "ParticleMaster.h"
 
 ParticleRenderer::ParticleRenderer()
 {
@@ -7,16 +8,17 @@ ParticleRenderer::ParticleRenderer()
 	this->explosionShader = Shader("Shader/explosion.vs", "Shader/explosion.fs");
 }
 
-void ParticleRenderer::render(std::unordered_map<ParticleTextureHandler, std::vector<Particle*>>& particles, glm::mat4 projection, Camera& camera)
+void ParticleRenderer::render(std::unordered_map<int, std::vector<Particle*>>& particles, glm::mat4 projection, Camera& camera)
 {
-	
+	this->prepareRendering();
+
 	glm::mat4 view = camera.GetViewMatrix();
 
 	for (auto it = particles.begin(); it != particles.end(); ++it) {
-		ParticleTextureHandler texture = it->first;
+		int texture = it->first;
 		std::vector<Particle*> particleList = it->second;
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, texture.getTextureID());
+		glBindTexture(GL_TEXTURE_2D, texture);
 
 		for (Particle* p : particleList) {
 
@@ -37,13 +39,14 @@ void ParticleRenderer::render(std::unordered_map<ParticleTextureHandler, std::ve
 				this->explosionShader.setFloat("elapsedTime", p->getElapsedTime());
 				this->explosionShader.setFloat("lifeLength", p->getLifeLength());
 			}
-
 			glBindVertexArray(this->VAO);
 			glDrawArrays(GL_TRIANGLES, 0, 6);
 			glBindVertexArray(0);
 			//Maybe depthmask und blend
 		}
 	}
+	this->finishRendering();
+
 }
 
 void ParticleRenderer::init()
@@ -95,4 +98,19 @@ void ParticleRenderer::updateModelViewMatrix(glm::vec3 position, float rotation,
 	this->model = glm::scale(this->model, glm::vec3(scale));
 
 	this->model = view * this->model;
+}
+
+void ParticleRenderer::prepareRendering()
+{
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_MIN);
+	glDepthMask(false);
+}
+
+void ParticleRenderer::finishRendering()
+{
+	//glDisable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glDepthMask(true);
 }
