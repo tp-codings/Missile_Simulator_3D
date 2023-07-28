@@ -310,6 +310,9 @@ void Simulation::initTextures()
 {
 	this->star = this->loadTextures(R"(resources/textures/particleStar.png)");
 	this->particleAtlas = this->loadTextures(R"(resources/textures/particleAtlas.png)");
+	this->tail = this->loadTextures(R"(resources/textures/smoke.png)");
+	this->explosions = this->loadTextures(R"(resources/textures/fire.png)");
+	this->bullets = this->loadTextures(R"(resources/textures/cosmic.png)");
 
 }
 void Simulation::initText()
@@ -594,8 +597,11 @@ void Simulation::updateSimulation()
 	this->updateHitMissile();
 	this->updateErasing();
 	this->updatePlaneHitsPlane();
+	this->particleMaster->update(this->deltaTime*this->timeFactor, &this->camera);
 
-	this->particleMaster->update(this->deltaTime*this->timeFactor);
+
+	this->explosion(glm::vec3(6.0f), glm::vec3(0.0f), 100, 0.001, 10, 1, 0.03f, 1.5f);
+	this->explosion(glm::vec3(15.0f), glm::vec3(0.0f), 100, 0.001, 10, 1, 0.03f, 1.5f);
 }
 
 void Simulation::updatePlanes()
@@ -801,7 +807,7 @@ void Simulation::updateGunTower()
 			if (this->shootGunTower) {
 
 				for (int l = 0; l < (int)this->gunTowers[i]->getSpeed(); l++) {
-					Particle* p = new Particle(ParticleTextureHandler(this->star, 1),
+					Particle* p = new Particle(ParticleTextureHandler(this->bullets, 4),
 						this->gunTowers[i]->getPosition() + glm::normalize(shootDirection) * (float)l,
 						gunTowers[i]->getSpeed() * glm::normalize(shootDirection),
 						0.1f,
@@ -843,7 +849,7 @@ std::tuple<int, float> Simulation::updateNearestPlane(Missile* missile, vector<P
 
 void Simulation::updateHitPlane()
 {
-	float radius = 5;
+	float radius = 10;
 	for (size_t i = 0; i < missiles.size(); ++i) {
 		for (size_t j = 0; j < planes.size(); ++j) {
 
@@ -862,7 +868,7 @@ void Simulation::updateHitPlane()
 			}
 		}
 	}
-	radius = 5;
+	radius = 10;
 	for (size_t i = 0; i < cruiseMissiles.size(); ++i) {
 		for (size_t j = 0; j < planes.size(); ++j) {
 
@@ -881,7 +887,7 @@ void Simulation::updateHitPlane()
 			}
 		}
 	}
-	radius = 5;
+	radius = 10;
 	for (size_t i = 0; i < particles.size(); ++i) {
 		for (size_t j = 0; j < planes.size(); ++j) {
 			Particle* p = particles[i];

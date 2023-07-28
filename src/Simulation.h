@@ -117,6 +117,9 @@ private:
 	//Texturen
 	unsigned int star;
 	unsigned int particleAtlas;
+	unsigned int tail;
+	unsigned int explosions;
+	unsigned int bullets;
 
 	//Settings
 	float cameraSpeed;

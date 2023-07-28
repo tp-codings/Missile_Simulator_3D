@@ -5,6 +5,9 @@ Particle::Particle(ParticleTextureHandler particleTexture, glm::vec3 position, g
 	texture(particleTexture), position(position), velocity(velocity), gravityEffect(gravityEffect), lifeLength(lifeLength), rotation(rotation), scale(scale), type(type)
 {
 	this->elapsedTime = 0.0f;
+	this->blendFactor = 0.0f;
+	this->texOffset1 = glm::vec3(0.0f);
+	this->texOffset2 = glm::vec3(0.0f);
 }
 
 glm::vec3 Particle::getPosition()
@@ -32,17 +35,24 @@ float Particle::getLifeLength()
 	return this->lifeLength;
 }
 
+float Particle::getDistanceToCamera()
+{
+	return this->distance;
+}
+
 std::string Particle::getType()
 {
 	return this->type;
 }
 
-bool Particle::update(float deltaTime)
+bool Particle::update(float deltaTime, Camera *camera)
 {
 	this->velocity *= (1 - deltaTime*0.2);
 	this->velocity.y += GRAVITY * this->gravityEffect * deltaTime;
 	this->position += this->velocity;
 	this->elapsedTime += deltaTime;
+	glm::vec3 dir = camera->Position - this->position;
+	this->distance = sqrt(dir.x * dir.x + dir.y * dir.y + dir.z * dir.z);
 	this->updateTextureCoordInfo();
 	return elapsedTime < this->lifeLength;
 }

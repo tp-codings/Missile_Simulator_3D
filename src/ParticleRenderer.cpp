@@ -14,7 +14,8 @@ void ParticleRenderer::render(std::unordered_map<int, std::vector<Particle*>>& p
 
 	glm::mat4 view = camera.GetViewMatrix();
 
-	for (auto it = particles.begin(); it != particles.end(); ++it) {
+	for (auto it = particles.begin(); it != particles.end(); it++) {
+
 		int texture = it->first;
 		std::vector<Particle*> particleList = it->second;
 		glActiveTexture(GL_TEXTURE0);

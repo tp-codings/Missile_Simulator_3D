@@ -7,7 +7,7 @@ ParticleMaster::ParticleMaster()
 }
 
 
-void ParticleMaster::update(float deltaTime)
+void ParticleMaster::update(float deltaTime, Camera *camera)
 {
     auto mapIterator = this->particles.begin();
 
@@ -20,7 +20,7 @@ void ParticleMaster::update(float deltaTime)
 
         while (listIterator != particleList.end()) {
             Particle* p = *listIterator;
-            bool stillAlive = p->update(deltaTime);
+            bool stillAlive = p->update(deltaTime, camera);
 
             if (!stillAlive) {
                 // Entferne das Particle aus der Liste
@@ -36,6 +36,8 @@ void ParticleMaster::update(float deltaTime)
                 ++listIterator;
             }
         }
+        //std::cout << particleList.size() << std::endl;
+        InsertionSortHighToLow(particleList);
 
         // Gehe zum nächsten Eintrag in der unordered_map
         ++mapIterator;
@@ -67,3 +69,15 @@ int ParticleMaster::getParticlesAlive()
     return this->particles.size();
 }
 
+void ParticleMaster::InsertionSortHighToLow(std::vector<Particle*>& list)
+{
+    for (size_t i = 1; i < list.size(); i++) {
+        Particle* item = list[i];
+        int j = i - 1;
+        while (j >= 0 && item->getDistanceToCamera() > list[j]->getDistanceToCamera()) {
+            list[j + 1] = list[j];
+            j--;
+        }
+        list[j + 1] = item;
+    }
+}
