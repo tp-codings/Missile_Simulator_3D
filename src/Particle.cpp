@@ -1,13 +1,14 @@
 #include "Particle.h"
 #define GRAVITY -10
 
-Particle::Particle(ParticleTextureHandler particleTexture, glm::vec3 position, glm::vec3 velocity, float gravityEffect, float lifeLength, float rotation, float scale, std::string type):
-	texture(particleTexture), position(position), velocity(velocity), gravityEffect(gravityEffect), lifeLength(lifeLength), rotation(rotation), scale(scale), type(type)
+Particle::Particle(ParticleTextureHandler particleTexture, glm::vec3 position, glm::vec3 velocity, float gravityEffect, float lifeLength, float rotation, float scale):
+	texture(particleTexture), position(position), velocity(velocity), gravityEffect(gravityEffect), lifeLength(lifeLength), rotation(rotation), scale(scale)
 {
 	this->elapsedTime = 0.0f;
 	this->blendFactor = 0.0f;
 	this->texOffset1 = glm::vec3(0.0f);
 	this->texOffset2 = glm::vec3(0.0f);
+	this->distance = 10000.0f;
 }
 
 glm::vec3 Particle::getPosition()
@@ -38,11 +39,6 @@ float Particle::getLifeLength()
 float Particle::getDistanceToCamera()
 {
 	return this->distance;
-}
-
-std::string Particle::getType()
-{
-	return this->type;
 }
 
 bool Particle::update(float deltaTime, Camera *camera)

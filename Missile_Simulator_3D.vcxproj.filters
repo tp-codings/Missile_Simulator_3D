@@ -110,6 +110,9 @@
     <ClInclude Include="src\ParticleTextureHandler.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="src\Loader.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\cubemap.fs">

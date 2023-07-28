@@ -24,7 +24,7 @@ class Particle
 {
 public:
 	// Constructor to create a particle with given properties
-	Particle(ParticleTextureHandler particleTexture, glm::vec3 position, glm::vec3 velocity, float gravityEffect, float lifeLength, float rotation, float scale, std::string type);
+	Particle(ParticleTextureHandler particleTexture, glm::vec3 position, glm::vec3 velocity, float gravityEffect, float lifeLength, float rotation, float scale);
 
 	// Getters for retrieving particle properties
 	glm::vec3 getPosition();
@@ -33,7 +33,6 @@ public:
 	float getElapsedTime();
 	float getLifeLength();
 	float getDistanceToCamera();
-	std::string getType();
 	bool update(float deltaTime, Camera* camera);
 
 	// Getters for particle texture information
@@ -51,7 +50,6 @@ private:
 	float scale;                // Current scale of the particle
 	float elapsedTime;         // Time elapsed since the particle's creation
 	float distance;             // Distance of the particle to the camera
-	std::string type;           // Type of the particle (e.g., smoke, fire, etc.)
 	ParticleTextureHandler texture;  // Particle texture handler
 	glm::vec2 texOffset1;       // Texture offset for the first texture atlas
 	glm::vec2 texOffset2;       // Texture offset for the second texture atlas

@@ -535,7 +535,7 @@ void Simulation::explosion(glm::vec3 pos, glm::vec3 direction, int spreadDiversi
 			ParticleTextureHandler(this->particleAtlas, 4),
 			pos,
 			glm::vec3(spreadFactor * (rand() % spreadDiversity - (spreadDiversity / 2)), spreadFactor * (rand() % spreadDiversity - (spreadDiversity / 2)), spreadFactor * (rand() % spreadDiversity - (spreadDiversity / 2)))+direction,
-			gravityImpact, (rand() % 5*maxDuration + 1) / maxDuration, 0, scale, "TAIL"));
+			gravityImpact, (rand() % 5*maxDuration + 1) / maxDuration, 0, scale));
 
 	}
 }
@@ -600,8 +600,8 @@ void Simulation::updateSimulation()
 	this->particleMaster->update(this->deltaTime*this->timeFactor, &this->camera);
 
 
-	this->explosion(glm::vec3(6.0f), glm::vec3(0.0f), 100, 0.001, 10, 1, 0.03f, 1.5f);
-	this->explosion(glm::vec3(15.0f), glm::vec3(0.0f), 100, 0.001, 10, 1, 0.03f, 1.5f);
+	//this->explosion(glm::vec3(6.0f), glm::vec3(0.0f), 100, 0.001, 10, 1, 0.03f, 1.5f);
+	//this->explosion(glm::vec3(15.0f), glm::vec3(0.0f), 100, 0.001, 10, 1, 0.03f, 1.5f);
 }
 
 void Simulation::updatePlanes()
@@ -612,7 +612,7 @@ void Simulation::updatePlanes()
 
 		int spreadFactor = 5;
 		float spread = 0.1;
-		this->particleMaster->addParticle(new Particle(ParticleTextureHandler(this->particleAtlas, 4),i->getPosition()-10.0f*i->getDirection(), 0.2f * -glm::normalize(glm::vec3(i->getDirection().x + spread * (rand() % spreadFactor - (spreadFactor / 2)), i->getDirection().y + spread * (rand() % spreadFactor - (spreadFactor / 2)), i->getDirection().z + spread * (rand() % spreadFactor - (spreadFactor / 2)))), 0.001, (rand() % 40 + 10) / 20, 0, 0.5, "TAIL"));
+		this->particleMaster->addParticle(new Particle(ParticleTextureHandler(this->particleAtlas, 4),i->getPosition()-10.0f*i->getDirection(), 0.2f * -glm::normalize(glm::vec3(i->getDirection().x + spread * (rand() % spreadFactor - (spreadFactor / 2)), i->getDirection().y + spread * (rand() % spreadFactor - (spreadFactor / 2)), i->getDirection().z + spread * (rand() % spreadFactor - (spreadFactor / 2)))), 0.001, (rand() % 40 + 10) / 20, 0, 0.5));
 	}
 }
 
@@ -649,7 +649,7 @@ void Simulation::updateMissiles()
 		this->particleMaster->addParticle(new Particle(ParticleTextureHandler(this->particleAtlas, 4),
 			this->missiles[i]->getPosition()-this->missiles[i]->getDirection(),
 			0.2f*-glm::normalize(glm::vec3(this->missiles[i]->getDirection().x + spread*(rand()% spreadFactor - (spreadFactor/2)), this->missiles[i]->getDirection().y + spread*(rand() % spreadFactor - (spreadFactor / 2)), this->missiles[i]->getDirection().z + spread*(rand() % spreadFactor - (spreadFactor / 2)) / 10)), 
-			0.01, (rand()%40+10)/20, 0, 1.0, "TAIL"));
+			0.01, (rand()%40+10)/20, 0, 1.0));
 
 		if (missiles[i]->getPosition().y < 0) {
 			this->eraseMissiles.insert(i);
@@ -723,7 +723,7 @@ void Simulation::updateCruiseMissile()
 					ParticleTextureHandler(this->particleAtlas, 4),
 					this->cruiseMissiles[i]->getPosition() - glm::normalize(this->cruiseMissiles[i]->getDirection()),
 					0.2f * -glm::normalize(glm::vec3(this->cruiseMissiles[i]->getDirection().x + spread * (rand() % spreadFactor - (spreadFactor / 2)), this->cruiseMissiles[i]->getDirection().y + spread * (rand() % spreadFactor - (spreadFactor / 2)), this->cruiseMissiles[i]->getDirection().z + spread * (rand() % spreadFactor - (spreadFactor / 2)) / 10)),
-					0.01, (rand() % 40 + 10) / 20, 0, 1.5, "TAIL"));
+					0.01, (rand() % 40 + 10) / 20, 0, 1.5));
 			}
 		}
 
@@ -813,8 +813,7 @@ void Simulation::updateGunTower()
 						0.1f,
 						5.0f,
 						0.0f,
-						0.5f,
-						"TAIL");
+						0.5f);
 					this->particleMaster->addParticle(p);
 					this->particles.push_back(p);
 				}

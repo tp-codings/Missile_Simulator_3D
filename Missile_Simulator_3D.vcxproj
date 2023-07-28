@@ -161,6 +161,7 @@
   <ItemGroup>
     <ClInclude Include="src\Engine.h" />
     <ClInclude Include="src\GunTower.h" />
+    <ClInclude Include="src\Loader.h" />
     <ClInclude Include="src\Missile.h" />
     <ClInclude Include="src\Particle.h" />
     <ClInclude Include="src\ParticleMaster.h" />
