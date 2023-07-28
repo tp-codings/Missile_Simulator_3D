@@ -646,11 +646,18 @@ void Simulation::updateMissiles()
 		}
 		int spreadFactor = 5;
 		float spread = 0.05;
-		this->particleMaster->addParticle(new Particle(ParticleTextureHandler(this->particleAtlas, 4),
-			this->missiles[i]->getPosition()-this->missiles[i]->getDirection(),
-			0.2f*-glm::normalize(glm::vec3(this->missiles[i]->getDirection().x + spread*(rand()% spreadFactor - (spreadFactor/2)), this->missiles[i]->getDirection().y + spread*(rand() % spreadFactor - (spreadFactor / 2)), this->missiles[i]->getDirection().z + spread*(rand() % spreadFactor - (spreadFactor / 2)) / 10)), 
-			0.01, (rand()%40+10)/20, 0, 1.0));
 
+		for (int m = 1; m < 20; m++) {
+			glm::vec3 vel = this->missiles[i]->getVelocity();
+			float speed = sqrt(vel.x * vel.x + vel.y * vel.y + vel.z * vel.z);
+
+			this->particleMaster->addParticle(new Particle(
+				ParticleTextureHandler(this->particleAtlas, 4),
+				//position particles along traveled distance
+				this->missiles[i]->getPosition() - glm::normalize(this->missiles[i]->getDirection()) * speed * this->deltaTime * (float)(1 / m),
+				0.2f * -glm::normalize(glm::vec3(this->missiles[i]->getDirection().x + spread * (rand() % spreadFactor - (spreadFactor / 2)), this->missiles[i]->getDirection().y + spread * (rand() % spreadFactor - (spreadFactor / 2)), this->missiles[i]->getDirection().z + spread * (rand() % spreadFactor - (spreadFactor / 2)) / 10)),
+				0.01, (rand() % 40 + 10) / 20, 0, 1.0));
+		}
 		if (missiles[i]->getPosition().y < 0) {
 			this->eraseMissiles.insert(i);
 			this->explosion(this->missiles[i]->getPosition(), -this->missiles[i]->getDirection(), 1000, 0.001, 150, 70, 0.09);
@@ -719,9 +726,12 @@ void Simulation::updateCruiseMissile()
 			int spreadFactor = 5;
 			float spread = 0.05;
 			for (int m = 1; m < 25; m++) {
+				glm::vec3 vel = this->cruiseMissiles[i]->getVelocity();
+				float speed = sqrt(vel.x * vel.x + vel.y * vel.y + vel.z * vel.z);
+
 				this->particleMaster->addParticle(new Particle(
 					ParticleTextureHandler(this->particleAtlas, 4),
-					this->cruiseMissiles[i]->getPosition() - glm::normalize(this->cruiseMissiles[i]->getDirection()),
+					this->cruiseMissiles[i]->getPosition() - glm::normalize(this->cruiseMissiles[i]->getDirection())*speed * this->deltaTime * (float)(1/m),
 					0.2f * -glm::normalize(glm::vec3(this->cruiseMissiles[i]->getDirection().x + spread * (rand() % spreadFactor - (spreadFactor / 2)), this->cruiseMissiles[i]->getDirection().y + spread * (rand() % spreadFactor - (spreadFactor / 2)), this->cruiseMissiles[i]->getDirection().z + spread * (rand() % spreadFactor - (spreadFactor / 2)) / 10)),
 					0.01, (rand() % 40 + 10) / 20, 0, 1.5));
 			}
