@@ -160,6 +160,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Engine.h" />
+    <ClInclude Include="src\FastNoiseLite.h" />
     <ClInclude Include="src\GunTower.h" />
     <ClInclude Include="src\Loader.h" />
     <ClInclude Include="src\Missile.h" />
@@ -169,6 +170,7 @@
     <ClInclude Include="src\ParticleTextureHandler.h" />
     <ClInclude Include="src\Planes.h" />
     <ClInclude Include="src\Simulation.h" />
+    <ClInclude Include="src\TerrrainGenerator.h" />
     <ClInclude Include="src\Torret.h" />
   </ItemGroup>
   <ItemGroup>
@@ -190,6 +192,8 @@
     <None Include="Shader\screen.vs" />
     <None Include="Shader\sun.fs" />
     <None Include="Shader\sun.vs" />
+    <None Include="Shader\terrain.fs" />
+    <None Include="Shader\terrain.vs" />
     <None Include="Shader\text.fs" />
     <None Include="Shader\text.vs" />
     <None Include="Shader\torret.fs" />

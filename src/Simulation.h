@@ -32,6 +32,7 @@
 #include "GunTower.h"
 #include "ParticleMaster.h"
 #include "ParticleTextureHandler.h"
+#include "TerrrainGenerator.h"
 
 
 class Simulation
@@ -110,6 +111,8 @@ private:
 	vector<Particle*> particles;
 
 	Camera camera;
+
+	TerrainGenerator *terrain;
 
 	//Particlesystem
 	ParticleMaster *particleMaster;

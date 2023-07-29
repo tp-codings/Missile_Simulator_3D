@@ -129,7 +129,9 @@ private:
 
 	void initCamera(){
 		//Create Camera object and place cursor reference to center of viewport
-		this->camera = Camera(glm::vec3(0.0f, 2.2f, 5.0f));
+		this->camera = Camera(glm::vec3(67.0f, 127.5f, 169.9f),
+			glm::vec3(0.0f, 1.0f, 0.0f),
+			-128.1f, -42.4f);
 		this->camera.setSpeed(this->cameraSpeed);
 		this->lastMouseX = this->WINDOW_WIDTH / 2.0f;
 		this->lastMouseY = this->WINDOW_HEIGHT / 2.0f;
