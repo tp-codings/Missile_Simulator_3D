@@ -64,11 +64,6 @@ void ParticleMaster::addParticle(Particle* particle)
     particleList.push_back(particle);
 }
 
-int ParticleMaster::getParticlesAlive()
-{
-    return this->particles.size();
-}
-
 void ParticleMaster::InsertionSortHighToLow(std::vector<Particle*>& list)
 {
     for (size_t i = 1; i < list.size(); i++) {

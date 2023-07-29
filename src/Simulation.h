@@ -33,6 +33,7 @@
 #include "ParticleMaster.h"
 #include "ParticleTextureHandler.h"
 #include "TerrrainGenerator.h"
+#include "PlaneMaster.h"
 
 
 class Simulation
@@ -79,6 +80,8 @@ private:
 	int planesSelfDestruct = 0;
 	string debug = " ";
 	bool shot;
+
+	PlaneMaster* planeMaster;
 
 
 	//Erase Marker

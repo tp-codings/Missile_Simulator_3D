@@ -35,9 +35,6 @@ public:
 	// Add a particle to the ParticleMaster for management
 	void addParticle(Particle* particle);
 
-	// Get the number of currently alive particles
-	int getParticlesAlive();
-
 private:
 	// A container to store particles grouped by their texture IDs
 	std::unordered_map<int, std::vector<Particle*>> particles;
