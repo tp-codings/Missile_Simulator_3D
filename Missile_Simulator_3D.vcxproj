@@ -152,6 +152,7 @@
     <ClCompile Include="src\Particle.cpp" />
     <ClCompile Include="src\ParticleMaster.cpp" />
     <ClCompile Include="src\ParticleRenderer.cpp" />
+    <ClCompile Include="src\ParticleTextureHandler.cpp" />
     <ClCompile Include="src\Planes.cpp" />
     <ClCompile Include="src\Simulation.cpp" />
     <ClCompile Include="src\stb_handler.cpp" />
@@ -159,13 +160,17 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Engine.h" />
+    <ClInclude Include="src\FastNoiseLite.h" />
     <ClInclude Include="src\GunTower.h" />
+    <ClInclude Include="src\Loader.h" />
     <ClInclude Include="src\Missile.h" />
     <ClInclude Include="src\Particle.h" />
     <ClInclude Include="src\ParticleMaster.h" />
     <ClInclude Include="src\ParticleRenderer.h" />
+    <ClInclude Include="src\ParticleTextureHandler.h" />
     <ClInclude Include="src\Planes.h" />
     <ClInclude Include="src\Simulation.h" />
+    <ClInclude Include="src\TerrrainGenerator.h" />
     <ClInclude Include="src\Torret.h" />
   </ItemGroup>
   <ItemGroup>
@@ -187,6 +192,8 @@
     <None Include="Shader\screen.vs" />
     <None Include="Shader\sun.fs" />
     <None Include="Shader\sun.vs" />
+    <None Include="Shader\terrain.fs" />
+    <None Include="Shader\terrain.vs" />
     <None Include="Shader\text.fs" />
     <None Include="Shader\text.vs" />
     <None Include="Shader\torret.fs" />

@@ -16,6 +16,9 @@
     <Filter Include="Quelldateien\imgui">
       <UniqueIdentifier>{76a78537-7d7b-46b6-9596-abf99b9bdb7b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Quelldateien\Particles">
+      <UniqueIdentifier>{efc21374-d1a0-4eff-b1b3-28b1295dc286}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Missile_Simulator_3D.cpp">
@@ -63,17 +66,20 @@
     <ClCompile Include="src\Torret.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\Particle.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ParticleRenderer.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ParticleMaster.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="src\GunTower.cpp">
       <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Particle.cpp">
+      <Filter>Quelldateien\Particles</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ParticleMaster.cpp">
+      <Filter>Quelldateien\Particles</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ParticleRenderer.cpp">
+      <Filter>Quelldateien\Particles</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ParticleTextureHandler.cpp">
+      <Filter>Quelldateien\Particles</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -102,6 +108,18 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\GunTower.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ParticleTextureHandler.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Loader.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TerrrainGenerator.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FastNoiseLite.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
@@ -170,6 +188,12 @@
       <Filter>Ressourcendateien</Filter>
     </None>
     <None Include="Shader\explosion.vs">
+      <Filter>Ressourcendateien</Filter>
+    </None>
+    <None Include="Shader\terrain.fs">
+      <Filter>Ressourcendateien</Filter>
+    </None>
+    <None Include="Shader\terrain.vs">
       <Filter>Ressourcendateien</Filter>
     </None>
   </ItemGroup>
