@@ -63,6 +63,9 @@ Simulation::Simulation(GLFWwindow* window, int WINDOW_WIDTH, int WINDOW_HEIGHT)
 	this->planeMaster = new PlaneMaster();
 	this->missileMaster = new MissileMaster();
 	this->collisionMaster = new CollisionMaster();
+	this->torretMaster = new TorretMaster();
+	this->s400Master = new S400Master();
+	this->missileTruckMaster = new MissileTruckMaster();
 
 	this->initShader();
 	this->initVertices();
@@ -120,6 +123,9 @@ void Simulation::render()
 	this->missileMaster->render(this->projection, this->camera);
 	this->particleMaster->render(this->projection, this->camera);
 	this->collisionMaster->render(this->projection, this->camera, this->deltaTime*this->timeFactor);
+	this->torretMaster->render(this->projection, this->camera);
+	this->s400Master->render(this->projection, this->camera);
+	this->missileTruckMaster->render(this->projection, this->camera);
 
 	this->DrawSimulation();
 
@@ -279,7 +285,7 @@ void Simulation::initParticleSystem()
 
 void Simulation::initPlanes()
 {
-	int amountPlanes = 2;
+	int amountPlanes = 0;
 	for (int i = 0; i < amountPlanes; i++) {
 		for (int j = 0; j < amountPlanes; j++) {
 			this->planes.push_back(new Planes(glm::vec3(-1000 + j * (rand() % 200 + -100), 500.0 + j * (rand() % 100 + 10), -1000.0 + i * (rand() % 200 - 1000)), glm::vec3(0.001, 0.0, 1.00), 70, glm::vec3(0.1)));
@@ -289,12 +295,12 @@ void Simulation::initPlanes()
 	this->rotSpeedY = 0.0f;
 	this->rotSpeedZ = 0.0f;
 
-	this->planeMaster->addPlane(new Planes(glm::vec3(0.0f, 100.0f, 0.0f), glm::vec3(0.001, 0.0, 1.00), 70, glm::vec3(0.1)));
+	this->planeMaster->addPlane(new Planes(glm::vec3(-100.0f, 7000.0f, -6100.0f), glm::vec3(0.001, 0.0, 1.00), 70, glm::vec3(0.1)));
 }
 
 void Simulation::initTorrets()
 {
-	int amnountTorrets = 1;
+	int amnountTorrets = 0;
 	for (int i = 0; i < amnountTorrets; i++) {
 		for (int j = 0; j < amnountTorrets; j++) {
 			glm::vec2 randomPos = glm::vec2(-10 + j * 50, 10.0f + i * 50);
@@ -303,7 +309,11 @@ void Simulation::initTorrets()
 			this->torrets.push_back(new Torret(glm::vec3(randomPos.x, height+1.5, randomPos.y)));
 		}
 	}
-	amnountTorrets = 1;
+	glm::vec2 randomPos = glm::vec2(-10, 10.0f);
+	float height = this->terrain->getHeightAtPosition(randomPos.x, randomPos.y);
+	this->missileTruckMaster->addMissileTrucks(new Torret(glm::vec3(randomPos.x, height, randomPos.y)));
+	this->torretMaster->addTorrets(new Torret(glm::vec3(40.0)));
+	amnountTorrets = 0;
 	for (int i = 0; i < amnountTorrets; i++) {
 		for (int j = 0; j < amnountTorrets; j++) {
 			glm::vec2 randomPos = glm::vec2(-0 + j * 50, 10.0f + i * 50);
@@ -531,9 +541,13 @@ unsigned int Simulation::loadTextures(const char* path)
 
 void Simulation::updateSimulation()
 {
-	this->planeMaster->update(this->deltaTime*this->timeFactor, this->camera);
+	this->planeMaster->update(this->deltaTime * this->timeFactor, this->camera);
 	this->missileMaster->update(this->deltaTime * this->timeFactor, this->camera, this->planeMaster->getPlanes());
-	this->collisionMaster->update(this->planeMaster, this->missileMaster);
+	this->collisionMaster->updateMissileCollision(this->planeMaster, this->missileMaster);
+	this->collisionMaster->updateS400Collision(this->planeMaster, this->s400Master);
+	this->torretMaster->update(this->deltaTime * this->timeFactor, this->camera, this->planeMaster->getPlanes(), this->missileMaster);
+	this->s400Master->update(this->deltaTime * this->timeFactor, this->camera, this->planeMaster->getPlanes());
+	this->missileTruckMaster->update(this->deltaTime * this->timeFactor, this->camera, this->planeMaster->getPlanes(), this->s400Master, this->shootMissileTruck);
 
 	this->updatePlanes();
 	this->updateTorrets();
@@ -724,7 +738,6 @@ void Simulation::updateTorrets()
 		if (nearestDistance < 1300 && this->planes.size()>0) {
 			this->torrets[i]->setShot(true);
 			this->missiles.push_back(this->torrets[i]->getMissile());
-			this->missileMaster->addMissile(new Missile(glm::vec3(0.0, 3.0, 0.0), glm::vec3(1.0), glm::vec3(20)));
 		}
 	}
 

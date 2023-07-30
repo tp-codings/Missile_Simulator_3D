@@ -150,6 +150,7 @@
     <ClCompile Include="src\GunTower.cpp" />
     <ClCompile Include="src\Missile.cpp" />
     <ClCompile Include="src\MissileMaster.cpp" />
+    <ClCompile Include="src\MissileTruckMaster.cpp" />
     <ClCompile Include="src\Missile_Simulator_3D.cpp" />
     <ClCompile Include="src\Particle.cpp" />
     <ClCompile Include="src\ParticleMaster.cpp" />
@@ -157,9 +158,11 @@
     <ClCompile Include="src\ParticleTextureHandler.cpp" />
     <ClCompile Include="src\PlaneMaster.cpp" />
     <ClCompile Include="src\Planes.cpp" />
+    <ClCompile Include="src\S400Master.cpp" />
     <ClCompile Include="src\Simulation.cpp" />
     <ClCompile Include="src\stb_handler.cpp" />
     <ClCompile Include="src\Torret.cpp" />
+    <ClCompile Include="src\TorretMaster.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\CollisionMaster.h" />
@@ -169,15 +172,18 @@
     <ClInclude Include="src\Loader.h" />
     <ClInclude Include="src\Missile.h" />
     <ClInclude Include="src\MissileMaster.h" />
+    <ClInclude Include="src\MissileTruckMaster.h" />
     <ClInclude Include="src\Particle.h" />
     <ClInclude Include="src\ParticleMaster.h" />
     <ClInclude Include="src\ParticleRenderer.h" />
     <ClInclude Include="src\ParticleTextureHandler.h" />
     <ClInclude Include="src\PlaneMaster.h" />
     <ClInclude Include="src\Planes.h" />
+    <ClInclude Include="src\S400Master.h" />
     <ClInclude Include="src\Simulation.h" />
     <ClInclude Include="src\TerrrainGenerator.h" />
     <ClInclude Include="src\Torret.h" />
+    <ClInclude Include="src\TorretMaster.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\cube.fs" />
