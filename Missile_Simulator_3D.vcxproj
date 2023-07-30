@@ -148,6 +148,7 @@
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\GunTower.cpp" />
     <ClCompile Include="src\Missile.cpp" />
+    <ClCompile Include="src\MissileMaster.cpp" />
     <ClCompile Include="src\Missile_Simulator_3D.cpp" />
     <ClCompile Include="src\Particle.cpp" />
     <ClCompile Include="src\ParticleMaster.cpp" />
@@ -165,6 +166,7 @@
     <ClInclude Include="src\GunTower.h" />
     <ClInclude Include="src\Loader.h" />
     <ClInclude Include="src\Missile.h" />
+    <ClInclude Include="src\MissileMaster.h" />
     <ClInclude Include="src\Particle.h" />
     <ClInclude Include="src\ParticleMaster.h" />
     <ClInclude Include="src\ParticleRenderer.h" />
