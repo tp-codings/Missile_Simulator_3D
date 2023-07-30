@@ -60,6 +60,8 @@ Simulation::Simulation(GLFWwindow* window, int WINDOW_WIDTH, int WINDOW_HEIGHT)
 	this->WINDOW_HEIGHT = WINDOW_HEIGHT;
 
 	this->terrain = new TerrainGenerator(R"(resources\textures\city_heightmap.png)");
+	this->planeMaster = new PlaneMaster();
+
 	this->initShader();
 	this->initVertices();
 	this->initVariables();
@@ -109,13 +111,14 @@ void Simulation::render()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	//Render
-	this->DrawSimulation();
-
 	this->DrawSkyBox();
 
 	this->terrain->render(this->deltaTime, this->projection, this->view);
-
+	//this->planeMaster->render(this->projection, this->camera);
 	this->particleMaster->render(this->projection, this->camera);
+
+	this->DrawSimulation();
+
 
 	this->DrawScreen();
 
@@ -281,6 +284,8 @@ void Simulation::initPlanes()
 	this->rotSpeedX = 0.0f;
 	this->rotSpeedY = 0.0f;
 	this->rotSpeedZ = 0.0f;
+
+	this->planeMaster->addPlane(new Planes(glm::vec3(0.0f, 100.0f, 0.0f), glm::vec3(0.001, 0.0, 1.00), 70, glm::vec3(0.1)));
 }
 
 void Simulation::initTorrets()
@@ -451,6 +456,7 @@ void Simulation::processInput(float deltaTime)
 	}
 	if (glfwGetKey(this->window, GLFW_KEY_P) == GLFW_PRESS && !this->shootMissileTruck) {
 		this->shootMissileTruck = true;
+		this->planeMaster->removePlanes(0);
 	}
 
 }
@@ -521,6 +527,8 @@ unsigned int Simulation::loadTextures(const char* path)
 
 void Simulation::updateSimulation()
 {
+	//this->planeMaster->update(this->deltaTime*this->timeFactor, this->camera);
+
 	this->updatePlanes();
 	this->updateTorrets();
 	this->updateCruiseMissile();
@@ -532,7 +540,7 @@ void Simulation::updateSimulation()
 	this->updateHitMissile();
 	this->updateErasing();
 	this->updatePlaneHitsPlane();
-	this->particleMaster->update(this->deltaTime*this->timeFactor, &this->camera);
+	this->particleMaster->update(this->deltaTime*this->timeFactor, this->camera);
 
 
 	//this->explosion(glm::vec3(6.0f), glm::vec3(0.0f), 100, 0.001, 10, 1, 0.03f, 1.5f);
@@ -734,7 +742,7 @@ void Simulation::updateGunTower()
 		int nearest;
 		float nearestDistance = 1001;
 		glm::vec3 direction;
-		float rotSpeed = 0.1f;
+		float rotSpeed = 10.0f*this->deltaTime;
 
 		if (this->planes.size() > 0) {
 			std::tuple<int, float> result = this->updateNearestPlane(gunTowers[i]->getTower(), planes);
@@ -742,7 +750,7 @@ void Simulation::updateGunTower()
 			nearestDistance = std::get<1>(result);
 
 			direction = glm::normalize(planes[nearest]->getPosition() - this->gunTowers[i]->getPosition());
-			float holdUpFactor = 0.2f;
+			float holdUpFactor = 0.09f;
 			glm::vec3 shootDirection = direction + this->planes[nearest]->getDirection() * holdUpFactor;
 
 			this->gunTowers[i]->setDirection(glm::vec3(this->gunTowers[i]->getDirection().x + shootDirection.x * rotSpeed, 0.0f, this->gunTowers[i]->getDirection().z + shootDirection.z * rotSpeed));
@@ -754,7 +762,7 @@ void Simulation::updateGunTower()
 					Particle* p = new Particle(ParticleTextureHandler(this->bullets, 4),
 						this->gunTowers[i]->getPosition() + glm::normalize(shootDirection) * (float)l,
 						gunTowers[i]->getSpeed() * glm::normalize(shootDirection),
-						0.1f,
+						0.01f,
 						5.0f,
 						0.0f,
 						0.5f);
@@ -948,7 +956,6 @@ void Simulation::updateErasing()
 
 void Simulation::DrawSimulation()
 {
-	//this->DrawGround();
 	this->DrawTorrets();
 	this->DrawPlanes();
 	this->DrawGunTower();
@@ -1159,8 +1166,7 @@ void Simulation::DrawText()
 	this->textRenderer->Draw(this->textShader, "Missiles: " + std::to_string(this->missiles.size()), this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 5 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 	this->textRenderer->Draw(this->textShader, "MissilesSelfDestruct: " + std::to_string(this->missilesSelfDestruct), this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 6 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 	this->textRenderer->Draw(this->textShader, "PlanesSelfDestruct: " + std::to_string(this->planesSelfDestruct), this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 7 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-	this->textRenderer->Draw(this->textShader, "ParticlesAlive: " + std::to_string(this->particleMaster->getParticlesAlive()), this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 8 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-	this->textRenderer->Draw(this->textShader, "Debug: " + this->debug, this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 9 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+	this->textRenderer->Draw(this->textShader, "Debug: " + this->debug, this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 8 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
 void Simulation::DrawSkyBox()

@@ -33,7 +33,7 @@ public:
 	float getElapsedTime();
 	float getLifeLength();
 	float getDistanceToCamera();
-	bool update(float deltaTime, Camera* camera);
+	bool update(float deltaTime, Camera& camera);
 
 	// Getters for particle texture information
 	ParticleTextureHandler getTexture();

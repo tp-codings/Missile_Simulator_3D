@@ -153,6 +153,7 @@
     <ClCompile Include="src\ParticleMaster.cpp" />
     <ClCompile Include="src\ParticleRenderer.cpp" />
     <ClCompile Include="src\ParticleTextureHandler.cpp" />
+    <ClCompile Include="src\PlaneMaster.cpp" />
     <ClCompile Include="src\Planes.cpp" />
     <ClCompile Include="src\Simulation.cpp" />
     <ClCompile Include="src\stb_handler.cpp" />
@@ -168,6 +169,7 @@
     <ClInclude Include="src\ParticleMaster.h" />
     <ClInclude Include="src\ParticleRenderer.h" />
     <ClInclude Include="src\ParticleTextureHandler.h" />
+    <ClInclude Include="src\PlaneMaster.h" />
     <ClInclude Include="src\Planes.h" />
     <ClInclude Include="src\Simulation.h" />
     <ClInclude Include="src\TerrrainGenerator.h" />

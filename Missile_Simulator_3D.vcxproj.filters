@@ -93,6 +93,9 @@
     <ClCompile Include="src\Missile_Simulator_3D.cpp">
       <Filter>Quelldateien\Engine</Filter>
     </ClCompile>
+    <ClCompile Include="src\PlaneMaster.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Simulation.h">
@@ -133,6 +136,9 @@
     </ClInclude>
     <ClInclude Include="src\Loader.h">
       <Filter>Headerdateien\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\PlaneMaster.h">
+      <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

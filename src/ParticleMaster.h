@@ -15,6 +15,8 @@
 
 #include <vector>
 #include <unordered_map>
+#include <string>
+
 #include "Particle.h"
 #include "ParticleRenderer.h"
 #include <Camera/camera.h>
@@ -27,16 +29,13 @@ public:
 	ParticleMaster();
 
 	// Update all particles and remove dead particles
-	void update(float deltaTime, Camera* camera);
+	void update(float deltaTime, Camera& camera);
 
 	// Render all particles using the provided projection and camera matrices
 	void render(glm::mat4 projection, Camera& camera);
 
 	// Add a particle to the ParticleMaster for management
 	void addParticle(Particle* particle);
-
-	// Get the number of currently alive particles
-	int getParticlesAlive();
 
 private:
 	// A container to store particles grouped by their texture IDs
