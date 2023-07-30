@@ -53,8 +53,6 @@
 #define NEON_BLUE glm::vec3(0.29f, 0.59f, 0.95f)
 #define NEON_PURPLE glm::vec3(0.67f, 0.29f, 0.95f)
 
-#define DIMENSION 1000.0f
-
 Simulation::Simulation(GLFWwindow* window, int WINDOW_WIDTH, int WINDOW_HEIGHT)
 {
 	this->window = window;
@@ -157,64 +155,6 @@ void Simulation::initVertices()
 
 	std::memcpy(this->quadVertices, qVertices, sizeof(qVertices));
 
-	float gVertices[] = {
-		// positions          // normals           // texture coords
-		// Bottom face
-		-DIMENSION, -0.5f, -DIMENSION,  0.0f, 1.0f,  0.0f,  0.0f,  0.0f,
-		 DIMENSION, -0.5f, -DIMENSION,  0.0f, 1.0f,  0.0f,  1.0f,  0.0f,
-		 DIMENSION, -0.5f,  DIMENSION,  0.0f, 1.0f,  0.0f,  1.0f,  1.0f,
-		 DIMENSION, -0.5f,  DIMENSION,  0.0f, 1.0f,  0.0f,  1.0f,  1.0f,
-		-DIMENSION, -0.5f,  DIMENSION,  0.0f, 1.0f,  0.0f,  0.0f,  1.0f,
-		-DIMENSION, -0.5f, -DIMENSION,  0.0f, 1.0f,  0.0f,  0.0f,  1.0f,
-
-		// Top face
-		-DIMENSION,  0.5f, -DIMENSION,  0.0f,  -1.0f,  0.0f,  0.0f,  0.0f,
-		 DIMENSION,  0.5f, -DIMENSION,  0.0f,  -1.0f,  0.0f,  1.0f,  0.0f,
-		 DIMENSION,  0.5f,  DIMENSION,  0.0f,  -1.0f,  0.0f,  1.0f,  1.0f,
-		 DIMENSION,  0.5f,  DIMENSION,  0.0f,  -1.0f,  0.0f,  1.0f,  1.0f,
-		-DIMENSION,  0.5f,  DIMENSION,  0.0f,  -1.0f,  0.0f,  0.0f,  1.0f,
-		-DIMENSION,  0.5f, -DIMENSION,  0.0f,  -1.0f,  0.0f,  0.0f,  1.0f,
-
-		// Front face
-		-DIMENSION, -0.5f, -DIMENSION,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
-		 DIMENSION, -0.5f, -DIMENSION,  0.0f,  0.0f, -1.0f,  1.0f,  0.0f,
-		 DIMENSION,  0.5f, -DIMENSION,  0.0f,  0.0f, -1.0f,  1.0f,  1.0f,
-		 DIMENSION,  0.5f, -DIMENSION,  0.0f,  0.0f, -1.0f,  1.0f,  1.0f,
-		-DIMENSION,  0.5f, -DIMENSION,  0.0f,  0.0f, -1.0f,  0.0f,  1.0f,
-		-DIMENSION, -0.5f, -DIMENSION,  0.0f,  0.0f, -1.0f,  0.0f,  1.0f,
-
-		// Back face
-		-DIMENSION, -0.5f,  DIMENSION,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,
-		 DIMENSION, -0.5f,  DIMENSION,  0.0f,  0.0f,  1.0f,  1.0f,  0.0f,
-		 DIMENSION,  0.5f,  DIMENSION,  0.0f,  0.0f,  1.0f,  1.0f,  1.0f,
-		 DIMENSION,  0.5f,  DIMENSION,  0.0f,  0.0f,  1.0f,  1.0f,  1.0f,
-		-DIMENSION,  0.5f,  DIMENSION,  0.0f,  0.0f,  1.0f,  0.0f,  1.0f,
-		-DIMENSION, -0.5f,  DIMENSION,  0.0f,  0.0f,  1.0f,  0.0f,  1.0f,
-
-		// Left face
-		-DIMENSION, -0.5f,  DIMENSION, -1.0f,  0.0f,  0.0f,  0.0f,  0.0f,
-		-DIMENSION, -0.5f, -DIMENSION, -1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
-		-DIMENSION,  0.5f, -DIMENSION, -1.0f,  0.0f,  0.0f,  1.0f,  1.0f,
-		-DIMENSION,  0.5f, -DIMENSION, -1.0f,  0.0f,  0.0f,  1.0f,  1.0f,
-		-DIMENSION,  0.5f,  DIMENSION, -1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
-		-DIMENSION, -0.5f,  DIMENSION, -1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
-
-		// Right face
-		 DIMENSION, -0.5f,  DIMENSION,  1.0f,  0.0f,  0.0f,  0.0f,  0.0f,
-		 DIMENSION, -0.5f, -DIMENSION,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
-		 DIMENSION,  0.5f, -DIMENSION,  1.0f,  0.0f,  0.0f,  1.0f,  1.0f,
-		 DIMENSION,  0.5f, -DIMENSION,  1.0f,  0.0f,  0.0f,  1.0f,  1.0f,
-		 DIMENSION,  0.5f,  DIMENSION,  1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
-		 DIMENSION, -0.5f,  DIMENSION,  1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
-	};
-
-
-
-
-	this->groundVertices = new float[36 * 8];
-
-	std::memcpy(this->groundVertices, gVertices, sizeof(gVertices));
-
 }
 
 void Simulation::initBuffer()
@@ -231,22 +171,6 @@ void Simulation::initBuffer()
 	//texture attribute
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 	glEnableVertexAttribArray(1);
-
-	//Ground Buffer
-	glGenVertexArrays(1, &this->groundVAO);
-	glGenBuffers(1, &this->groundVBO);
-	glBindVertexArray(this->groundVAO);
-	glBindBuffer(GL_ARRAY_BUFFER, this->groundVBO);
-	//position attribute
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 36 * 8, this->groundVertices, GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-	//normal attribute
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3*sizeof(float)));
-	glEnableVertexAttribArray(1);
-	//textur attribute
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6* sizeof(float)));
-	glEnableVertexAttribArray(2);
 
 	//Screen Framebuffer
 	glGenFramebuffers(1, &this->framebuffer);
@@ -275,7 +199,6 @@ void Simulation::initShader()
 	this->screenShader = Shader("Shader/screen.vs", "Shader/screen.fs");
 	this->textShader = Shader("Shader/text.vs", "Shader/text.fs");
 	this->cubeMapShader = Shader("Shader/cubemap.vs", "Shader/cubemap.fs");
-	this->groundShader = Shader("Shader/ground.vs", "Shader/ground.fs");
 	this->planeShader = Shader("Shader/plane.vs", "Shader/plane.fs");
 	this->missileShader = Shader("Shader/missile.vs", "Shader/missile.fs");
 	this->torretShader = Shader("Shader/torret.vs", "Shader/torret.fs");
@@ -1031,21 +954,6 @@ void Simulation::DrawSimulation()
 	this->DrawGunTower();
 	this->DrawMissiles();
 	
-	glBindVertexArray(0);
-}
-
-void Simulation::DrawGround()
-{
-	this->groundShader.use();
-
-	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(0.0f, -1.0f, 0.0f));
-	this->groundShader.setMat4("model", model);
-	this->groundShader.setMat4("view", this->view);
-	this->groundShader.setMat4("projection", this->projection);
-	this->groundShader.setVec3("viewPos", this->camera.Position);
-	glBindVertexArray(this->groundVAO);
-	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glBindVertexArray(0);
 }
 
