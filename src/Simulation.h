@@ -35,6 +35,7 @@
 #include "TerrrainGenerator.h"
 
 #include "PlaneMaster.h"
+#include "MissileMaster.h"
 
 
 class Simulation
@@ -82,6 +83,7 @@ private:
 	bool shot;
 
 	PlaneMaster *planeMaster;
+	MissileMaster* missileMaster;
 
 
 	//Erase Marker

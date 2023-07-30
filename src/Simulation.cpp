@@ -61,6 +61,7 @@ Simulation::Simulation(GLFWwindow* window, int WINDOW_WIDTH, int WINDOW_HEIGHT)
 
 	this->terrain = new TerrainGenerator(R"(resources\textures\city_heightmap.png)");
 	this->planeMaster = new PlaneMaster();
+	this->missileMaster = new MissileMaster();
 
 	this->initShader();
 	this->initVertices();
@@ -114,7 +115,8 @@ void Simulation::render()
 	this->DrawSkyBox();
 
 	this->terrain->render(this->deltaTime, this->projection, this->view);
-	//this->planeMaster->render(this->projection, this->camera);
+	this->planeMaster->render(this->projection, this->camera);
+	this->missileMaster->render(this->projection, this->camera);
 	this->particleMaster->render(this->projection, this->camera);
 
 	this->DrawSimulation();
@@ -480,6 +482,7 @@ void Simulation::explosion(glm::vec3 pos, glm::vec3 direction, int spreadDiversi
 
 	}
 }
+
 unsigned int Simulation::loadTextures(const char* path)
 {
 	unsigned int textureID;
@@ -527,7 +530,8 @@ unsigned int Simulation::loadTextures(const char* path)
 
 void Simulation::updateSimulation()
 {
-	//this->planeMaster->update(this->deltaTime*this->timeFactor, this->camera);
+	this->planeMaster->update(this->deltaTime*this->timeFactor, this->camera);
+	this->missileMaster->update(this->deltaTime * this->timeFactor, this->camera, this->planeMaster->getPlanes());
 
 	this->updatePlanes();
 	this->updateTorrets();
@@ -718,6 +722,7 @@ void Simulation::updateTorrets()
 		if (nearestDistance < 1300 && this->planes.size()>0) {
 			this->torrets[i]->setShot(true);
 			this->missiles.push_back(this->torrets[i]->getMissile());
+			this->missileMaster->addMissile(new Missile(glm::vec3(0.0, 3.0, 0.0), glm::vec3(1.0), glm::vec3(20)));
 		}
 	}
 
