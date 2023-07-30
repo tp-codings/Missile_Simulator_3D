@@ -767,7 +767,7 @@ void Simulation::updateGunTower()
 					Particle* p = new Particle(ParticleTextureHandler(this->bullets, 4),
 						this->gunTowers[i]->getPosition() + glm::normalize(shootDirection) * (float)l,
 						gunTowers[i]->getSpeed() * glm::normalize(shootDirection),
-						0.01f,
+						0.001f,
 						5.0f,
 						0.0f,
 						0.5f);

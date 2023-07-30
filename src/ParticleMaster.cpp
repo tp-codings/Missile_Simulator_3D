@@ -3,46 +3,53 @@
 
 ParticleMaster::ParticleMaster()
 {
-	this->renderer = ParticleRenderer();
+    this->renderer = ParticleRenderer();
 }
 
 
-void ParticleMaster::update(float deltaTime, Camera &camera)
+void ParticleMaster::update(float deltaTime, Camera& camera)
 {
-    if (particles.size() > 0) {
-        auto mapIterator = this->particles.begin();
-       
-        while (mapIterator != this->particles.end()) {
-            // Erhalte eine Referenz auf die Liste von Partikeln für das aktuelle ParticleTextureHandler
-            std::vector<Particle*>& particleList = mapIterator->second;
+    auto mapIterator = this->particles.begin();
 
-            // Erstelle einen Iterator für die Liste von Partikeln
-            auto listIterator = particleList.begin();
+    while (mapIterator != this->particles.end()) {
+        // Erhalte eine Referenz auf die Liste von Partikeln für das aktuelle ParticleTextureHandler
+        std::vector<Particle*>& particleList = mapIterator->second;
 
-            while (listIterator != particleList.end()) {
-                Particle* p = *listIterator;
-                bool stillAlive = p->update(deltaTime, camera);
+        // Erstelle einen Iterator für die Liste von Partikeln
+        auto listIterator = particleList.begin();
 
-                if (!stillAlive) {
-                    // Entferne das Particle aus der Liste
-                    listIterator = particleList.erase(listIterator);
+        while (listIterator != particleList.end()) {
+            Particle* p = *listIterator;
+            bool stillAlive = p->update(deltaTime, camera);
 
-                    if (particleList.empty()) {
-                        // Entferne den Eintrag aus der unordered_map, wenn die Liste leer ist
-                        mapIterator = particles.erase(mapIterator);
-                    }
-                }
-                else {
-                    // Gehe zum nächsten Particle in der Liste
-                    ++listIterator;
-                }
+            if (!stillAlive) {
+                // Entferne das Particle aus der Liste
+                listIterator = particleList.erase(listIterator);
+
+
             }
-            //std::cout << particleList.size() << std::endl;
+            else {
+                // Gehe zum nächsten Particle in der Liste
+                ++listIterator;
+            }
+        }
+        if (particleList.empty()) {
+            // Entferne den Eintrag aus der unordered_map, wenn die Liste leer ist
+            mapIterator = particles.erase(mapIterator);
+        }
+        else {
             InsertionSortHighToLow(particleList);
-
-            // Gehe zum nächsten Eintrag in der unordered_map
             ++mapIterator;
         }
+        //std::cout << particleList.size() << std::endl;
+
+        // Gehe zum nächsten Eintrag in der unordered_map
+    }
+    for (auto& entry : this->particles) {
+        entry.second.erase(std::remove_if(entry.second.begin(), entry.second.end(),
+            [](Particle* particle) {return (particle->getElapsedTime() > particle->getLifeLength());
+            }),
+            entry.second.end());
     }
 }
 

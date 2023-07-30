@@ -16,6 +16,7 @@ void MissileMaster::update(float deltaTime, Camera& camera, std::vector<Planes *
 
 		if (planes.size() > 0) {
 			this->missiles[i]->setAccAcc(glm::vec3(50.0f));
+			this->missiles[i]->setMaxVelocity(glm::vec3(120.0f));
 
 			int nearest;
 			float nearestDistance;
@@ -78,11 +79,11 @@ void MissileMaster::render(glm::mat4 projection, Camera& camera)
 	this->shader.setVec3("viewPos", camera.Position);
 
 	for (auto i : missiles) {
-		std::cout << i->getPosition().x << std::endl;
 		this->model->Translate(i->getPosition());
 		this->model->Rotate(i->getRotationAngle(), i->getRotationAxis());
 		this->model->Draw(&this->shader, projection, view, i->getColor());
 	}
+	this->particleMaster->render(projection, camera);
 }
 
 void MissileMaster::addMissile(Missile* missile)
