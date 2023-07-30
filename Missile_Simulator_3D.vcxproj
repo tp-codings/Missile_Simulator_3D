@@ -144,6 +144,7 @@
     <ClCompile Include="imgui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="imgui\imgui_tables.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
+    <ClCompile Include="src\CollisionMaster.cpp" />
     <ClCompile Include="src\Engine.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\GunTower.cpp" />
@@ -161,6 +162,7 @@
     <ClCompile Include="src\Torret.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\CollisionMaster.h" />
     <ClInclude Include="src\Engine.h" />
     <ClInclude Include="src\FastNoiseLite.h" />
     <ClInclude Include="src\GunTower.h" />

@@ -62,6 +62,7 @@ Simulation::Simulation(GLFWwindow* window, int WINDOW_WIDTH, int WINDOW_HEIGHT)
 	this->terrain = new TerrainGenerator(R"(resources\textures\city_heightmap.png)");
 	this->planeMaster = new PlaneMaster();
 	this->missileMaster = new MissileMaster();
+	this->collisionMaster = new CollisionMaster();
 
 	this->initShader();
 	this->initVertices();
@@ -118,6 +119,7 @@ void Simulation::render()
 	this->planeMaster->render(this->projection, this->camera);
 	this->missileMaster->render(this->projection, this->camera);
 	this->particleMaster->render(this->projection, this->camera);
+	this->collisionMaster->render(this->projection, this->camera, this->deltaTime*this->timeFactor);
 
 	this->DrawSimulation();
 
@@ -458,7 +460,6 @@ void Simulation::processInput(float deltaTime)
 	}
 	if (glfwGetKey(this->window, GLFW_KEY_P) == GLFW_PRESS && !this->shootMissileTruck) {
 		this->shootMissileTruck = true;
-		this->planeMaster->removePlanes(0);
 	}
 
 }
@@ -532,6 +533,7 @@ void Simulation::updateSimulation()
 {
 	this->planeMaster->update(this->deltaTime*this->timeFactor, this->camera);
 	this->missileMaster->update(this->deltaTime * this->timeFactor, this->camera, this->planeMaster->getPlanes());
+	this->collisionMaster->update(this->planeMaster, this->missileMaster);
 
 	this->updatePlanes();
 	this->updateTorrets();

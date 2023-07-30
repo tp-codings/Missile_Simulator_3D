@@ -36,6 +36,7 @@
 
 #include "PlaneMaster.h"
 #include "MissileMaster.h"
+#include "CollisionMaster.h"
 
 
 class Simulation
@@ -84,6 +85,7 @@ private:
 
 	PlaneMaster *planeMaster;
 	MissileMaster* missileMaster;
+	CollisionMaster* collisionMaster;
 
 
 	//Erase Marker

@@ -28,8 +28,7 @@ void PlaneMaster::update(float deltaTime, Camera& camera)
 		this->erasePlanes.clear();
 	}
 
-	if(planes.size()>0)
-		this->particleMaster->update(deltaTime, camera);
+	this->particleMaster->update(deltaTime, camera);
 
 	//Missile_Simulator_3D.exe!std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<Particle*>>>::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<Particle*>>>(Particle * *_Parg, const std::_Container_base12 * _Pvector) Zeile 45	C++
 	//Missile_Simulator_3D.exe!std::_Vector_iterator<std::_Vector_val<std::_Simple_types<Particle*>>>::_Vector_iterator<std::_Vector_val<std::_Simple_types<Particle*>>>(Particle**)	C++
