@@ -183,21 +183,6 @@ void Simulation::initBuffer()
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 	glEnableVertexAttribArray(1);
 
-	//Ground Buffer
-	glGenVertexArrays(1, &this->groundVAO);
-	glGenBuffers(1, &this->groundVBO);
-	glBindVertexArray(this->groundVAO);
-	glBindBuffer(GL_ARRAY_BUFFER, this->groundVBO);
-	//position attribute
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 36 * 8, this->groundVertices, GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-	//normal attribute
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3*sizeof(float)));
-	glEnableVertexAttribArray(1);
-	//textur attribute
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6* sizeof(float)));
-	glEnableVertexAttribArray(2);
 
 	//Screen Framebuffer
 	glGenFramebuffers(1, &this->framebuffer);
