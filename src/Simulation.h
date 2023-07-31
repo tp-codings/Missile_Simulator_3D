@@ -68,9 +68,6 @@ private:
 	Shader screenShader;
 	Shader textShader;
 	Shader cubeMapShader;
-	Shader planeShader;
-	Shader missileShader;
-	Shader torretShader;
 
 	//Matrizen
 	glm::mat4 projection;
@@ -87,6 +84,7 @@ private:
 	string debug = " ";
 	bool shot;
 
+	//Worldobjects
 	PlaneMaster *planeMaster;
 	MissileMaster* missileMaster;
 	CollisionMaster* collisionMaster;
@@ -95,49 +93,9 @@ private:
 	MissileTruckMaster* missileTruckMaster;
 	GunTowerMaster* gunTowerMaster;
 	BulletMaster* bulletMaster;
-
-
-	//Erase Marker
-	set<int> eraseCrashedPlanes;
-	set<int> erasePlanes;
-	set<int> eraseMissiles;
-	set<int> eraseCruiseMissiles;
-
-	//World objects
-	ModelHandler* plane;
-	ModelHandler* missile;
-	ModelHandler* torret;
-	ModelHandler* missileTruck;
-	ModelHandler* s400;
-	ModelHandler* gunTower;
-	ModelHandler* barrel;
-
-	vector<Planes*>planes;
-	vector<Planes*>crashingPlanes;
-
-	vector<Missile*>missiles;
-	vector<Missile*>cruiseMissiles;
-
-	vector<Torret*> torrets;
-	vector<Torret*> missileTrucks;
-
-	vector<GunTower*> gunTowers;
-
-	vector<Particle*> particles;
-
-	Camera camera;
-
 	TerrainGenerator *terrain;
 
-	//Particlesystem
-	ParticleMaster *particleMaster;
-
-	//Texturen
-	unsigned int star;
-	unsigned int particleAtlas;
-	unsigned int tail;
-	unsigned int explosions;
-	unsigned int bullets;
+	Camera camera;
 
 	//Settings
 	float cameraSpeed;
@@ -153,10 +111,6 @@ private:
 
 	ImVec4 dirLightColor;
 	glm::vec3 dirLightPos;
-
-	float rotSpeedX;
-	float rotSpeedY;
-	float rotSpeedZ;
 
 	//Buffer
 	unsigned int screenVAO;
@@ -215,6 +169,7 @@ private:
 
 	//Inits------------------------------------------------------------------------------
 
+	void initMaster();
 	void initVertices();
 	void initBuffer();
 	void initShader();
@@ -225,11 +180,9 @@ private:
 	void initText();
 	void initMatrices();
 	void initSkybox();
-	void initParticleSystem();
 	void initPlanes();
 	void initTorrets();
 	void initGunTower();
-	void initModels();
 
 	//Input------------------------------------------------------------------------------
 
@@ -238,31 +191,14 @@ private:
 	//Helper------------------------------------------------------------------------------
 
 	int random(int range, int start);
-	void explosion(glm::vec3 pos, glm::vec3 direction, int spreadDiversity, float spreadFactor, int amount, int maxDuration, float gravityImpact, float scale);
-	unsigned int loadTextures(const char* path);
 
 	//Updates------------------------------------------------------------------------------
 
 	void updateSimulation();
-	void updatePlanes();
-	void updateMissiles();
-	void updateTorrets();
-	void updateGunTower();
-	std::tuple<int, float> updateNearestPlane(Missile* missile, vector<Planes*> planes);
-	void updateHitPlane();
-	void updateHitMissile();
-	void updateCruiseMissile();
-	void updatePlaneHitsPlane();
-	void updateCrashingPlanes();
-	void updateErasing();
 
 	//Rendering------------------------------------------------------------------------------
 
 	void DrawSimulation();
-	void DrawPlanes();
-	void DrawMissiles();
-	void DrawTorrets();
-	void DrawGunTower();
 	void DrawSettings();
 	void DrawScreen();
 	void DrawText();
