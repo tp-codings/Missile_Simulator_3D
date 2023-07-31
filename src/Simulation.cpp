@@ -299,6 +299,8 @@ void Simulation::initPlanes()
 	this->rotSpeedZ = 0.0f;
 
 	this->planeMaster->addPlane(new Planes(glm::vec3(-100.0f, 7000.0f, -6100.0f), glm::vec3(0.001, 0.0, 1.00), 70, glm::vec3(0.1)));
+	this->planeMaster->addPlane(new Planes(glm::vec3(-100.0f, 1000.0f, -1100.0f), glm::vec3(0.001, 0.0, 1.00), 70, glm::vec3(0.1)));
+	this->planeMaster->addPlane(new Planes(glm::vec3(-50.0f, 1000.0f, -1100.0f), glm::vec3(0.001, 0.0, 1.00), 70, glm::vec3(0.1)));
 }
 
 void Simulation::initTorrets()
@@ -553,6 +555,9 @@ void Simulation::updateSimulation()
 	this->missileMaster->update(this->deltaTime * this->timeFactor, this->camera, this->planeMaster->getPlanes());
 	this->collisionMaster->updateMissileCollision(this->planeMaster, this->missileMaster);
 	this->collisionMaster->updateS400Collision(this->planeMaster, this->s400Master);
+	this->collisionMaster->updateBulletCollision(this->planeMaster, this->bulletMaster);
+	this->collisionMaster->updateMMCollision(this->missileMaster);
+	this->collisionMaster->updateSSCollision(this->s400Master);
 	this->torretMaster->update(this->deltaTime * this->timeFactor, this->camera, this->planeMaster->getPlanes(), this->missileMaster);
 	this->s400Master->update(this->deltaTime * this->timeFactor, this->camera, this->planeMaster->getPlanes());
 	this->missileTruckMaster->update(this->deltaTime * this->timeFactor, this->camera, this->planeMaster->getPlanes(), this->s400Master, this->shootMissileTruck);

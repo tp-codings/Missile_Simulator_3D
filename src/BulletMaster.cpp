@@ -20,8 +20,6 @@ void BulletMaster::update(float deltaTime, Camera& camera)
 		}
 	}
 	this->eraseBullets.clear();
-
-	cout << this->particles.size() << endl;
 }
 
 void BulletMaster::render(glm::mat4 projection, Camera& camera)
