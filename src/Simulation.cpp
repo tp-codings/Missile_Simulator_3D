@@ -299,7 +299,7 @@ void Simulation::initPlanes()
 
 void Simulation::initTorrets()
 {
-	int amnountTorrets = 1;
+	int amnountTorrets = 0;
 	for (int i = 0; i < amnountTorrets; i++) {
 		for (int j = 0; j < amnountTorrets; j++) {
 			glm::vec2 randomPos = glm::vec2(-10 + j * 50, 10.0f + i * 50);
@@ -308,7 +308,12 @@ void Simulation::initTorrets()
 			this->torrets.push_back(new Torret(glm::vec3(randomPos.x, height+1.5, randomPos.y)));
 		}
 	}
-	amnountTorrets = 1;
+	this->torretMaster->addTorrets(new Torret(glm::vec3(40.0f)));
+
+	glm::vec2 randomPos = glm::vec2(-10, 10.0f);
+	float height = this->terrain->getHeightAtPosition(randomPos.x, randomPos.y);
+	this->missileTruckMaster->addMissileTrucks(new Torret(glm::vec3(randomPos.x, height + 1.5, randomPos.y)));
+	amnountTorrets = 0;
 	for (int i = 0; i < amnountTorrets; i++) {
 		for (int j = 0; j < amnountTorrets; j++) {
 			glm::vec2 randomPos = glm::vec2(-0 + j * 50, 10.0f + i * 50);
