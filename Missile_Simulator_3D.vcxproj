@@ -161,6 +161,7 @@
     <ClCompile Include="src\PlaneMaster.cpp" />
     <ClCompile Include="src\Planes.cpp" />
     <ClCompile Include="src\S400Master.cpp" />
+    <ClCompile Include="src\ScreenRenderer.cpp" />
     <ClCompile Include="src\Simulation.cpp" />
     <ClCompile Include="src\stb_handler.cpp" />
     <ClCompile Include="src\Torret.cpp" />
@@ -173,6 +174,7 @@
     <ClInclude Include="src\FastNoiseLite.h" />
     <ClInclude Include="src\GunTower.h" />
     <ClInclude Include="src\GunTowerMaster.h" />
+    <ClInclude Include="src\Helper.h" />
     <ClInclude Include="src\Loader.h" />
     <ClInclude Include="src\Missile.h" />
     <ClInclude Include="src\MissileMaster.h" />
@@ -184,6 +186,7 @@
     <ClInclude Include="src\PlaneMaster.h" />
     <ClInclude Include="src\Planes.h" />
     <ClInclude Include="src\S400Master.h" />
+    <ClInclude Include="src\ScreenRenderer.h" />
     <ClInclude Include="src\Simulation.h" />
     <ClInclude Include="src\TerrrainGenerator.h" />
     <ClInclude Include="src\Torret.h" />

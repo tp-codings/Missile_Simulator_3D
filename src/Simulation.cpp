@@ -2,68 +2,9 @@
 #include <thread>
 #include <random>
 
-// Base Colors
-#define RED glm::vec3(1.0f, 0.0f, 0.0f)
-#define GREEN glm::vec3(0.0f, 1.0f, 0.0f)
-#define BLUE glm::vec3(0.0f, 0.0f, 1.0f)
-#define WHITE glm::vec3(1.0f, 1.0f, 1.0f)
-#define BLACK glm::vec3(0.0f, 0.0f, 0.0f)
-
-// Custom Colors
-#define ORANGE glm::vec3(1.0f, 0.5f, 0.0f)
-#define PURPLE glm::vec3(0.5f, 0.0f, 0.5f)
-#define YELLOW glm::vec3(1.0f, 1.0f, 0.0f)
-#define CYAN glm::vec3(0.0f, 1.0f, 1.0f)
-#define MAGENTA glm::vec3(1.0f, 0.0f, 1.0f)
-
-
-// Pastell Colors
-#define PASTEL_PINK glm::vec3(0.86f, 0.63f, 0.69f)
-#define PASTEL_YELLOW glm::vec3(0.95f, 0.95f, 0.58f)
-#define PASTEL_BLUE glm::vec3(0.62f, 0.77f, 0.87f)
-#define PASTEL_GREEN glm::vec3(0.64f, 0.87f, 0.68f)
-#define PASTEL_PURPLE glm::vec3(0.73f, 0.62f, 0.81f)
-
-// Metallic Colors
-#define GOLD glm::vec3(1.0f, 0.84f, 0.0f)
-#define SILVER glm::vec3(0.75f, 0.75f, 0.75f)
-#define BRONZE glm::vec3(0.8f, 0.5f, 0.2f)
-#define COPPER glm::vec3(0.85f, 0.55f, 0.4f)
-#define STEEL glm::vec3(0.6f, 0.6f, 0.67f)
-
-// Rainbow Colors
-#define VIOLET glm::vec3(0.5f, 0.0f, 1.0f)
-#define INDIGO glm::vec3(0.29f, 0.0f, 0.51f)
-#define BLUE_GREEN glm::vec3(0.0f, 0.5f, 0.5f)
-#define YELLOW_GREEN glm::vec3(0.6f, 0.8f, 0.2f)
-#define YELLOW_ORANGE glm::vec3(1.0f, 0.71f, 0.0f)
-#define RED_ORANGE glm::vec3(1.0f, 0.27f, 0.0f)
-
-// Earth Tones
-#define BROWN glm::vec3(0.65f, 0.16f, 0.16f)
-#define SAND glm::vec3(0.76f, 0.7f, 0.5f)
-#define OLIVE glm::vec3(0.5f, 0.5f, 0.0f)
-#define MOSS_GREEN glm::vec3(0.55f, 0.64f, 0.45f)
-#define SLATE_GRAY glm::vec3(0.44f, 0.5f, 0.56f)
-
-// Neon Colors
-#define NEON_PINK glm::vec3(1.0f, 0.07f, 0.55f)
-#define NEON_YELLOW glm::vec3(1.0f, 0.95f, 0.0f)
-#define NEON_GREEN glm::vec3(0.29f, 0.95f, 0.29f)
-#define NEON_BLUE glm::vec3(0.29f, 0.59f, 0.95f)
-#define NEON_PURPLE glm::vec3(0.67f, 0.29f, 0.95f)
-
 Simulation::Simulation(GLFWwindow* window, int WINDOW_WIDTH, int WINDOW_HEIGHT)
 {
-	this->window = window;
-	this->WINDOW_WIDTH = WINDOW_WIDTH;
-	this->WINDOW_HEIGHT = WINDOW_HEIGHT;
-
-	this->initMaster();
-	this->initShader();
-	this->initVertices();
-	this->initVariables();
-	this->initBuffer();
+	this->init();
 
 	//ImGUI Setup
 	IMGUI_CHECKVERSION();
@@ -72,7 +13,6 @@ Simulation::Simulation(GLFWwindow* window, int WINDOW_WIDTH, int WINDOW_HEIGHT)
 	ImGui::StyleColorsDark();
 	ImGui_ImplGlfw_InitForOpenGL(this->window, true);
 	ImGui_ImplOpenGL3_Init("#version 330");
-
 }
 
 void Simulation::update(float deltaTime, int FPS, Camera camera)
@@ -86,7 +26,7 @@ void Simulation::update(float deltaTime, int FPS, Camera camera)
 	this->FPS = FPS;
 	this->camera = camera;
 
-	this->processInput(deltaTime);
+	this->processInput();
 
 	if (this->start)
 	{
@@ -96,7 +36,7 @@ void Simulation::update(float deltaTime, int FPS, Camera camera)
 
 void Simulation::render()
 {
-	//Draw scene to framebuffer which will be rendered as a texture for post processing purposes
+	//render scene to framebuffer which will be rendered as a texture for post processing purposes
 	glBindFramebuffer(GL_FRAMEBUFFER, this->framebuffer);
 	glEnable(GL_DEPTH_TEST);
 	//Sets Backgroundcolor to dimmed color of the directional light color
@@ -106,15 +46,14 @@ void Simulation::render()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	//Render
-	this->DrawSkyBox();
 
-	this->DrawSimulation();
+	this->renderSimulation();
 
-	this->DrawScreen();
+	this->screenRenderer->render(this->texColorBuffer);
 
-	this->DrawText();
+	this->renderHUD();
 
-	this->DrawSettings();
+	this->renderSettings();
 
 	ImGui::EndFrame();
 }
@@ -131,6 +70,25 @@ bool Simulation::getViewMode()
 
 //Inits------------------------------------------------------------------------------
 
+void Simulation::init()
+{
+	this->window = window;
+	this->WINDOW_WIDTH = WINDOW_WIDTH;
+	this->WINDOW_HEIGHT = WINDOW_HEIGHT;
+	this->screenRenderer = new ScreenRenderer();
+	this->skybox = new Skybox();
+	this->loader = new Loader();
+
+	this->initMaster();
+	this->initSettings();
+	this->initHUD();
+	this->initMatrices();
+	this->initPlanes();
+	this->initTorrets();
+	this->initGunTower();
+	this->initBuffer();
+}
+
 void Simulation::initMaster()
 {
 	this->terrain = new TerrainGenerator(R"(resources\textures\city_heightmap.png)");
@@ -144,80 +102,9 @@ void Simulation::initMaster()
 	this->bulletMaster = new BulletMaster();
 }
 
-void Simulation::initVertices()
-{
-	//Screen quad
-	float qVertices[] = {
-		// positions // texCoords
-		-1.0f,  1.0f,  0.0f, 1.0f,
-		-1.0f, -1.0f,  0.0f, 0.0f,
-		 1.0f, -1.0f,  1.0f, 0.0f,
-
-		-1.0f,  1.0f,  0.0f, 1.0f,
-		 1.0f, -1.0f,  1.0f, 0.0f,
-		 1.0f,  1.0f,  1.0f, 1.0f
-	};
-	this->quadVertices = new float[6 * 4];
-
-	std::memcpy(this->quadVertices, qVertices, sizeof(qVertices));
-
-}
-
 void Simulation::initBuffer()
 {
-	//Screen Buffer
-	glGenVertexArrays(1, &this->screenVAO);
-	glGenBuffers(1, &this->screenVBO);
-	glBindVertexArray(this->screenVAO);
-	glBindBuffer(GL_ARRAY_BUFFER, this->screenVBO);
-	//position attribute
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, this->quadVertices, GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-	//texture attribute
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
-	glEnableVertexAttribArray(1);
-
-
-	//Screen Framebuffer
-	glGenFramebuffers(1, &this->framebuffer);
-	glBindFramebuffer(GL_FRAMEBUFFER, this->framebuffer);
-	//create a color attachment texture
-	glGenTextures(1, &this->texColorBuffer);
-	glBindTexture(GL_TEXTURE_2D, this->texColorBuffer);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, this->WINDOW_WIDTH, this->WINDOW_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->texColorBuffer, 0);
-
-	//create a renderbuffer object for depth and stencil attachment
-	glGenRenderbuffers(1, &this->rbo);
-	glBindRenderbuffer(GL_RENDERBUFFER, this->rbo);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, this->WINDOW_WIDTH, this->WINDOW_HEIGHT);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, this->rbo);
-	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-		std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << endl;
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-}
-
-void Simulation::initShader()
-{
-	//Create Shader objects for several shader units
-	this->screenShader = Shader("Shader/screen.vs", "Shader/screen.fs");
-	this->textShader = Shader("Shader/text.vs", "Shader/text.fs");
-	this->cubeMapShader = Shader("Shader/cubemap.vs", "Shader/cubemap.fs");
-}
-
-void Simulation::initVariables()
-{
-	this->initSettings();
-	this->initTextures();
-	this->initText();
-	this->initMatrices();
-	this->initSkybox();
-	this->initPlanes();
-	this->initTorrets();
-	this->initGunTower();
+	this->loader->loadFrameBuffer(this->WINDOW_WIDTH, this->WINDOW_HEIGHT, this->framebuffer, this->texColorBuffer);
 }
 
 void Simulation::initSettings()
@@ -229,20 +116,14 @@ void Simulation::initSettings()
 	this->dirLightPos = glm::vec3(glm::vec3(-0.5, 0.7, -1.0) * 40.f);
 	this->startKeyPressed = false;
 	this->settingsKeyPressed = false;
-	this->shadingKeyPressed = false;
 	this->shootGunTower = false;
 	this->shootMissileTruck = false;
-	this->shadingChoice = 0;
 	this->timeFactor = 1.0f;
 	this->shot = false;
+	this->skyBoxChoice = 1;
 }
 
-void Simulation::initTextures()
-{
-
-}
-
-void Simulation::initText()
+void Simulation::initHUD()
 {
 	this->textRenderer = new TextRenderer(10, this->WINDOW_WIDTH, this->WINDOW_HEIGHT);
 	this->fontSize = 10;
@@ -254,20 +135,11 @@ void Simulation::initMatrices()
 	this->view = glm::mat4(1.0f);
 }
 
-void Simulation::initSkybox()
-{
-	this->oceanBox = new Skybox(this->ocean);
-	this->spaceBox = new Skybox(this->space);
-	this->forestBox = new Skybox(this->forest);
-	this->cityBox = new Skybox(this->city);
-	this->skyBoxChoice = 1;
-}
-
 void Simulation::initPlanes()
 {
-	this->planeMaster->addPlane(new Planes(glm::vec3(-100.0f, 7000.0f, -6100.0f), glm::vec3(0.001, 0.0, 1.00), 70, glm::vec3(0.1)));
-	this->planeMaster->addPlane(new Planes(glm::vec3(-100.0f, 1000.0f, -1100.0f), glm::vec3(0.001, 0.0, 1.00), 70, glm::vec3(0.1)));
-	this->planeMaster->addPlane(new Planes(glm::vec3(-50.0f, 1000.0f, -1100.0f), glm::vec3(0.001, 0.0, 1.00), 70, glm::vec3(0.1)));
+	this->planeMaster->addPlane(new Planes(glm::vec3(-100.0f, 7000.0f, -6100.0f), glm::vec3(0.001, 0.0, 1.00), 70, Colors::BLUE));
+	this->planeMaster->addPlane(new Planes(glm::vec3(-100.0f, 1000.0f, -1100.0f), glm::vec3(0.001, 0.0, 1.00), 70, Colors::RED));
+	this->planeMaster->addPlane(new Planes(glm::vec3(-50.0f, 1000.0f, -1100.0f), glm::vec3(0.001, 0.0, 1.00), 70, Colors::BLUE));
 }
 
 void Simulation::initTorrets()
@@ -289,7 +161,7 @@ void Simulation::initGunTower()
 
 //Inputhandling------------------------------------------------------------------------------
 
-void Simulation::processInput(float deltaTime)
+void Simulation::processInput()
 {
 	//Keyboard shortcuts
 	if (glfwGetKey(this->window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -320,15 +192,6 @@ void Simulation::processInput(float deltaTime)
 	if (glfwGetKey(this->window, GLFW_KEY_ENTER) == GLFW_RELEASE)
 	{
 		this->startKeyPressed = false;
-	}
-	if (glfwGetKey(this->window, GLFW_KEY_B) == GLFW_PRESS && !this->shadingKeyPressed)
-	{
-		this->shadingChoice = ++this->shadingChoice%2;
-		this->shadingKeyPressed = true;
-	}
-	if (glfwGetKey(this->window, GLFW_KEY_B) == GLFW_RELEASE)
-	{
-		this->shadingKeyPressed = false;
 	}
 	if (glfwGetKey(this->window, GLFW_KEY_4) == GLFW_PRESS)
 	{
@@ -361,13 +224,6 @@ void Simulation::processInput(float deltaTime)
 	}
 }
 
-//Helper------------------------------------------------------------------------------
-
-int Simulation::random(int range, int start)
-{
-	return rand() % range + start;
-}
-
 //Updates------------------------------------------------------------------------------
 
 void Simulation::updateSimulation()
@@ -384,12 +240,17 @@ void Simulation::updateSimulation()
 	this->missileTruckMaster->update(this->deltaTime * this->timeFactor, this->camera, this->planeMaster->getPlanes(), this->s400Master, this->shootMissileTruck);
 	this->gunTowerMaster->update(this->deltaTime * this->timeFactor, this->camera, this->planeMaster->getPlanes(), this->bulletMaster, this->shootGunTower);
 	this->bulletMaster->update(this->deltaTime * this->timeFactor, this->camera);
+	//this->skybox->updateSkybox(this->skyBoxChoice) //Noch Probleme
 }
 
 //Rendering------------------------------------------------------------------------------
 
-void Simulation::DrawSimulation()
+void Simulation::renderSimulation()
 {
+	if (this->skyBoxChoice != 4) {
+		this->skybox->render(this->camera, this->projection);
+	}
+
 	this->terrain->render(this->deltaTime, this->projection, this->view);
 	this->planeMaster->render(this->projection, this->camera);
 	this->missileMaster->render(this->projection, this->camera);
@@ -402,7 +263,7 @@ void Simulation::DrawSimulation()
 	glBindVertexArray(0);
 }
 
-void Simulation::DrawSettings()
+void Simulation::renderSettings()
 {
 	//Tell ImGUI its a new Frame
 	ImGui_ImplOpenGL3_NewFrame();
@@ -435,16 +296,7 @@ void Simulation::DrawSettings()
 			this->start = !this->start;
 		}				
 		ImGui::SliderFloat("Timefactor", &this->timeFactor, 0.0f, 1.0f);
-
-		const char* shading = "Reflection";
-		if (this->shadingChoice == 1) {
-			shading = "Colors";
-		}
-		ImGui::SameLine();
-		if (ImGui::Button(shading))
-		{
-			this->shadingChoice = ++this->shadingChoice % 2;
-		}		
+	
 		if (ImGui::Button("Ocean"))
 		{
 			this->skyBoxChoice = 1;
@@ -473,63 +325,19 @@ void Simulation::DrawSettings()
 	}
 }
 
-void Simulation::DrawScreen()
+void Simulation::renderHUD()
 {
-	//Draw Scene texture to standard Framebuffer
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
-
-	this->screenShader.use();
-	this->screenShader.setInt("screenTexture", 0);
-	this->screenShader.setInt("choice", 7);
-
-	glActiveTexture(GL_TEXTURE0);
-	glBindVertexArray(this->screenVAO);
-	glDisable(GL_DEPTH_TEST);
-	glBindTexture(GL_TEXTURE_2D, this->texColorBuffer);
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-}
-
-void Simulation::DrawText()
-{
-	this->textRenderer->Draw(this->textShader, "FPS: " + std::to_string((int)this->FPS), 0.0f, (float)this->WINDOW_HEIGHT - 1 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-	this->textRenderer->Draw(this->textShader, "Pos: " + std::to_string(this->camera.Position.x) + ", " + std::to_string(this->camera.Position.y) + ", " + std::to_string(this->camera.Position.z), 0.0f, (float)this->WINDOW_HEIGHT - 2 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-	this->textRenderer->Draw(this->textShader, "CameraView: " + std::to_string(this->camera.Front.x) + ", " + std::to_string(this->camera.Front.y) + ", " + std::to_string(this->camera.Front.z), 0.0f, (float)this->WINDOW_HEIGHT - 3 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-	this->textRenderer->Draw(this->textShader, "DeltaTime: " + std::to_string(this->deltaTime), 0.0f, (float)this->WINDOW_HEIGHT - 4 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-
-	this->textRenderer->Draw(this->textShader, "Start: " + std::to_string(this->start), this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 1 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-	std::string shading = "Colors";
-	if (this->shadingChoice == 1) {
-		shading = "Reflection";
-	}
-	this->textRenderer->Draw(this->textShader, "Shading: " + shading, this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 2 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+	this->textRenderer->render("FPS: " + std::to_string((int)this->FPS), 0.0f, (float)this->WINDOW_HEIGHT - 1 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+	this->textRenderer->render("Pos: " + std::to_string(this->camera.Position.x) + ", " + std::to_string(this->camera.Position.y) + ", " + std::to_string(this->camera.Position.z), 0.0f, (float)this->WINDOW_HEIGHT - 2 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+	this->textRenderer->render("CameraView: " + std::to_string(this->camera.Front.x) + ", " + std::to_string(this->camera.Front.y) + ", " + std::to_string(this->camera.Front.z), 0.0f, (float)this->WINDOW_HEIGHT - 3 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+	this->textRenderer->render("DeltaTime: " + std::to_string(this->deltaTime), 0.0f, (float)this->WINDOW_HEIGHT - 4 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+	this->textRenderer->render("Start: " + std::to_string(this->start), this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 1 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 	
 	std::string skyboxes[] = { "No Skybox", "Ocean", "Space", "Forest", "City" };
-	this->textRenderer->Draw(this->textShader, "Skybox: " + skyboxes[skyBoxChoice], this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 3 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-	this->textRenderer->Draw(this->textShader, "Planes: " + std::to_string(this->planeMaster->getPlanes().size()), this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 4 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-	this->textRenderer->Draw(this->textShader, "Missiles: " + std::to_string(this->missileMaster->getMissiles().size()), this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 5 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-	this->textRenderer->Draw(this->textShader, "MissilesSelfDestruct: " + std::to_string(this->missilesSelfDestruct), this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 6 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-	this->textRenderer->Draw(this->textShader, "PlanesSelfDestruct: " + std::to_string(this->planesSelfDestruct), this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 7 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-	this->textRenderer->Draw(this->textShader, "Debug: " + this->debug, this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 8 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-}
-
-void Simulation::DrawSkyBox()
-{
-	switch (this->skyBoxChoice) {
-	case 1:
-		this->oceanBox->render(this->cubeMapShader, this->camera, this->projection);
-		break;
-	case 2:
-		this->spaceBox->render(this->cubeMapShader, this->camera, this->projection);
-		break;	
-	case 3:
-		this->forestBox->render(this->cubeMapShader, this->camera, this->projection);
-		break;	
-	case 4:
-		this->cityBox->render(this->cubeMapShader, this->camera, this->projection);
-		break;
-	default:
-		break;
-	}
+	this->textRenderer->render("Skybox: " + skyboxes[skyBoxChoice], this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 3 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+	this->textRenderer->render("Planes: " + std::to_string(this->planeMaster->getPlanes().size()), this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 4 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+	this->textRenderer->render("Missiles: " + std::to_string(this->missileMaster->getMissiles().size()), this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 5 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+	this->textRenderer->render("MissilesSelfDestruct: " + std::to_string(this->missilesSelfDestruct), this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 6 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+	this->textRenderer->render("PlanesSelfDestruct: " + std::to_string(this->planesSelfDestruct), this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 7 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+	this->textRenderer->render("Debug: " + this->debug, this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 8 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 }
