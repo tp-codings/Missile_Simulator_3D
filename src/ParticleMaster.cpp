@@ -3,11 +3,11 @@
 
 ParticleMaster::ParticleMaster()
 {
-	this->renderer = ParticleRenderer();
+    this->renderer = ParticleRenderer();
 }
 
 
-void ParticleMaster::update(float deltaTime, Camera *camera)
+void ParticleMaster::update(float deltaTime, Camera& camera)
 {
     auto mapIterator = this->particles.begin();
 
@@ -26,21 +26,30 @@ void ParticleMaster::update(float deltaTime, Camera *camera)
                 // Entferne das Particle aus der Liste
                 listIterator = particleList.erase(listIterator);
 
-                if (particleList.empty()) {
-                    // Entferne den Eintrag aus der unordered_map, wenn die Liste leer ist
-                    mapIterator = particles.erase(mapIterator);
-                }
+
             }
             else {
                 // Gehe zum nächsten Particle in der Liste
                 ++listIterator;
             }
         }
+        if (particleList.empty()) {
+            // Entferne den Eintrag aus der unordered_map, wenn die Liste leer ist
+            mapIterator = particles.erase(mapIterator);
+        }
+        else {
+            InsertionSortHighToLow(particleList);
+            ++mapIterator;
+        }
         //std::cout << particleList.size() << std::endl;
-        InsertionSortHighToLow(particleList);
 
         // Gehe zum nächsten Eintrag in der unordered_map
-        ++mapIterator;
+    }
+    for (auto& entry : this->particles) {
+        entry.second.erase(std::remove_if(entry.second.begin(), entry.second.end(),
+            [](Particle* particle) {return (particle->getElapsedTime() > particle->getLifeLength());
+            }),
+            entry.second.end());
     }
 }
 
@@ -62,11 +71,6 @@ void ParticleMaster::addParticle(Particle* particle)
 
     // Füge das Particle zur Liste hinzu
     particleList.push_back(particle);
-}
-
-int ParticleMaster::getParticlesAlive()
-{
-    return this->particles.size();
 }
 
 void ParticleMaster::InsertionSortHighToLow(std::vector<Particle*>& list)

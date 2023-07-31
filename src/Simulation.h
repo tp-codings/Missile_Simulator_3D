@@ -34,6 +34,12 @@
 #include "ParticleTextureHandler.h"
 #include "TerrrainGenerator.h"
 
+#include "PlaneMaster.h"
+#include "MissileMaster.h"
+#include "CollisionMaster.h"
+#include "TorretMaster.h"
+#include "S400Master.h"
+#include "MissileTruckMaster.h"
 
 class Simulation
 {
@@ -60,7 +66,6 @@ private:
 	Shader screenShader;
 	Shader textShader;
 	Shader cubeMapShader;
-	Shader groundShader;
 	Shader planeShader;
 	Shader missileShader;
 	Shader torretShader;
@@ -79,6 +84,13 @@ private:
 	int planesSelfDestruct = 0;
 	string debug = " ";
 	bool shot;
+
+	PlaneMaster *planeMaster;
+	MissileMaster* missileMaster;
+	CollisionMaster* collisionMaster;
+	TorretMaster* torretMaster;
+	S400Master* s400Master;
+	MissileTruckMaster* missileTruckMaster;
 
 
 	//Erase Marker
@@ -150,12 +162,8 @@ private:
 	unsigned int texColorBuffer;
 	unsigned int rbo;
 
-	unsigned int groundVAO;
-	unsigned int groundVBO;
-
 	//Vertices
 	float* quadVertices;
-	float* groundVertices;
 
 	//Skybox
 	Skybox *oceanBox;
@@ -248,7 +256,6 @@ private:
 	//Rendering------------------------------------------------------------------------------
 
 	void DrawSimulation();
-	void DrawGround();
 	void DrawPlanes();
 	void DrawMissiles();
 	void DrawTorrets();

@@ -41,13 +41,13 @@ float Particle::getDistanceToCamera()
 	return this->distance;
 }
 
-bool Particle::update(float deltaTime, Camera *camera)
+bool Particle::update(float deltaTime, Camera &camera)
 {
 	this->velocity *= (1 - deltaTime*0.2);
 	this->velocity.y += GRAVITY * this->gravityEffect * deltaTime;
 	this->position += this->velocity;
 	this->elapsedTime += deltaTime;
-	glm::vec3 dir = camera->Position - this->position;
+	glm::vec3 dir = camera.Position - this->position;
 	this->distance = sqrt(dir.x * dir.x + dir.y * dir.y + dir.z * dir.z);
 	this->updateTextureCoordInfo();
 	return elapsedTime < this->lifeLength;
