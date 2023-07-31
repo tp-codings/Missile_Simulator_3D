@@ -66,6 +66,8 @@ Simulation::Simulation(GLFWwindow* window, int WINDOW_WIDTH, int WINDOW_HEIGHT)
 	this->torretMaster = new TorretMaster();
 	this->s400Master = new S400Master();
 	this->missileTruckMaster = new MissileTruckMaster();
+	this->gunTowerMaster = new GunTowerMaster();
+	this->bulletMaster = new BulletMaster();
 
 	this->initShader();
 	this->initVertices();
@@ -124,6 +126,8 @@ void Simulation::render()
 	this->torretMaster->render(this->projection, this->camera);
 	this->s400Master->render(this->projection, this->camera);
 	this->missileTruckMaster->render(this->projection, this->camera);
+	this->gunTowerMaster->render(this->projection, this->camera);
+	this->bulletMaster->render(this->projection, this->camera);
 
 	this->DrawSimulation();
 
@@ -335,6 +339,9 @@ void Simulation::initGunTower()
 			this->gunTowers.push_back(new GunTower(glm::vec3(randomPos.x, height + 1.5, randomPos.y), 15.0f));
 		}
 	}
+	glm::vec2 randomPos = glm::vec2(10.0f, 10.0f);
+	float height = this->terrain->getHeightAtPosition(randomPos.x, randomPos.y);
+	this->gunTowerMaster->addGunTower(new GunTower(glm::vec3(randomPos.x, height + 1.5, randomPos.y), 15.0f));
 }
 
 void Simulation::initModels()
@@ -549,6 +556,8 @@ void Simulation::updateSimulation()
 	this->torretMaster->update(this->deltaTime * this->timeFactor, this->camera, this->planeMaster->getPlanes(), this->missileMaster);
 	this->s400Master->update(this->deltaTime * this->timeFactor, this->camera, this->planeMaster->getPlanes());
 	this->missileTruckMaster->update(this->deltaTime * this->timeFactor, this->camera, this->planeMaster->getPlanes(), this->s400Master, this->shootMissileTruck);
+	this->gunTowerMaster->update(this->deltaTime * this->timeFactor, this->camera, this->planeMaster->getPlanes(), this->bulletMaster, this->shootGunTower);
+	this->bulletMaster->update(this->deltaTime * this->timeFactor, this->camera);
 
 	this->updatePlanes();
 	this->updateTorrets();

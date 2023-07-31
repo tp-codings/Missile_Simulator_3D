@@ -111,6 +111,12 @@
     <ClCompile Include="src\S400Master.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="src\GunTowerMaster.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BulletMaster.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Simulation.h">
@@ -170,6 +176,12 @@
     <ClInclude Include="src\S400Master.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="src\GunTowerMaster.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BulletMaster.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\cubemap.fs">
@@ -200,12 +212,6 @@
       <Filter>Ressourcendateien</Filter>
     </None>
     <None Include="Shader\cube.vs">
-      <Filter>Ressourcendateien</Filter>
-    </None>
-    <None Include="Shader\ground.vs">
-      <Filter>Ressourcendateien</Filter>
-    </None>
-    <None Include="Shader\ground.fs">
       <Filter>Ressourcendateien</Filter>
     </None>
     <None Include="Shader\plane.vs">

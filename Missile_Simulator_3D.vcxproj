@@ -144,10 +144,12 @@
     <ClCompile Include="imgui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="imgui\imgui_tables.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
+    <ClCompile Include="src\BulletMaster.cpp" />
     <ClCompile Include="src\CollisionMaster.cpp" />
     <ClCompile Include="src\Engine.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\GunTower.cpp" />
+    <ClCompile Include="src\GunTowerMaster.cpp" />
     <ClCompile Include="src\Missile.cpp" />
     <ClCompile Include="src\MissileMaster.cpp" />
     <ClCompile Include="src\MissileTruckMaster.cpp" />
@@ -165,10 +167,12 @@
     <ClCompile Include="src\TorretMaster.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\BulletMaster.h" />
     <ClInclude Include="src\CollisionMaster.h" />
     <ClInclude Include="src\Engine.h" />
     <ClInclude Include="src\FastNoiseLite.h" />
     <ClInclude Include="src\GunTower.h" />
+    <ClInclude Include="src\GunTowerMaster.h" />
     <ClInclude Include="src\Loader.h" />
     <ClInclude Include="src\Missile.h" />
     <ClInclude Include="src\MissileMaster.h" />

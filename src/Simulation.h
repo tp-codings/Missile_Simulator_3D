@@ -40,6 +40,8 @@
 #include "TorretMaster.h"
 #include "S400Master.h"
 #include "MissileTruckMaster.h"
+#include "GunTowerMaster.h"
+#include "BulletMaster.h"
 
 class Simulation
 {
@@ -91,6 +93,8 @@ private:
 	TorretMaster* torretMaster;
 	S400Master* s400Master;
 	MissileTruckMaster* missileTruckMaster;
+	GunTowerMaster* gunTowerMaster;
+	BulletMaster* bulletMaster;
 
 
 	//Erase Marker

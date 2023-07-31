@@ -59,6 +59,69 @@ void CollisionMaster::updateS400Collision(PlaneMaster* planeMaster, S400Master* 
 	}
 }
 
+void CollisionMaster::updateBulletCollision(PlaneMaster* planeMaster, BulletMaster* bulletMaster)
+{
+	std::vector<Planes*> planes = planeMaster->getPlanes();
+	std::vector<Particle*> particles = bulletMaster->getBullets();
+
+	float radius = 10;
+	for (size_t i = 0; i < particles.size(); ++i) {
+		for (size_t j = 0; j < planes.size(); ++j) {
+			Particle* p = particles[i];
+			glm::vec3 connectionVector = planes[j]->getPosition() - p->getPosition();
+			float distance = sqrt(connectionVector.x * connectionVector.x + connectionVector.y * connectionVector.y + connectionVector.z * connectionVector.z);
+
+			if (distance <= radius) {
+				planeMaster->removePlanes(j);
+				this->explosion(planes[j]->getPosition(), planes[j]->getDirection(), 1000, 0.001, 100, 100, 0.001f, 3.0f);
+			}
+		}
+	}
+}
+
+int CollisionMaster::updateMMCollision(MissileMaster* missileMaster)
+{
+	std::vector<Missile*> missiles = missileMaster->getMissiles();
+
+	float radius = 10;
+	for (size_t i = 0; i < missiles.size(); ++i) {
+		for (size_t j = i + 1; j < missiles.size(); ++j) {
+			glm::vec3 connectionVector = missiles[j]->getPosition() - missiles[i]->getPosition();
+			float distance = sqrt(connectionVector.x * connectionVector.x + connectionVector.y * connectionVector.y + connectionVector.z * connectionVector.z);
+
+			if (distance <= radius) {
+				missileMaster->removeMissile(i);
+				missileMaster->removeMissile(j);
+				this->explosion(missiles[i]->getPosition(), missiles[i]->getDirection(), 1000, 0.001, 150, 70, 0.001f, 2.0f);
+				return 1;
+			}
+		}
+	}
+	return 0;
+}
+
+int CollisionMaster::updateSSCollision(S400Master* s400Master)
+{
+	std::vector<Missile*> s400s = s400Master->getS400();
+
+	float radius = 10;
+	for (size_t i = 0; i < s400s.size(); ++i) {
+		for (size_t j = i + 1; j < s400s.size(); ++j) {
+			glm::vec3 connectionVector = s400s[j]->getPosition() - s400s[i]->getPosition();
+			float distance = sqrt(connectionVector.x * connectionVector.x + connectionVector.y * connectionVector.y + connectionVector.z * connectionVector.z);
+
+			if (distance <= radius) {
+				s400Master->removeS400(i);
+				s400Master->removeS400(j);
+				this->explosion(s400s[i]->getPosition(), s400s[i]->getDirection(), 1000, 0.001, 150, 70, 0.001f, 2.0f);
+				return 1;
+			}
+		}
+	}
+	return 0;
+}
+
+
 void CollisionMaster::render(glm::mat4 projection, Camera& camera, float deltaTime)
 {
 	this->particleMaster->update(deltaTime, camera);

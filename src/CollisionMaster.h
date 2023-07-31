@@ -1,6 +1,7 @@
 #pragma once
 #include  "PlaneMaster.h"
 #include "MissileMaster.h"
+#include "BulletMaster.h"
 #include "S400Master.h"
 #include "Planes.h"
 #include "Missile.h"
@@ -16,6 +17,10 @@ public:
 
 	void updateMissileCollision(PlaneMaster* planeMaster, MissileMaster* missileMaster);
 	void updateS400Collision(PlaneMaster* planeMaster, S400Master* missileMaster);
+	void updateBulletCollision(PlaneMaster* planeMaster, BulletMaster* bulletMaster);
+	int updateMMCollision(MissileMaster* missileMaster);
+	int updateSSCollision(S400Master* s400Master);
+
 	void render(glm::mat4 projection, Camera& camera, float deltaTime);
 
 
