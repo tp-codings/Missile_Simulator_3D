@@ -60,6 +60,13 @@ Simulation::Simulation(GLFWwindow* window, int WINDOW_WIDTH, int WINDOW_HEIGHT)
 	this->WINDOW_HEIGHT = WINDOW_HEIGHT;
 
 	this->terrain = new TerrainGenerator(R"(resources\textures\city_heightmap.png)");
+	this->planeMaster = new PlaneMaster();
+	this->missileMaster = new MissileMaster();
+	this->collisionMaster = new CollisionMaster();
+	this->torretMaster = new TorretMaster();
+	this->s400Master = new S400Master();
+	this->missileTruckMaster = new MissileTruckMaster();
+
 	this->initShader();
 	this->initVertices();
 	this->initVariables();
@@ -107,13 +114,19 @@ void Simulation::render()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	//Render
-	this->DrawSimulation();
-
 	this->DrawSkyBox();
 
 	this->terrain->render(this->deltaTime, this->projection, this->view);
-
+	this->planeMaster->render(this->projection, this->camera);
+	this->missileMaster->render(this->projection, this->camera);
 	this->particleMaster->render(this->projection, this->camera);
+	this->collisionMaster->render(this->projection, this->camera, this->deltaTime*this->timeFactor);
+	this->torretMaster->render(this->projection, this->camera);
+	this->s400Master->render(this->projection, this->camera);
+	this->missileTruckMaster->render(this->projection, this->camera);
+
+	this->DrawSimulation();
+
 
 	this->DrawScreen();
 
@@ -152,6 +165,7 @@ void Simulation::initVertices()
 	this->quadVertices = new float[6 * 4];
 
 	std::memcpy(this->quadVertices, qVertices, sizeof(qVertices));
+
 }
 
 void Simulation::initBuffer()
@@ -168,6 +182,22 @@ void Simulation::initBuffer()
 	//texture attribute
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 	glEnableVertexAttribArray(1);
+
+	//Ground Buffer
+	glGenVertexArrays(1, &this->groundVAO);
+	glGenBuffers(1, &this->groundVBO);
+	glBindVertexArray(this->groundVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, this->groundVBO);
+	//position attribute
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 36 * 8, this->groundVertices, GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+	//normal attribute
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3*sizeof(float)));
+	glEnableVertexAttribArray(1);
+	//textur attribute
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6* sizeof(float)));
+	glEnableVertexAttribArray(2);
 
 	//Screen Framebuffer
 	glGenFramebuffers(1, &this->framebuffer);
@@ -269,7 +299,7 @@ void Simulation::initParticleSystem()
 
 void Simulation::initPlanes()
 {
-	int amountPlanes = 4;
+	int amountPlanes = 2;
 	for (int i = 0; i < amountPlanes; i++) {
 		for (int j = 0; j < amountPlanes; j++) {
 			this->planes.push_back(new Planes(glm::vec3(-1000 + j * (rand() % 200 + -100), 500.0 + j * (rand() % 100 + 10), -1000.0 + i * (rand() % 200 - 1000)), glm::vec3(0.001, 0.0, 1.00), 70, glm::vec3(0.1)));
@@ -278,11 +308,13 @@ void Simulation::initPlanes()
 	this->rotSpeedX = 0.0f;
 	this->rotSpeedY = 0.0f;
 	this->rotSpeedZ = 0.0f;
+
+	this->planeMaster->addPlane(new Planes(glm::vec3(-100.0f, 7000.0f, -6100.0f), glm::vec3(0.001, 0.0, 1.00), 70, glm::vec3(0.1)));
 }
 
 void Simulation::initTorrets()
 {
-	int amnountTorrets = 4;
+	int amnountTorrets = 1;
 	for (int i = 0; i < amnountTorrets; i++) {
 		for (int j = 0; j < amnountTorrets; j++) {
 			glm::vec2 randomPos = glm::vec2(-10 + j * 50, 10.0f + i * 50);
@@ -291,7 +323,7 @@ void Simulation::initTorrets()
 			this->torrets.push_back(new Torret(glm::vec3(randomPos.x, height+1.5, randomPos.y)));
 		}
 	}
-	amnountTorrets = 4;
+	amnountTorrets = 1;
 	for (int i = 0; i < amnountTorrets; i++) {
 		for (int j = 0; j < amnountTorrets; j++) {
 			glm::vec2 randomPos = glm::vec2(-0 + j * 50, 10.0f + i * 50);
@@ -471,6 +503,7 @@ void Simulation::explosion(glm::vec3 pos, glm::vec3 direction, int spreadDiversi
 
 	}
 }
+
 unsigned int Simulation::loadTextures(const char* path)
 {
 	unsigned int textureID;
@@ -519,6 +552,14 @@ unsigned int Simulation::loadTextures(const char* path)
 
 void Simulation::updateSimulation()
 {
+	this->planeMaster->update(this->deltaTime * this->timeFactor, this->camera);
+	this->missileMaster->update(this->deltaTime * this->timeFactor, this->camera, this->planeMaster->getPlanes());
+	this->collisionMaster->updateMissileCollision(this->planeMaster, this->missileMaster);
+	this->collisionMaster->updateS400Collision(this->planeMaster, this->s400Master);
+	this->torretMaster->update(this->deltaTime * this->timeFactor, this->camera, this->planeMaster->getPlanes(), this->missileMaster);
+	this->s400Master->update(this->deltaTime * this->timeFactor, this->camera, this->planeMaster->getPlanes());
+	this->missileTruckMaster->update(this->deltaTime * this->timeFactor, this->camera, this->planeMaster->getPlanes(), this->s400Master, this->shootMissileTruck);
+
 	this->updatePlanes();
 	this->updateTorrets();
 	this->updateCruiseMissile();
@@ -530,7 +571,7 @@ void Simulation::updateSimulation()
 	this->updateHitMissile();
 	this->updateErasing();
 	this->updatePlaneHitsPlane();
-	this->particleMaster->update(this->deltaTime*this->timeFactor, &this->camera);
+	this->particleMaster->update(this->deltaTime*this->timeFactor, this->camera);
 
 
 	//this->explosion(glm::vec3(6.0f), glm::vec3(0.0f), 100, 0.001, 10, 1, 0.03f, 1.5f);
@@ -732,7 +773,7 @@ void Simulation::updateGunTower()
 		int nearest;
 		float nearestDistance = 1001;
 		glm::vec3 direction;
-		float rotSpeed = 0.1f;
+		float rotSpeed = 10.0f*this->deltaTime;
 
 		if (this->planes.size() > 0) {
 			std::tuple<int, float> result = this->updateNearestPlane(gunTowers[i]->getTower(), planes);
@@ -752,7 +793,7 @@ void Simulation::updateGunTower()
 					Particle* p = new Particle(ParticleTextureHandler(this->bullets, 4),
 						this->gunTowers[i]->getPosition() + glm::normalize(shootDirection) * (float)l,
 						gunTowers[i]->getSpeed() * glm::normalize(shootDirection),
-						0.01f,
+						0.1f,
 						5.0f,
 						0.0f,
 						0.5f);
@@ -946,7 +987,6 @@ void Simulation::updateErasing()
 
 void Simulation::DrawSimulation()
 {
-	//this->DrawGround();
 	this->DrawTorrets();
 	this->DrawPlanes();
 	this->DrawGunTower();
@@ -1157,8 +1197,7 @@ void Simulation::DrawText()
 	this->textRenderer->Draw(this->textShader, "Missiles: " + std::to_string(this->missiles.size()), this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 5 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 	this->textRenderer->Draw(this->textShader, "MissilesSelfDestruct: " + std::to_string(this->missilesSelfDestruct), this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 6 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 	this->textRenderer->Draw(this->textShader, "PlanesSelfDestruct: " + std::to_string(this->planesSelfDestruct), this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 7 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-	this->textRenderer->Draw(this->textShader, "ParticlesAlive: " + std::to_string(this->particleMaster->getParticlesAlive()), this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 8 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-	this->textRenderer->Draw(this->textShader, "Debug: " + this->debug, this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 9 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+	this->textRenderer->Draw(this->textShader, "Debug: " + this->debug, this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 8 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
 void Simulation::DrawSkyBox()

@@ -19,21 +19,21 @@
     <Filter Include="Quelldateien\Particles">
       <UniqueIdentifier>{efc21374-d1a0-4eff-b1b3-28b1295dc286}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Headerdateien\Particles">
+      <UniqueIdentifier>{2dc40a05-1684-4952-81f3-fc9cc8110c58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\Terrain">
+      <UniqueIdentifier>{be9bb57c-8782-4d41-bc73-f93e4f4b050e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\Engine">
+      <UniqueIdentifier>{cf049151-03bf-45da-9375-f3be6b14fb1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quelldateien\Engine">
+      <UniqueIdentifier>{0865ff97-f4d9-4c1a-a20f-daf7330f54d3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Missile_Simulator_3D.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="src\Simulation.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="src\stb_handler.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Engine.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="src\glad.c">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="imgui\imgui_tables.cpp">
@@ -81,11 +81,38 @@
     <ClCompile Include="src\ParticleTextureHandler.cpp">
       <Filter>Quelldateien\Particles</Filter>
     </ClCompile>
+    <ClCompile Include="src\Engine.cpp">
+      <Filter>Quelldateien\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="src\glad.c">
+      <Filter>Quelldateien\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="src\stb_handler.cpp">
+      <Filter>Quelldateien\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Missile_Simulator_3D.cpp">
+      <Filter>Quelldateien\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PlaneMaster.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MissileMaster.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CollisionMaster.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TorretMaster.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MissileTruckMaster.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\S400Master.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Engine.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="src\Simulation.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -98,28 +125,49 @@
     <ClInclude Include="src\Torret.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\Particle.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ParticleRenderer.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ParticleMaster.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="src\GunTower.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="src\ParticleMaster.h">
+      <Filter>Headerdateien\Particles</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ParticleRenderer.h">
+      <Filter>Headerdateien\Particles</Filter>
+    </ClInclude>
     <ClInclude Include="src\ParticleTextureHandler.h">
-      <Filter>Headerdateien</Filter>
+      <Filter>Headerdateien\Particles</Filter>
     </ClInclude>
-    <ClInclude Include="src\Loader.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="src\TerrrainGenerator.h">
-      <Filter>Headerdateien</Filter>
+    <ClInclude Include="src\Particle.h">
+      <Filter>Headerdateien\Particles</Filter>
     </ClInclude>
     <ClInclude Include="src\FastNoiseLite.h">
+      <Filter>Headerdateien\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TerrrainGenerator.h">
+      <Filter>Headerdateien\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine.h">
+      <Filter>Headerdateien\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Loader.h">
+      <Filter>Headerdateien\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\PlaneMaster.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\MissileMaster.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CollisionMaster.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TorretMaster.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\MissileTruckMaster.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\S400Master.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
