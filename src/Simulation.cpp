@@ -4,6 +4,10 @@
 
 Simulation::Simulation(GLFWwindow* window, int WINDOW_WIDTH, int WINDOW_HEIGHT)
 {
+	this->window = window;
+	this->WINDOW_WIDTH = WINDOW_WIDTH;
+	this->WINDOW_HEIGHT = WINDOW_HEIGHT;
+
 	this->init();
 
 	//ImGUI Setup
@@ -72,9 +76,6 @@ bool Simulation::getViewMode()
 
 void Simulation::init()
 {
-	this->window = window;
-	this->WINDOW_WIDTH = WINDOW_WIDTH;
-	this->WINDOW_HEIGHT = WINDOW_HEIGHT;
 	this->screenRenderer = new ScreenRenderer();
 	this->skybox = new Skybox();
 	this->loader = new Loader();

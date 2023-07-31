@@ -7,10 +7,11 @@
 
 class Helper {
 public:
-	Helper() {};
+	Helper() {
+	};
 
 private:
-
+	Loader* loader;
 };
 
 namespace Colors {

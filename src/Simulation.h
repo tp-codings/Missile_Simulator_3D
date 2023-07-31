@@ -114,12 +114,11 @@ private:
 
 	//Inits------------------------------------------------------------------------------
 
+	void init();
 	void initMaster();
 	void initBuffer();
-	void initVariables();
-
 	void initSettings();
-	void initText();
+	void initHUD();
 	void initMatrices();
 	void initPlanes();
 	void initTorrets();
@@ -127,7 +126,7 @@ private:
 
 	//Input------------------------------------------------------------------------------
 
-	void processInput(float deltaTime);
+	void processInput();
 
 	//Updates------------------------------------------------------------------------------
 
@@ -137,6 +136,6 @@ private:
 
 	void renderSimulation();
 	void renderSettings();
-	void renderText();
+	void renderHUD();
 };
 
