@@ -22,7 +22,12 @@ public:
 		this->initBuffer();
 
 		this->shader = Shader("Shader/terrain.vs", "Shader/terrain.fs");
+	}
+	TerrainGenerator(float ampltudeMultiplier, float width, float height) {
+		this->generatePerlinNoise(ampltudeMultiplier, width, height);
+		this->initBuffer();
 
+		this->shader = Shader("Shader/terrain.vs", "Shader/terrain.fs");
 	}
 
 	void render(float deltaTime, glm::mat4 projection, glm::mat4 view) {
@@ -123,17 +128,16 @@ private:
 		std::cout << "Created " << numStrips * numTrisPerStrip << " triangles total" << std::endl;
 	}
 
-	void generatePerlinNoise() {
+	void generatePerlinNoise(float amplitudeMultiplier, float width, float height) {
 		float yScale = 64.0f / 256.0f, yShift = 16.0f;
 		int rez = 1;
-		unsigned bytePerPixel = nrChannels;
+		unsigned bytePerPixel = 4;
 
 		// Erstellen und konfigurieren des Perlin Noise Generators
 		FastNoiseLite noise;
 		noise.SetNoiseType(FastNoiseLite::NoiseType_Perlin);
 		noise.SetFrequency(0.02f); // Ändere die Frequenz, um die Detailstufe des Geländes zu ändern
 		noise.SetFractalOctaves(4); // Ändere die Anzahl der Oktaven für mehr oder weniger Details
-		float amplitudeMultiplier = 200.0f; // Ändere diesen Wert, um die Höhen stärker auszuprägen
 
 		// Generiere Höhenwerte für das Terrain anhand von Perlin Noise
 		for (int i = 0; i < height; i++)

@@ -53,8 +53,6 @@
 #define NEON_BLUE glm::vec3(0.29f, 0.59f, 0.95f)
 #define NEON_PURPLE glm::vec3(0.67f, 0.29f, 0.95f)
 
-#define DIMENSION 1000.0f
-
 Simulation::Simulation(GLFWwindow* window, int WINDOW_WIDTH, int WINDOW_HEIGHT)
 {
 	this->window = window;
@@ -67,8 +65,6 @@ Simulation::Simulation(GLFWwindow* window, int WINDOW_WIDTH, int WINDOW_HEIGHT)
 	this->initVariables();
 	this->initModels();
 	this->initBuffer();
-
-
 
 	//ImGUI Setup
 	IMGUI_CHECKVERSION();
@@ -156,65 +152,6 @@ void Simulation::initVertices()
 	this->quadVertices = new float[6 * 4];
 
 	std::memcpy(this->quadVertices, qVertices, sizeof(qVertices));
-
-	float gVertices[] = {
-		// positions          // normals           // texture coords
-		// Bottom face
-		-DIMENSION, -0.5f, -DIMENSION,  0.0f, 1.0f,  0.0f,  0.0f,  0.0f,
-		 DIMENSION, -0.5f, -DIMENSION,  0.0f, 1.0f,  0.0f,  1.0f,  0.0f,
-		 DIMENSION, -0.5f,  DIMENSION,  0.0f, 1.0f,  0.0f,  1.0f,  1.0f,
-		 DIMENSION, -0.5f,  DIMENSION,  0.0f, 1.0f,  0.0f,  1.0f,  1.0f,
-		-DIMENSION, -0.5f,  DIMENSION,  0.0f, 1.0f,  0.0f,  0.0f,  1.0f,
-		-DIMENSION, -0.5f, -DIMENSION,  0.0f, 1.0f,  0.0f,  0.0f,  1.0f,
-
-		// Top face
-		-DIMENSION,  0.5f, -DIMENSION,  0.0f,  -1.0f,  0.0f,  0.0f,  0.0f,
-		 DIMENSION,  0.5f, -DIMENSION,  0.0f,  -1.0f,  0.0f,  1.0f,  0.0f,
-		 DIMENSION,  0.5f,  DIMENSION,  0.0f,  -1.0f,  0.0f,  1.0f,  1.0f,
-		 DIMENSION,  0.5f,  DIMENSION,  0.0f,  -1.0f,  0.0f,  1.0f,  1.0f,
-		-DIMENSION,  0.5f,  DIMENSION,  0.0f,  -1.0f,  0.0f,  0.0f,  1.0f,
-		-DIMENSION,  0.5f, -DIMENSION,  0.0f,  -1.0f,  0.0f,  0.0f,  1.0f,
-
-		// Front face
-		-DIMENSION, -0.5f, -DIMENSION,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
-		 DIMENSION, -0.5f, -DIMENSION,  0.0f,  0.0f, -1.0f,  1.0f,  0.0f,
-		 DIMENSION,  0.5f, -DIMENSION,  0.0f,  0.0f, -1.0f,  1.0f,  1.0f,
-		 DIMENSION,  0.5f, -DIMENSION,  0.0f,  0.0f, -1.0f,  1.0f,  1.0f,
-		-DIMENSION,  0.5f, -DIMENSION,  0.0f,  0.0f, -1.0f,  0.0f,  1.0f,
-		-DIMENSION, -0.5f, -DIMENSION,  0.0f,  0.0f, -1.0f,  0.0f,  1.0f,
-
-		// Back face
-		-DIMENSION, -0.5f,  DIMENSION,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,
-		 DIMENSION, -0.5f,  DIMENSION,  0.0f,  0.0f,  1.0f,  1.0f,  0.0f,
-		 DIMENSION,  0.5f,  DIMENSION,  0.0f,  0.0f,  1.0f,  1.0f,  1.0f,
-		 DIMENSION,  0.5f,  DIMENSION,  0.0f,  0.0f,  1.0f,  1.0f,  1.0f,
-		-DIMENSION,  0.5f,  DIMENSION,  0.0f,  0.0f,  1.0f,  0.0f,  1.0f,
-		-DIMENSION, -0.5f,  DIMENSION,  0.0f,  0.0f,  1.0f,  0.0f,  1.0f,
-
-		// Left face
-		-DIMENSION, -0.5f,  DIMENSION, -1.0f,  0.0f,  0.0f,  0.0f,  0.0f,
-		-DIMENSION, -0.5f, -DIMENSION, -1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
-		-DIMENSION,  0.5f, -DIMENSION, -1.0f,  0.0f,  0.0f,  1.0f,  1.0f,
-		-DIMENSION,  0.5f, -DIMENSION, -1.0f,  0.0f,  0.0f,  1.0f,  1.0f,
-		-DIMENSION,  0.5f,  DIMENSION, -1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
-		-DIMENSION, -0.5f,  DIMENSION, -1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
-
-		// Right face
-		 DIMENSION, -0.5f,  DIMENSION,  1.0f,  0.0f,  0.0f,  0.0f,  0.0f,
-		 DIMENSION, -0.5f, -DIMENSION,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
-		 DIMENSION,  0.5f, -DIMENSION,  1.0f,  0.0f,  0.0f,  1.0f,  1.0f,
-		 DIMENSION,  0.5f, -DIMENSION,  1.0f,  0.0f,  0.0f,  1.0f,  1.0f,
-		 DIMENSION,  0.5f,  DIMENSION,  1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
-		 DIMENSION, -0.5f,  DIMENSION,  1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
-	};
-
-
-
-
-	this->groundVertices = new float[36 * 8];
-
-	std::memcpy(this->groundVertices, gVertices, sizeof(gVertices));
-
 }
 
 void Simulation::initBuffer()
@@ -231,22 +168,6 @@ void Simulation::initBuffer()
 	//texture attribute
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 	glEnableVertexAttribArray(1);
-
-	//Ground Buffer
-	glGenVertexArrays(1, &this->groundVAO);
-	glGenBuffers(1, &this->groundVBO);
-	glBindVertexArray(this->groundVAO);
-	glBindBuffer(GL_ARRAY_BUFFER, this->groundVBO);
-	//position attribute
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 36 * 8, this->groundVertices, GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-	//normal attribute
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3*sizeof(float)));
-	glEnableVertexAttribArray(1);
-	//textur attribute
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6* sizeof(float)));
-	glEnableVertexAttribArray(2);
 
 	//Screen Framebuffer
 	glGenFramebuffers(1, &this->framebuffer);
@@ -275,7 +196,6 @@ void Simulation::initShader()
 	this->screenShader = Shader("Shader/screen.vs", "Shader/screen.fs");
 	this->textShader = Shader("Shader/text.vs", "Shader/text.fs");
 	this->cubeMapShader = Shader("Shader/cubemap.vs", "Shader/cubemap.fs");
-	this->groundShader = Shader("Shader/ground.vs", "Shader/ground.fs");
 	this->planeShader = Shader("Shader/plane.vs", "Shader/plane.fs");
 	this->missileShader = Shader("Shader/missile.vs", "Shader/missile.fs");
 	this->torretShader = Shader("Shader/torret.vs", "Shader/torret.fs");
@@ -349,7 +269,7 @@ void Simulation::initParticleSystem()
 
 void Simulation::initPlanes()
 {
-	int amountPlanes = 2;
+	int amountPlanes = 4;
 	for (int i = 0; i < amountPlanes; i++) {
 		for (int j = 0; j < amountPlanes; j++) {
 			this->planes.push_back(new Planes(glm::vec3(-1000 + j * (rand() % 200 + -100), 500.0 + j * (rand() % 100 + 10), -1000.0 + i * (rand() % 200 - 1000)), glm::vec3(0.001, 0.0, 1.00), 70, glm::vec3(0.1)));
@@ -362,7 +282,7 @@ void Simulation::initPlanes()
 
 void Simulation::initTorrets()
 {
-	int amnountTorrets = 1;
+	int amnountTorrets = 4;
 	for (int i = 0; i < amnountTorrets; i++) {
 		for (int j = 0; j < amnountTorrets; j++) {
 			glm::vec2 randomPos = glm::vec2(-10 + j * 50, 10.0f + i * 50);
@@ -371,7 +291,7 @@ void Simulation::initTorrets()
 			this->torrets.push_back(new Torret(glm::vec3(randomPos.x, height+1.5, randomPos.y)));
 		}
 	}
-	amnountTorrets = 1;
+	amnountTorrets = 4;
 	for (int i = 0; i < amnountTorrets; i++) {
 		for (int j = 0; j < amnountTorrets; j++) {
 			glm::vec2 randomPos = glm::vec2(-0 + j * 50, 10.0f + i * 50);
@@ -594,6 +514,7 @@ unsigned int Simulation::loadTextures(const char* path)
 	return textureID;
 
 }
+
 //Updates------------------------------------------------------------------------------
 
 void Simulation::updateSimulation()
@@ -661,7 +582,7 @@ void Simulation::updateMissiles()
 		int spreadFactor = 5;
 		float spread = 0.05;
 
-		for (int m = 1; m < 20; m++) {
+		for (int m = 1; m < 4; m++) {
 			glm::vec3 vel = this->missiles[i]->getVelocity();
 			float speed = sqrt(vel.x * vel.x + vel.y * vel.y + vel.z * vel.z);
 
@@ -736,7 +657,7 @@ void Simulation::updateCruiseMissile()
 			}
 			int spreadFactor = 5;
 			float spread = 0.05;
-			for (int m = 1; m < 25; m++) {
+			for (int m = 1; m < 4; m++) {
 				glm::vec3 vel = this->cruiseMissiles[i]->getVelocity();
 				float speed = sqrt(vel.x * vel.x + vel.y * vel.y + vel.z * vel.z);
 
@@ -819,7 +740,7 @@ void Simulation::updateGunTower()
 			nearestDistance = std::get<1>(result);
 
 			direction = glm::normalize(planes[nearest]->getPosition() - this->gunTowers[i]->getPosition());
-			float holdUpFactor = 0.2f;
+			float holdUpFactor = 0.09f;
 			glm::vec3 shootDirection = direction + this->planes[nearest]->getDirection() * holdUpFactor;
 
 			this->gunTowers[i]->setDirection(glm::vec3(this->gunTowers[i]->getDirection().x + shootDirection.x * rotSpeed, 0.0f, this->gunTowers[i]->getDirection().z + shootDirection.z * rotSpeed));
@@ -831,7 +752,7 @@ void Simulation::updateGunTower()
 					Particle* p = new Particle(ParticleTextureHandler(this->bullets, 4),
 						this->gunTowers[i]->getPosition() + glm::normalize(shootDirection) * (float)l,
 						gunTowers[i]->getSpeed() * glm::normalize(shootDirection),
-						0.1f,
+						0.01f,
 						5.0f,
 						0.0f,
 						0.5f);
@@ -985,7 +906,7 @@ void Simulation::updateCrashingPlanes()
 			this->eraseCrashedPlanes.insert(i);
 			this->explosion(this->crashingPlanes[i]->getPosition(), this->crashingPlanes[i]->getDirection(), 1000, 0.002, 1000, 100, 0.001f, 3.0f);
 		}
-		if (crashingPlanes[i]->getPosition().y < 0) {
+		else if (crashingPlanes[i]->getPosition().y < 0) {
 			this->eraseCrashedPlanes.insert(i);
 			this->explosion(this->crashingPlanes[i]->getPosition(), -this->crashingPlanes[i]->getDirection(), 1000, 0.002, 1000, 100, 0.09, 3.0f);
 
@@ -1031,21 +952,6 @@ void Simulation::DrawSimulation()
 	this->DrawGunTower();
 	this->DrawMissiles();
 	
-	glBindVertexArray(0);
-}
-
-void Simulation::DrawGround()
-{
-	this->groundShader.use();
-
-	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(0.0f, -1.0f, 0.0f));
-	this->groundShader.setMat4("model", model);
-	this->groundShader.setMat4("view", this->view);
-	this->groundShader.setMat4("projection", this->projection);
-	this->groundShader.setVec3("viewPos", this->camera.Position);
-	glBindVertexArray(this->groundVAO);
-	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glBindVertexArray(0);
 }
 

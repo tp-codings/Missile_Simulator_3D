@@ -60,7 +60,6 @@ private:
 	Shader screenShader;
 	Shader textShader;
 	Shader cubeMapShader;
-	Shader groundShader;
 	Shader planeShader;
 	Shader missileShader;
 	Shader torretShader;
@@ -100,7 +99,6 @@ private:
 	vector<Planes*>crashingPlanes;
 
 	vector<Missile*>missiles;
-
 	vector<Missile*>cruiseMissiles;
 
 	vector<Torret*> torrets;
@@ -150,12 +148,8 @@ private:
 	unsigned int texColorBuffer;
 	unsigned int rbo;
 
-	unsigned int groundVAO;
-	unsigned int groundVBO;
-
 	//Vertices
 	float* quadVertices;
-	float* groundVertices;
 
 	//Skybox
 	Skybox *oceanBox;
@@ -248,7 +242,6 @@ private:
 	//Rendering------------------------------------------------------------------------------
 
 	void DrawSimulation();
-	void DrawGround();
 	void DrawPlanes();
 	void DrawMissiles();
 	void DrawTorrets();
