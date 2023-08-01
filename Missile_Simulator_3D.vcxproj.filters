@@ -120,6 +120,9 @@
     <ClCompile Include="src\ScreenRenderer.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="src\RangeRenderer.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Simulation.h">
@@ -191,6 +194,9 @@
     <ClInclude Include="src\Helper.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="src\RangeRenderer.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\cubemap.fs">
@@ -257,6 +263,12 @@
       <Filter>Ressourcendateien</Filter>
     </None>
     <None Include="Shader\terrain.vs">
+      <Filter>Ressourcendateien</Filter>
+    </None>
+    <None Include="Shader\range.vs">
+      <Filter>Ressourcendateien</Filter>
+    </None>
+    <None Include="Shader\range.fs">
       <Filter>Ressourcendateien</Filter>
     </None>
   </ItemGroup>

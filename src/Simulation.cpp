@@ -117,6 +117,8 @@ void Simulation::initSettings()
 	this->dirLightPos = glm::vec3(glm::vec3(-0.5, 0.7, -1.0) * 40.f);
 	this->startKeyPressed = false;
 	this->settingsKeyPressed = false;
+	this->rangeKeyPressed = false;
+	this->showRange = false;
 	this->shootGunTower = false;
 	this->shootMissileTruck = false;
 	this->timeFactor = 1.0f;
@@ -194,6 +196,15 @@ void Simulation::processInput()
 	{
 		this->startKeyPressed = false;
 	}
+	if (glfwGetKey(this->window, GLFW_KEY_R) == GLFW_PRESS && !this->rangeKeyPressed)
+	{
+		this->showRange = !this->showRange;
+		this->rangeKeyPressed = true;
+	}
+	if (glfwGetKey(this->window, GLFW_KEY_R) == GLFW_RELEASE)
+	{
+		this->rangeKeyPressed = false;
+	}
 	if (glfwGetKey(this->window, GLFW_KEY_4) == GLFW_PRESS)
 	{
 		this->skyBoxChoice = 4;
@@ -256,7 +267,7 @@ void Simulation::renderSimulation()
 	this->planeMaster->render(this->projection, this->camera);
 	this->missileMaster->render(this->projection, this->camera);
 	this->collisionMaster->render(this->projection, this->camera, this->deltaTime * this->timeFactor);
-	this->torretMaster->render(this->projection, this->camera);
+	this->torretMaster->render(this->projection, this->camera, this->showRange);
 	this->s400Master->render(this->projection, this->camera);
 	this->missileTruckMaster->render(this->projection, this->camera);
 	this->gunTowerMaster->render(this->projection, this->camera);

@@ -160,6 +160,7 @@
     <ClCompile Include="src\ParticleTextureHandler.cpp" />
     <ClCompile Include="src\PlaneMaster.cpp" />
     <ClCompile Include="src\Planes.cpp" />
+    <ClCompile Include="src\RangeRenderer.cpp" />
     <ClCompile Include="src\S400Master.cpp" />
     <ClCompile Include="src\ScreenRenderer.cpp" />
     <ClCompile Include="src\Simulation.cpp" />
@@ -185,6 +186,7 @@
     <ClInclude Include="src\ParticleTextureHandler.h" />
     <ClInclude Include="src\PlaneMaster.h" />
     <ClInclude Include="src\Planes.h" />
+    <ClInclude Include="src\RangeRenderer.h" />
     <ClInclude Include="src\S400Master.h" />
     <ClInclude Include="src\ScreenRenderer.h" />
     <ClInclude Include="src\Simulation.h" />
@@ -205,6 +207,8 @@
     <None Include="Shader\particle.vs" />
     <None Include="Shader\plane.fs" />
     <None Include="Shader\plane.vs" />
+    <None Include="Shader\range.fs" />
+    <None Include="Shader\range.vs" />
     <None Include="Shader\screen.fs" />
     <None Include="Shader\screen.vs" />
     <None Include="Shader\sun.fs" />

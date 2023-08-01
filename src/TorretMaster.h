@@ -10,6 +10,8 @@
 #include "MissileMaster.h"
 #include "Loader.h"
 
+#include "RangeRenderer.h"
+
 class TorretMaster
 {
 public:
@@ -17,12 +19,13 @@ public:
 
 	void update(float deltaTime, Camera& camera, std::vector<Planes*> planes, MissileMaster* missileMaster);
 
-	void render(glm::mat4 projection, Camera& camera);
+	void render(glm::mat4 projection, Camera& camera, bool showRange);
 
 	void addTorrets(Torret* torret);
 
 private:
 	ParticleMaster* particleMaster;
+	RangeRenderer* rangeRenderer;
 	std::vector<Torret*> torrets;
 
 	ModelHandler* torretModel;

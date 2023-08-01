@@ -98,6 +98,8 @@ private:
 
 	bool startKeyPressed;
 	bool settingsKeyPressed;
+	bool rangeKeyPressed;
+	bool showRange;
 	bool shootGunTower;
 	bool shootMissileTruck;
 

@@ -10,6 +10,8 @@ TorretMaster::TorretMaster()
 	this->particleMaster = new ParticleMaster();
 	this->particleAtlas = loader.loadTextures(R"(resources/textures/particleAtlas.png)");
 
+	this->rangeRenderer = new RangeRenderer(1300.0f);
+
 	this->torretShader = Shader("Shader/torret.vs", "Shader/torret.fs");
 	this->missileShader = Shader("Shader/missile.vs", "Shader/missile.fs");
 }
@@ -44,9 +46,10 @@ void TorretMaster::update(float deltaTime, Camera& camera, std::vector<Planes*> 
 			missileMaster->addMissile(this->torrets[i]->getMissile());
 		}
 	}
+	//this->rangeRenderer->update(1300.0f);
 }
 
-void TorretMaster::render(glm::mat4 projection, Camera& camera)
+void TorretMaster::render(glm::mat4 projection, Camera& camera, bool showRange)
 {
 	glm::mat4 view = camera.GetViewMatrix();
 
@@ -66,6 +69,9 @@ void TorretMaster::render(glm::mat4 projection, Camera& camera)
 			this->missileModel->Rotate(i->getMissile()->getRotationAngle(), i->getMissile()->getRotationAxis());
 			this->missileModel->Draw(&this->missileShader, projection, view, i->getColor());
 		}
+	}
+	if (showRange) {
+		this->rangeRenderer->render(projection, camera);
 	}
 }
 
