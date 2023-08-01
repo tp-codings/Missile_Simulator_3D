@@ -148,6 +148,8 @@
     <ClCompile Include="src\CollisionMaster.cpp" />
     <ClCompile Include="src\Engine.cpp" />
     <ClCompile Include="src\glad.c" />
+    <ClCompile Include="src\InputController.cpp" />
+    <ClCompile Include="src\Settings.cpp" />
     <ClCompile Include="src\GunTower.cpp" />
     <ClCompile Include="src\GunTowerMaster.cpp" />
     <ClCompile Include="src\Missile.cpp" />
@@ -173,6 +175,8 @@
     <ClInclude Include="src\CollisionMaster.h" />
     <ClInclude Include="src\Engine.h" />
     <ClInclude Include="src\FastNoiseLite.h" />
+    <ClInclude Include="src\InputController.h" />
+    <ClInclude Include="src\Settings.h" />
     <ClInclude Include="src\GunTower.h" />
     <ClInclude Include="src\GunTowerMaster.h" />
     <ClInclude Include="src\Helper.h" />

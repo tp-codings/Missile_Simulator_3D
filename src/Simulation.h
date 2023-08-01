@@ -37,6 +37,8 @@
 #include "BulletMaster.h"
 
 #include "ScreenRenderer.h"
+#include "Settings.h"
+#include "InputController.h"
 
 class Simulation
 {
@@ -69,7 +71,6 @@ private:
 	//TIMING
 	float deltaTime;
 	float FPS;
-	float timeFactor;
 
 	//Debug
 	int missilesSelfDestruct = 0;
@@ -91,20 +92,8 @@ private:
 	Camera camera;
 
 	//Settings
-	float cameraSpeed;
-
-	bool viewMode;
-	bool start;
-
-	bool startKeyPressed;
-	bool settingsKeyPressed;
-	bool rangeKeyPressed;
-	bool showRange;
-	bool shootGunTower;
-	bool shootMissileTruck;
-
-	ImVec4 dirLightColor;
-	glm::vec3 dirLightPos;
+	Settings* settings;
+	InputController* inputController;
 
 	unsigned int framebuffer;
 	unsigned int texColorBuffer;
@@ -112,7 +101,6 @@ private:
 
 	//Skybox
 	Skybox* skybox;
-	int skyBoxChoice;
 
 	//Inits------------------------------------------------------------------------------
 
@@ -126,10 +114,6 @@ private:
 	void initTorrets();
 	void initGunTower();
 
-	//Input------------------------------------------------------------------------------
-
-	void processInput();
-
 	//Updates------------------------------------------------------------------------------
 
 	void updateSimulation();
@@ -137,7 +121,6 @@ private:
 	//Rendering------------------------------------------------------------------------------
 
 	void renderSimulation();
-	void renderSettings();
 	void renderHUD();
 };
 
