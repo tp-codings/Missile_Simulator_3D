@@ -63,7 +63,7 @@ void S400Master::update(float deltaTime, Camera& camera, std::vector<Planes*> pl
 			}
 			int spreadFactor = 5;
 			float spread = 0.05;
-			for (int m = 1; m < 25; m++) {
+			for (int m = 1; m < 10; m++) {
 				glm::vec3 vel = this->s400[i]->getVelocity();
 				float speed = sqrt(vel.x * vel.x + vel.y * vel.y + vel.z * vel.z);
 
@@ -71,7 +71,7 @@ void S400Master::update(float deltaTime, Camera& camera, std::vector<Planes*> pl
 					ParticleTextureHandler(this->particleAtlas, 4),
 					this->s400[i]->getPosition() - glm::normalize(this->s400[i]->getDirection()) * speed * deltaTime * (float)(1 / m),
 					0.2f * -glm::normalize(glm::vec3(this->s400[i]->getDirection().x + spread * (rand() % spreadFactor - (spreadFactor / 2)), this->s400[i]->getDirection().y + spread * (rand() % spreadFactor - (spreadFactor / 2)), this->s400[i]->getDirection().z + spread * (rand() % spreadFactor - (spreadFactor / 2)) / 10)),
-					0.01, (rand() % 40 + 10) / 20, 0, 1.5));
+					0.01, (rand() % 40 + 10) / 20, 0, 5.5));
 			}
 		}
 
@@ -83,15 +83,15 @@ void S400Master::update(float deltaTime, Camera& camera, std::vector<Planes*> pl
 			this->eraseS400.insert(i);
 			this->explosion(this->s400[i]->getPosition(), this->s400[i]->getDirection(), 1000, 0.001, 150, 70, 0.09, 2.0f);
 		}
-		CameraMaster::update(this->camKey[i], glm::vec3(this->s400[i]->getPosition().x+5.0f, this->s400[i]->getPosition().y+5.0f, this->s400[i]->getPosition().z), this->s400[i]->getRotationAxis(), this->s400[i]->getRotationAngle());
+		CameraMaster::update(this->camKeys[i], glm::vec3(this->s400[i]->getPosition().x+5.0f, this->s400[i]->getPosition().y+5.0f, this->s400[i]->getPosition().z), this->s400[i]->getRotationAxis(), this->s400[i]->getRotationAngle());
 	}
 
 
 	if (this->eraseS400.size() > 0) {
 		for (auto it = this->eraseS400.rbegin(); it != this->eraseS400.rend(); ++it) {
 			this->s400.erase(this->s400.begin() + *it);
-			CameraMaster::removeCamera(*(this->camKey.begin() + *it));
-			this->camKey.erase(this->camKey.begin() + *it);
+			CameraMaster::removeCamera(*(this->camKeys.begin() + *it));
+			this->camKeys.erase(this->camKeys.begin() + *it);
 		}
 		this->eraseS400.clear();
 	}
@@ -116,7 +116,7 @@ void S400Master::render(glm::mat4 projection, Camera& camera)
 void S400Master::addS400(Missile* missile)
 {
 	this->s400.push_back(missile);
-	this->camKey.push_back(CameraMaster::addCamera(new Camera(missile->getPosition())));
+	this->camKeys.push_back(CameraMaster::addCamera(new Camera(missile->getPosition())));
 }
 
 

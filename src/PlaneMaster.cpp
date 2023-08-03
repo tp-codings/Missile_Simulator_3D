@@ -18,7 +18,7 @@ void PlaneMaster::update(float deltaTime, Camera& camera)
 
 		int spreadFactor = 5;
 		float spread = 0.1;
-		this->particleMaster->addParticle(new Particle(ParticleTextureHandler(this->particleAtlas, 4), i->getPosition() - 10.0f * i->getDirection(), 0.2f * -glm::normalize(glm::vec3(i->getDirection().x + spread * (rand() % spreadFactor - (spreadFactor / 2)), i->getDirection().y + spread * (rand() % spreadFactor - (spreadFactor / 2)), i->getDirection().z + spread * (rand() % spreadFactor - (spreadFactor / 2)))), 0.001, (rand() % 40 + 10) / 20, 0, 0.5));
+		this->particleMaster->addParticle(new Particle(ParticleTextureHandler(this->particleAtlas, 4), i->getPosition() - 10.0f * i->getDirection(), 0.2f * -glm::normalize(glm::vec3(i->getDirection().x + spread * (rand() % spreadFactor - (spreadFactor / 2)), i->getDirection().y + spread * (rand() % spreadFactor - (spreadFactor / 2)), i->getDirection().z + spread * (rand() % spreadFactor - (spreadFactor / 2)))), 0.001, (rand() % 40 + 10) / 20, 0, 2.5));
 	}
 
 	if (erasePlanes.size() > 0) {

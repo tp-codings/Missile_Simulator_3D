@@ -77,7 +77,7 @@ public:
     }
 
     void setRotationAxis(glm::vec3 rotationAxis) {
-        this->rotationAxis = rotationAxis;
+        this->rotationAxis = -rotationAxis;
     }
 
     void setTranslation(glm::vec3 translation) {

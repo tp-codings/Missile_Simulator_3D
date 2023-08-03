@@ -149,6 +149,7 @@
     <ClCompile Include="src\CollisionMaster.cpp" />
     <ClCompile Include="src\Engine.cpp" />
     <ClCompile Include="src\glad.c" />
+    <ClCompile Include="src\Helper.cpp" />
     <ClCompile Include="src\InputController.cpp" />
     <ClCompile Include="src\Settings.cpp" />
     <ClCompile Include="src\GunTower.cpp" />
@@ -168,6 +169,7 @@
     <ClCompile Include="src\ScreenRenderer.cpp" />
     <ClCompile Include="src\Simulation.cpp" />
     <ClCompile Include="src\stb_handler.cpp" />
+    <ClCompile Include="src\TerrrainGenerator.cpp" />
     <ClCompile Include="src\Torret.cpp" />
     <ClCompile Include="src\TorretMaster.cpp" />
   </ItemGroup>

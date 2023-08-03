@@ -61,11 +61,15 @@ void MissileMaster::update(float deltaTime, Camera& camera, std::vector<Planes *
 			this->eraseMissiles.insert(i);
 			this->explosion(this->missiles[i]->getPosition(), this->missiles[i]->getDirection(), 1000, 0.001, 150, 70, 0.09, 0.5);
 		}
+		CameraMaster::update(this->camKeys[i], glm::vec3(this->missiles[i]->getPosition().x + 5.0f, this->missiles[i]->getPosition().y + 5.0f, this->missiles[i]->getPosition().z), this->missiles[i]->getRotationAxis(), this->missiles[i]->getRotationAngle());
+
 	}
 
 	if (eraseMissiles.size() > 0) {
 		for (auto it = eraseMissiles.rbegin(); it != eraseMissiles.rend(); ++it) {
 			this->missiles.erase(this->missiles.begin() + *it);
+			CameraMaster::removeCamera(*(this->camKeys.begin() + *it));
+			this->camKeys.erase(this->camKeys.begin() + *it);
 		}
 		this->eraseMissiles.clear();
 	}
@@ -89,6 +93,7 @@ void MissileMaster::render(glm::mat4 projection, Camera& camera)
 void MissileMaster::addMissile(Missile* missile)
 {
 	this->missiles.push_back(missile);
+	this->camKeys.push_back(CameraMaster::addCamera(new Camera(missile->getPosition())));
 }
 
 std::vector<Missile*> MissileMaster::getMissiles()

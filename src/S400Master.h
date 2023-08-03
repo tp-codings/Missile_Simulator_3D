@@ -43,6 +43,6 @@ private:
 
 	void explosion(glm::vec3 pos, glm::vec3 direction, int spreadDiversity, float spreadFactor, int amount, int maxDuration, float gravityImpact, float scale);
 
-	std::vector<int> camKey;
+	std::vector<int> camKeys;
 
 };

@@ -1,4 +1,5 @@
 #include "InputController.h"
+#include <iostream>
 
 InputController::InputController(GLFWwindow* window):window(window)
 {
@@ -45,6 +46,15 @@ void InputController::update()
 	{
 		rangeKeyPressed = false;
 	}
+	if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS && !camChoicePressed)
+	{
+		camChoice++;
+		camChoicePressed = true;
+	}
+	if (glfwGetKey(window, GLFW_KEY_C) == GLFW_RELEASE)
+	{
+		camChoicePressed = false;
+	}
 	if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS)
 	{
 		Settings::skyBoxChoice = 4;
@@ -74,6 +84,7 @@ void InputController::update()
 	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS && !shootMissileTruck) {
 		shootMissileTruck = true;
 	}
+
 }
 
 bool InputController::startKeyPressed = false;
@@ -81,3 +92,5 @@ bool InputController::settingsKeyPressed = false;
 bool InputController::rangeKeyPressed = false;
 bool InputController::shootGunTower = false;
 bool InputController::shootMissileTruck = false;
+bool InputController::camChoicePressed = false;
+int InputController::camChoice = 0;

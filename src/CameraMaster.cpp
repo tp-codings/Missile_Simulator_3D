@@ -1,5 +1,7 @@
 #include "CameraMaster.h"
 #include <iostream>
+#include <algorithm>
+
 CameraMaster::CameraMaster()
 {
 }
@@ -18,17 +20,36 @@ void CameraMaster::removeCamera(int key)
 
 void CameraMaster::update(int key, glm::vec3 translation, glm::vec3 rotationAxis, float rotationAngle)
 {
-	if (key < cameras.size()) {
-		cameras[key]->setTranslation(translation);
-		cameras[key]->setRotationAngle(rotationAngle);
-		cameras[key]->setRotationAxis(rotationAxis);
-	}
+    if (key < cameras.size()) {
+        cameras[key]->setTranslation(translation);
+        cameras[key]->setRotationAngle(rotationAngle);
+        cameras[key]->setRotationAxis(rotationAxis);
+    }
 
-	if (eraseCameras.size() > 0) {
-		for (auto it = eraseCameras.rbegin(); it != eraseCameras.rend(); ++it) {
-			cameras.erase(cameras.begin() + *it);
-		}
-		eraseCameras.clear();
+    if (!eraseCameras.empty()) {
+        std::vector<int> keysToRemove;
+        for (int eraseKey : eraseCameras) {
+            if (eraseKey < cameras.size()) {
+                keysToRemove.push_back(eraseKey);
+            }
+        }
+
+        // Sort the keys in reverse order
+        std::sort(keysToRemove.rbegin(), keysToRemove.rend());
+
+        // Erase elements from cameras vector
+        for (int eraseKey : keysToRemove) {
+            cameras.erase(cameras.begin() + eraseKey);
+        }
+
+        eraseCameras.clear();
+    }
+}
+
+void CameraMaster::updateCamSpeed(int key, float camSpeed)
+{
+	if (key < cameras.size()) {
+		cameras[key]->setSpeed(camSpeed);
 	}
 }
 

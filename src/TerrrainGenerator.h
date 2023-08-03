@@ -64,6 +64,12 @@ public:
 		return y;
 	}
 
+	int getWidth() {
+		return this->width;
+	}
+
+	int getHeight() { return this->height; }
+
 private:
 	Shader shader;
 	int width, height, nrChannels;

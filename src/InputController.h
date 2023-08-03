@@ -12,6 +12,9 @@ public:
 	static bool rangeKeyPressed;
 	static bool shootGunTower;
 	static bool shootMissileTruck;
+	static bool camChoicePressed;
+	static int camChoice;
+
 
 	void update();
 

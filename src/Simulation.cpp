@@ -14,6 +14,7 @@ Simulation::Simulation(GLFWwindow* window, int WINDOW_WIDTH, int WINDOW_HEIGHT)
 
 void Simulation::update(float deltaTime, int FPS, Camera camera)
 {
+
 	//Update Timing
 	this->deltaTime = deltaTime;
 	this->FPS = FPS;
@@ -24,9 +25,14 @@ void Simulation::update(float deltaTime, int FPS, Camera camera)
 	this->projection = glm::perspective(glm::radians(this->camera.Zoom), (float)this->WINDOW_WIDTH / (float)this->WINDOW_HEIGHT, 0.1f, 100000.0f);
 	this->view = this->camera.GetViewMatrix();
 
-	if (CameraMaster::getCameras().size() > 0) {
-		this->camera = *CameraMaster::getCameras()[0];
-		this->view = this->camera.GetViewMatrix();
+	if (InputController::camChoice > 0 && CameraMaster::getCameras().size() > 0) {
+		if (InputController::camChoice > CameraMaster::getCameras().size()) {
+			InputController::camChoice = 0;
+		}
+		else {
+			this->camera = *CameraMaster::getCameras()[InputController::camChoice-1];
+			this->view = this->camera.GetViewMatrix();
+		}
 	}
 
 	this->inputController->update();
@@ -131,19 +137,26 @@ void Simulation::initMatrices()
 
 void Simulation::initPlanes()
 {
-	this->planeMaster->addPlane(new Planes(glm::vec3(-100.0f, 7000.0f, -6100.0f), glm::vec3(0.001, 0.0, 1.00), 70, Colors::BLUE));
-	this->planeMaster->addPlane(new Planes(glm::vec3(-100.0f, 1000.0f, -1100.0f), glm::vec3(0.001, 0.0, 1.00), 70, Colors::RED));
-	this->planeMaster->addPlane(new Planes(glm::vec3(-50.0f, 1000.0f, -1100.0f), glm::vec3(0.001, 0.0, 1.00), 70, Colors::BLUE));
+	int amount = rand()%10 + 5;
+
+	for (int i = 0; i < amount; i++) {
+		this->planeMaster->addPlane(new Planes(Helper::getRandomPlanePosition(this->terrain), Helper::getRandomDirection(), 70, Colors::WHITE));
+	}
 }
 
 void Simulation::initTorrets()
 {
-	this->torretMaster->addTorrets(new Torret(glm::vec3(40.0f)));
+	int amount = rand() % 10 + 5;
 
-	glm::vec2 randomPos = glm::vec2(-10, 10.0f);
-	float height = this->terrain->getHeightAtPosition(randomPos.x, randomPos.y);
+	for (int i = 0; i < amount; i++) {
+		this->torretMaster->addTorrets(new Torret(Helper::getRandomPosition(this->terrain)));
+	}
 
-	this->missileTruckMaster->addMissileTrucks(new Torret(glm::vec3(randomPos.x, height + 1.5, randomPos.y)));
+	amount = rand() % 60 + 20;
+
+	for (int i = 0; i < amount; i++) {
+		this->missileTruckMaster->addMissileTrucks(new Torret(Helper::getRandomPosition(this->terrain)));
+	}
 }
 
 void Simulation::initGunTower()

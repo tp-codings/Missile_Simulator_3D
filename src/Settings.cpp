@@ -101,9 +101,9 @@ void Settings::init()
 
 bool Settings::viewMode = true;
 bool Settings::start = false;
-float Settings::cameraSpeed = 100.0f;
+float Settings::cameraSpeed = 600.0f;
 float Settings::timeFactor = 1.0f;
-int Settings::skyBoxChoice = 1;
+int Settings::skyBoxChoice = 4;
 bool Settings::showRange = false;
 ImVec4 Settings::dirLightColor = ImVec4(1.0, 1.0, 1.0, 1.0);
 const char* Settings::camMode = "MAIN";

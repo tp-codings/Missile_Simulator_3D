@@ -31,6 +31,8 @@ private:
 
 	set<int> eraseMissiles;
 
+	std::vector<int> camKeys;					 // Key for identifying corresponding camera in CameraMaster
+
 	ModelHandler* model;
 	unsigned int particleAtlas;
 	Shader shader;

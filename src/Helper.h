@@ -2,13 +2,24 @@
 #include <map>
 #include <string>
 #include <glm/glm.hpp>
+#include <glm/gtc/random.hpp>
 #include "Loader.h"
+#include "TerrrainGenerator.h"
+#include <random>
+
+
 
 
 class Helper {
 public:
 	Helper() {
 	};
+
+	static glm::vec3 getRandomPosition(TerrainGenerator* terrain);
+
+	static glm::vec3 getRandomPlanePosition(TerrainGenerator* terrain);
+
+	static glm::vec3 getRandomDirection();
 
 private:
 	Loader* loader;
