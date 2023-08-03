@@ -34,7 +34,32 @@ void Settings::render()
         if (ImGui::Button(play)) {
             start = !start;
         }
-        ImGui::SliderFloat("Timefactor", &timeFactor, 0.0f, 1.0f);
+
+        ImGui::SameLine();
+        const char* range = "Show Range";
+        if (showRange) {
+            range = "Hide Range";
+        }
+        if (ImGui::Button(range)) {
+            showRange = !showRange;
+        }
+
+        ImGui::SameLine();
+        const char* cam = camMode;
+        if (camMode=="MAIN") {
+            cam = "S400";
+        }
+        if (ImGui::Button(cam)) {
+            if (camMode == "MAIN") {
+                camMode = "S400";
+            }
+            else if (camMode == "S400") {
+                camMode = "MAIN";
+            }
+          
+        }
+
+        ImGui::SliderFloat("Timefactor", &timeFactor, 0.0f, 2.0f);
 
         if (ImGui::Button("Ocean")) {
             skyBoxChoice = 1;
@@ -81,3 +106,4 @@ float Settings::timeFactor = 1.0f;
 int Settings::skyBoxChoice = 1;
 bool Settings::showRange = false;
 ImVec4 Settings::dirLightColor = ImVec4(1.0, 1.0, 1.0, 1.0);
+const char* Settings::camMode = "MAIN";

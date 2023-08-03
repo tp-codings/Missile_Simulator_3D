@@ -65,12 +65,27 @@ public:
     // returns the view matrix calculated using Euler Angles and the LookAt Matrix
     glm::mat4 GetViewMatrix()
     {
-        return glm::lookAt(Position, Position + Front, Up);
+        glm::mat4 look = glm::lookAt(Position, Position + Front, Up);
+        look = glm::rotate(look, this->rotationAngle, this->rotationAxis);
+        look = glm::translate(look, this->translation);
+        return look;
     }
 
     void setSpeed(float speed)
     {
         MovementSpeed = speed;
+    }
+
+    void setRotationAxis(glm::vec3 rotationAxis) {
+        this->rotationAxis = rotationAxis;
+    }
+
+    void setTranslation(glm::vec3 translation) {
+        this->translation = -translation;
+    }
+
+    void setRotationAngle(float rotationAngle) {
+        this->rotationAngle = rotationAngle;
     }
 
     // processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
@@ -137,5 +152,10 @@ private:
         Right = glm::normalize(glm::cross(Front, WorldUp));  // normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
         Up = glm::normalize(glm::cross(Right, Front));
     }
+
+
+    glm::vec3 translation = glm::vec3(0.0f);
+    glm::vec3 rotationAxis = glm::vec3(0.0f, 1.0, 0.0);
+    float rotationAngle = 0.0f;
 };
 #endif

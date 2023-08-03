@@ -83,14 +83,20 @@ void S400Master::update(float deltaTime, Camera& camera, std::vector<Planes*> pl
 			this->eraseS400.insert(i);
 			this->explosion(this->s400[i]->getPosition(), this->s400[i]->getDirection(), 1000, 0.001, 150, 70, 0.09, 2.0f);
 		}
+		CameraMaster::update(this->camKey[i], glm::vec3(this->s400[i]->getPosition().x+5.0f, this->s400[i]->getPosition().y+5.0f, this->s400[i]->getPosition().z), this->s400[i]->getRotationAxis(), this->s400[i]->getRotationAngle());
 	}
+
+
 	if (this->eraseS400.size() > 0) {
 		for (auto it = this->eraseS400.rbegin(); it != this->eraseS400.rend(); ++it) {
 			this->s400.erase(this->s400.begin() + *it);
+			CameraMaster::removeCamera(*(this->camKey.begin() + *it));
+			this->camKey.erase(this->camKey.begin() + *it);
 		}
 		this->eraseS400.clear();
 	}
 	this->particleMaster->update(deltaTime, camera);
+
 }
 
 void S400Master::render(glm::mat4 projection, Camera& camera)
@@ -110,7 +116,9 @@ void S400Master::render(glm::mat4 projection, Camera& camera)
 void S400Master::addS400(Missile* missile)
 {
 	this->s400.push_back(missile);
+	this->camKey.push_back(CameraMaster::addCamera(new Camera(missile->getPosition())));
 }
+
 
 std::vector<Missile*> S400Master::getS400()
 {

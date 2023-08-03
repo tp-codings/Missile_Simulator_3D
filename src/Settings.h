@@ -22,6 +22,7 @@ public:
     static int skyBoxChoice;
     static bool showRange;
     static ImVec4 dirLightColor;
+    static const char* camMode;
     
 private:
     void init();

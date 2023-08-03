@@ -8,25 +8,44 @@ Simulation::Simulation(GLFWwindow* window, int WINDOW_WIDTH, int WINDOW_HEIGHT)
 	this->WINDOW_WIDTH = WINDOW_WIDTH;
 	this->WINDOW_HEIGHT = WINDOW_HEIGHT;
 
+
 	this->init();
 }
 
 void Simulation::update(float deltaTime, int FPS, Camera camera)
 {
-	//Update view and projection matrix
-	this->projection = glm::perspective(glm::radians(camera.Zoom), (float)this->WINDOW_WIDTH / (float)this->WINDOW_HEIGHT, 0.1f, 100000.0f);
-	this->view = camera.GetViewMatrix();
-
 	//Update Timing
 	this->deltaTime = deltaTime;
 	this->FPS = FPS;
+
 	this->camera = camera;
+
+	//Update view and projection matrix
+	this->projection = glm::perspective(glm::radians(this->camera.Zoom), (float)this->WINDOW_WIDTH / (float)this->WINDOW_HEIGHT, 0.1f, 100000.0f);
+	this->view = this->camera.GetViewMatrix();
+
+	if (CameraMaster::getCameras().size() > 0) {
+		this->camera = *CameraMaster::getCameras()[0];
+		this->view = this->camera.GetViewMatrix();
+	}
 
 	this->inputController->update();
 
 	if (Settings::start)
 	{
-		this->updateSimulation();
+		this->planeMaster->update(this->deltaTime * Settings::timeFactor, this->camera);
+		this->missileMaster->update(this->deltaTime * Settings::timeFactor, this->camera, this->planeMaster->getPlanes());
+		this->collisionMaster->updateMissileCollision(this->planeMaster, this->missileMaster);
+		this->collisionMaster->updateS400Collision(this->planeMaster, this->s400Master);
+		this->collisionMaster->updateBulletCollision(this->planeMaster, this->bulletMaster);
+		this->missilesSelfDestruct += this->collisionMaster->updateMMCollision(this->missileMaster);
+		this->missilesSelfDestruct += this->collisionMaster->updateSSCollision(this->s400Master);
+		this->torretMaster->update(this->deltaTime * Settings::timeFactor, this->camera, this->planeMaster->getPlanes(), this->missileMaster);
+		this->s400Master->update(this->deltaTime * Settings::timeFactor, this->camera, this->planeMaster->getPlanes());
+		this->missileTruckMaster->update(this->deltaTime * Settings::timeFactor, this->camera, this->planeMaster->getPlanes(), this->s400Master, InputController::shootMissileTruck);
+		this->gunTowerMaster->update(this->deltaTime * Settings::timeFactor, this->camera, this->planeMaster->getPlanes(), this->bulletMaster, InputController::shootGunTower);
+		this->bulletMaster->update(this->deltaTime * Settings::timeFactor, this->camera);
+		//this->skybox->updateSkybox(Settings:skyBoxChoice) //Noch Probleme
 	}
 }
 
@@ -49,7 +68,6 @@ void Simulation::render()
 	this->renderHUD();
 
 	this->settings->render();
-
 }
 
 float Simulation::getCameraSpeed()
@@ -73,7 +91,6 @@ void Simulation::init()
 	this->loader = new Loader();
 
 	this->initMaster();
-	this->initSettings();
 	this->initHUD();
 	this->initMatrices();
 	this->initPlanes();
@@ -98,11 +115,6 @@ void Simulation::initMaster()
 void Simulation::initBuffer()
 {
 	this->loader->loadFrameBuffer(this->WINDOW_WIDTH, this->WINDOW_HEIGHT, this->framebuffer, this->texColorBuffer);
-}
-
-void Simulation::initSettings()
-{
-	this->shot = false;
 }
 
 void Simulation::initHUD()
@@ -139,25 +151,6 @@ void Simulation::initGunTower()
 	glm::vec2 randomPos = glm::vec2(10.0f, 10.0f);
 	float height = this->terrain->getHeightAtPosition(randomPos.x, randomPos.y);
 	this->gunTowerMaster->addGunTower(new GunTower(glm::vec3(randomPos.x, height + 1.5, randomPos.y), 15.0f));
-}
-
-//Updates------------------------------------------------------------------------------
-
-void Simulation::updateSimulation()
-{
-	this->planeMaster->update(this->deltaTime * Settings::timeFactor, this->camera);
-	this->missileMaster->update(this->deltaTime * Settings::timeFactor, this->camera, this->planeMaster->getPlanes());
-	this->collisionMaster->updateMissileCollision(this->planeMaster, this->missileMaster);
-	this->collisionMaster->updateS400Collision(this->planeMaster, this->s400Master);
-	this->collisionMaster->updateBulletCollision(this->planeMaster, this->bulletMaster);
-	this->missilesSelfDestruct += this->collisionMaster->updateMMCollision(this->missileMaster);
-	this->missilesSelfDestruct += this->collisionMaster->updateSSCollision(this->s400Master);
-	this->torretMaster->update(this->deltaTime * Settings::timeFactor, this->camera, this->planeMaster->getPlanes(), this->missileMaster);
-	this->s400Master->update(this->deltaTime * Settings::timeFactor, this->camera, this->planeMaster->getPlanes());
-	this->missileTruckMaster->update(this->deltaTime * Settings::timeFactor, this->camera, this->planeMaster->getPlanes(), this->s400Master, InputController::shootMissileTruck);
-	this->gunTowerMaster->update(this->deltaTime * Settings::timeFactor, this->camera, this->planeMaster->getPlanes(), this->bulletMaster, InputController::shootGunTower);
-	this->bulletMaster->update(this->deltaTime * Settings::timeFactor, this->camera);
-	//this->skybox->updateSkybox(Settings:skyBoxChoice) //Noch Probleme
 }
 
 //Rendering------------------------------------------------------------------------------

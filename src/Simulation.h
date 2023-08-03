@@ -35,6 +35,7 @@
 #include "MissileTruckMaster.h"
 #include "GunTowerMaster.h"
 #include "BulletMaster.h"
+#include "CameraMaster.h"
 
 #include "ScreenRenderer.h"
 #include "Settings.h"
@@ -76,7 +77,6 @@ private:
 	int missilesSelfDestruct = 0;
 	int planesSelfDestruct = 0;
 	string debug = " ";
-	bool shot;
 
 	//Worldobjects
 	PlaneMaster *planeMaster;
@@ -107,16 +107,11 @@ private:
 	void init();
 	void initMaster();
 	void initBuffer();
-	void initSettings();
 	void initHUD();
 	void initMatrices();
 	void initPlanes();
 	void initTorrets();
 	void initGunTower();
-
-	//Updates------------------------------------------------------------------------------
-
-	void updateSimulation();
 
 	//Rendering------------------------------------------------------------------------------
 

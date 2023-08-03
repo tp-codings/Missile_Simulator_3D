@@ -1,5 +1,6 @@
 #pragma once
 #include <set>
+#include <tuple>
 #include <Camera/camera.h>
 #include <ModelHandler/ModelHandler.h>
 #include <glm/gtx/vector_angle.hpp>
@@ -8,6 +9,8 @@
 #include "Planes.h"
 #include "ParticleMaster.h"
 #include "Loader.h"
+
+#include "CameraMaster.h"
 
 class S400Master
 {
@@ -28,7 +31,7 @@ private:
 	ParticleMaster* particleMaster;
 	std::vector<Missile*> s400;
 
-	set<int> eraseS400;
+	std::set<int> eraseS400;
 
 	ModelHandler* model;
 	unsigned int particleAtlas;
@@ -39,5 +42,7 @@ private:
 	std::tuple<int, float> updateNearestPlane(Missile* missile, vector<Planes*> planes);
 
 	void explosion(glm::vec3 pos, glm::vec3 direction, int spreadDiversity, float spreadFactor, int amount, int maxDuration, float gravityImpact, float scale);
+
+	std::vector<int> camKey;
 
 };

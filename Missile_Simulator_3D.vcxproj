@@ -145,6 +145,7 @@
     <ClCompile Include="imgui\imgui_tables.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="src\BulletMaster.cpp" />
+    <ClCompile Include="src\CameraMaster.cpp" />
     <ClCompile Include="src\CollisionMaster.cpp" />
     <ClCompile Include="src\Engine.cpp" />
     <ClCompile Include="src\glad.c" />
@@ -172,6 +173,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BulletMaster.h" />
+    <ClInclude Include="src\CameraMaster.h" />
     <ClInclude Include="src\CollisionMaster.h" />
     <ClInclude Include="src\Engine.h" />
     <ClInclude Include="src\FastNoiseLite.h" />
