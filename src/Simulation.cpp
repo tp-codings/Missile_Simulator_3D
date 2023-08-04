@@ -137,7 +137,7 @@ void Simulation::initMatrices()
 
 void Simulation::initPlanes()
 {
-	int amount = rand()%10 + 5;
+	int amount = rand()%100 + 5;
 
 	for (int i = 0; i < amount; i++) {
 		this->planeMaster->addPlane(new Planes(Helper::getRandomPlanePosition(this->terrain), Helper::getRandomDirection(), 70, Colors::WHITE));
@@ -146,13 +146,13 @@ void Simulation::initPlanes()
 
 void Simulation::initTorrets()
 {
-	int amount = rand() % 10 + 5;
+	int amount = rand() % 30 + 5;
 
 	for (int i = 0; i < amount; i++) {
 		this->torretMaster->addTorrets(new Torret(Helper::getRandomPosition(this->terrain)));
 	}
 
-	amount = rand() % 60 + 20;
+	amount = rand() % 10 + 5;
 
 	for (int i = 0; i < amount; i++) {
 		this->missileTruckMaster->addMissileTrucks(new Torret(Helper::getRandomPosition(this->terrain)));
@@ -192,7 +192,9 @@ void Simulation::renderHUD()
 	this->textRenderer->render("Pos: " + std::to_string(this->camera.Position.x) + ", " + std::to_string(this->camera.Position.y) + ", " + std::to_string(this->camera.Position.z), 0.0f, (float)this->WINDOW_HEIGHT - 2 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 	this->textRenderer->render("CameraView: " + std::to_string(this->camera.Front.x) + ", " + std::to_string(this->camera.Front.y) + ", " + std::to_string(this->camera.Front.z), 0.0f, (float)this->WINDOW_HEIGHT - 3 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 	this->textRenderer->render("DeltaTime: " + std::to_string(this->deltaTime), 0.0f, (float)this->WINDOW_HEIGHT - 4 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+
 	this->textRenderer->render("Start: " + std::to_string(Settings::start), this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 1 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+	this->textRenderer->render("Cam: " + std::to_string(InputController::camChoice) + "/" + std::to_string(CameraMaster::getCameras().size()), this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 2 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 	
 	std::string skyboxes[] = { "No Skybox", "Ocean", "Space", "Forest", "City" };
 	this->textRenderer->render("Skybox: " + skyboxes[Settings::skyBoxChoice], this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 3 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));

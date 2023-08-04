@@ -221,6 +221,9 @@
     <ClInclude Include="src\CameraMaster.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="src\WindowHandler.h">
+      <Filter>Headerdateien\Engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\cubemap.fs">

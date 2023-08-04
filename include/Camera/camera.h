@@ -44,7 +44,7 @@ public:
     float Zoom;
 
     // constructor with vectors
-    Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH) : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM)
+    Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH) : Front(glm::vec3(0.0f, 1.0f, 0.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM)
     {
         Position = position;
         WorldUp = up;
@@ -66,8 +66,7 @@ public:
     glm::mat4 GetViewMatrix()
     {
         glm::mat4 look = glm::lookAt(Position, Position + Front, Up);
-        look = glm::rotate(look, this->rotationAngle, this->rotationAxis);
-        look = glm::translate(look, this->translation);
+        //look = glm::rotate(look, this->rotationAngle, this->rotationAxis);
         return look;
     }
 
@@ -77,11 +76,11 @@ public:
     }
 
     void setRotationAxis(glm::vec3 rotationAxis) {
-        this->rotationAxis = -rotationAxis;
+        this->rotationAxis = rotationAxis;
     }
 
     void setTranslation(glm::vec3 translation) {
-        this->translation = -translation;
+        this->Position = translation;
     }
 
     void setRotationAngle(float rotationAngle) {
@@ -153,8 +152,6 @@ private:
         Up = glm::normalize(glm::cross(Right, Front));
     }
 
-
-    glm::vec3 translation = glm::vec3(0.0f);
     glm::vec3 rotationAxis = glm::vec3(0.0f, 1.0, 0.0);
     float rotationAngle = 0.0f;
 };

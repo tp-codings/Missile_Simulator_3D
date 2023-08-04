@@ -201,6 +201,7 @@
     <ClInclude Include="src\TerrrainGenerator.h" />
     <ClInclude Include="src\Torret.h" />
     <ClInclude Include="src\TorretMaster.h" />
+    <ClInclude Include="src\WindowHandler.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\cube.fs" />

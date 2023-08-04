@@ -15,7 +15,7 @@ int CameraMaster::addCamera(Camera* camera)
 void CameraMaster::removeCamera(int key)
 {
 	eraseCameras.insert(key);
-	update(key);
+	//update(key);
 }
 
 void CameraMaster::update(int key, glm::vec3 translation, glm::vec3 rotationAxis, float rotationAngle)

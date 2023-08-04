@@ -1,6 +1,7 @@
 #pragma once
 #include "Simulation.h"
-#include <WindowHandler/WindowHandler.h>
+//#include <WindowHandler/WindowHandler.h>
+#include "WindowHandler.h"
 
 class Engine
 {
