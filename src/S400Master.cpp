@@ -86,7 +86,7 @@ void S400Master::update(float deltaTime, Camera& camera, std::vector<Planes*> pl
 			this->eraseS400.insert(i);
 			this->explosion(this->s400[i]->getPosition(), this->s400[i]->getDirection(), 1000, 0.001, 150, 70, 0.09, 2.0f);
 		}
-		CameraMaster::update(this->camKeys[i], glm::vec3(this->s400[i]->getPosition().x, this->s400[i]->getPosition().y, this->s400[i]->getPosition().z+10.0f), this->s400[i]->getRotationAxis(), this->s400[i]->getRotationAngle());
+		CameraMaster::update(this->camKeys[i], glm::vec3(this->s400[i]->getPosition().x, this->s400[i]->getPosition().y, this->s400[i]->getPosition().z+10.0f));
 	}
 
 

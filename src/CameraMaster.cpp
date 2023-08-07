@@ -18,12 +18,10 @@ void CameraMaster::removeCamera(int key)
 	//update(key);
 }
 
-void CameraMaster::update(int key, glm::vec3 translation, glm::vec3 rotationAxis, float rotationAngle)
+void CameraMaster::update(int key, glm::vec3 translation)
 {
     if (key < cameras.size()) {
         cameras[key]->setTranslation(translation);
-        cameras[key]->setRotationAngle(rotationAngle);
-        cameras[key]->setRotationAxis(rotationAxis);
     }
 
     if (!eraseCameras.empty()) {

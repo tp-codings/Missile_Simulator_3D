@@ -14,14 +14,17 @@ MissileTruckMaster::MissileTruckMaster()
 	this->s400Shader = Shader("Shader/missile.vs", "Shader/missile.fs");
 }
 
-void MissileTruckMaster::update(float deltaTime, Camera& camera, std::vector<Planes*> planes, S400Master* s400Master, bool shootMissileTruck)
+void MissileTruckMaster::update(float deltaTime, Camera& camera, std::vector<Planes*> planes, S400Master* s400Master)
 {
-	for (size_t i = 0; i < this->missileTrucks.size(); ++i) {
-		if (shootMissileTruck && planes.size() > 0) {
-			if (!this->missileTrucks[i]->getShot()) {
-				this->missileTrucks[i]->setShot(true);
-				s400Master->addS400(this->missileTrucks[i]->getMissile());
-				this->explosion(this->missileTrucks[i]->getPosition() + glm::vec3(0.0f, 4.13f, 0.0f), glm::vec3(0.0f), 1000.0f, 0.0001, 5, 5, 0.01, 0.32);
+	static int shootPosition = 0;
+	if(this->missileTrucks.size() > 0 && shootPosition < this->missileTrucks.size()){
+		if (InputController::shootMissileTruck && planes.size() > 0) {
+			if (!this->missileTrucks[shootPosition]->getShot()) {
+				this->missileTrucks[shootPosition]->setShot(true);
+				s400Master->addS400(this->missileTrucks[shootPosition]->getMissile());
+				this->explosion(this->missileTrucks[shootPosition]->getPosition() + glm::vec3(0.0f, 4.13f, 0.0f), glm::vec3(0.0f), 1000.0f, 0.0001, 5, 5, 0.01, 0.32);
+				shootPosition++;
+				InputController::shootMissileTruck = false;
 			}
 		}
 	}

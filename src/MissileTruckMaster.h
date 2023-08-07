@@ -10,12 +10,14 @@
 #include "S400Master.h"
 #include "Loader.h"
 
+#include "InputController.h"
+
 class MissileTruckMaster
 {
 public:
 	MissileTruckMaster();
 
-	void update(float deltaTime, Camera& camera, std::vector<Planes*> planes, S400Master *s400Master, bool shootMissileTruck);
+	void update(float deltaTime, Camera& camera, std::vector<Planes*> planes, S400Master *s400Master);
 
 	void render(glm::mat4 projection, Camera& camera);
 

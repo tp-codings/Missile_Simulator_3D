@@ -81,8 +81,13 @@ void InputController::update()
 	else {
 		shootGunTower = false;
 	}
-	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS && !shootMissileTruck) {
+	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS && !shootMissilePressed) {
+		shootMissilePressed = true;
 		shootMissileTruck = true;
+	}
+	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_RELEASE)
+	{
+		shootMissilePressed = false;
 	}
 
 }
@@ -92,5 +97,6 @@ bool InputController::settingsKeyPressed = false;
 bool InputController::rangeKeyPressed = false;
 bool InputController::shootGunTower = false;
 bool InputController::shootMissileTruck = false;
+bool InputController::shootMissilePressed = false;
 bool InputController::camChoicePressed = false;
 int InputController::camChoice = 0;
