@@ -13,6 +13,14 @@ S400Master::S400Master()
 
 void S400Master::update(float deltaTime, Camera& camera, std::vector<Planes*> planes)
 {
+	if (eraseS400.size() > 0) {
+		for (auto it = eraseS400.rbegin(); it != eraseS400.rend(); ++it) {
+			this->s400.erase(this->s400.begin() + *it);
+			//this->camKeys.erase(this->camKeys.begin() + *it);
+		}
+		this->eraseS400.clear();
+	}
+
 	for (size_t i = 0; i < this->s400.size(); ++i) {
 		this->s400[i]->update(deltaTime);
 		int nearest;
@@ -86,18 +94,9 @@ void S400Master::update(float deltaTime, Camera& camera, std::vector<Planes*> pl
 			this->eraseS400.insert(i);
 			this->explosion(this->s400[i]->getPosition(), this->s400[i]->getDirection(), 1000, 0.001, 150, 70, 0.09, 2.0f);
 		}
-		CameraMaster::update(this->camKeys[i], glm::vec3(this->s400[i]->getPosition().x, this->s400[i]->getPosition().y, this->s400[i]->getPosition().z+10.0f));
+		CameraMaster::update(this->camKeys[i], glm::vec3(this->s400[i]->getPosition().x, this->s400[i]->getPosition().y, this->s400[i]->getPosition().z));
 	}
 
-
-	if (this->eraseS400.size() > 0) {
-		for (auto it = this->eraseS400.rbegin(); it != this->eraseS400.rend(); ++it) {
-			this->s400.erase(this->s400.begin() + *it);
-			CameraMaster::removeCamera(*(this->camKeys.begin() + *it));
-			this->camKeys.erase(this->camKeys.begin() + *it);
-		}
-		this->eraseS400.clear();
-	}
 	this->particleMaster->update(deltaTime, camera);
 
 }
@@ -119,7 +118,7 @@ void S400Master::render(glm::mat4 projection, Camera& camera)
 void S400Master::addS400(Missile* missile)
 {
 	this->s400.push_back(missile);
-	this->camKeys.push_back(CameraMaster::addCamera(new Camera(missile->getPosition())));
+	this->camKeys.push_back(CameraMaster::addCamera(new Camera(missile->getPosition()), true));
 }
 
 
@@ -131,6 +130,7 @@ std::vector<Missile*> S400Master::getS400()
 void S400Master::removeS400(int index)
 {
 	this->eraseS400.insert(index);
+	CameraMaster::removeCamera(camKeys[index]);
 }
 
 std::tuple<int, float> S400Master::updateNearestPlane(Missile* missile, vector<Planes*> planes)

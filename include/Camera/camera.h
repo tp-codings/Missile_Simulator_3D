@@ -7,6 +7,7 @@
 
 #include <vector>
 
+
 // Defines several possible options for camera movement. Used as abstraction to stay away from window-system specific input methods
 enum Camera_Movement {
     FORWARD,
@@ -64,9 +65,17 @@ public:
     // returns the view matrix calculated using Euler Angles and the LookAt Matrix
     glm::mat4 GetViewMatrix()
     {
-        glm::mat4 look = glm::lookAt(Position, Position + Front, Up);
-        //look = glm::rotate(look, this->rotationAngle, this->rotationAxis);
-        return look;
+        if (thirdPersonMode)
+        {
+            glm::vec3 cameraPos = Position - thirdPersonOffset * Front; 
+            glm::mat4 view = glm::lookAt(cameraPos, Position, Up);
+            return view;
+        }
+        else
+        {
+            glm::mat4 view = glm::lookAt(Position, Position + Front, Up);
+            return view;
+        }
     }
 
     void setSpeed(float speed)
@@ -84,6 +93,10 @@ public:
 
     void setRotationAngle(float rotationAngle) {
         this->rotationAngle = rotationAngle;
+    }
+
+    void setCamMode(float thirdPerson) {
+        this->thirdPersonMode = thirdPerson;
     }
 
     // processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
@@ -140,18 +153,37 @@ private:
     // calculates the front vector from the Camera's (updated) Euler Angles
     void updateCameraVectors()
     {
-        // calculate the new Front vector
         glm::vec3 front;
-        front.x = cos(glm::radians(Yaw)) * cos(glm::radians(Pitch));
-        front.y = sin(glm::radians(Pitch));
-        front.z = sin(glm::radians(Yaw)) * cos(glm::radians(Pitch));
-        Front = glm::normalize(front);
-        // also re-calculate the Right and Up vector
-        Right = glm::normalize(glm::cross(Front, WorldUp));  // normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
+
+        if (thirdPersonMode)
+        {
+
+        // Berechne die Kameraausrichtung um das Objekt herum
+
+            float camX = Position.x + thirdPersonOffset * cos(glm::radians(Yaw)) * cos(glm::radians(Pitch));
+            float camY = Position.y + thirdPersonOffset * sin(glm::radians(Pitch));
+            float camZ = Position.z + thirdPersonOffset * sin(glm::radians(Yaw)) * cos(glm::radians(Pitch));
+
+            front = glm::normalize(Position - glm::vec3(camX, camY, camZ));
+
+        }
+        else
+        {
+            front.x = cos(glm::radians(Yaw)) * cos(glm::radians(Pitch));
+            front.y = sin(glm::radians(Pitch));
+            front.z = sin(glm::radians(Yaw)) * cos(glm::radians(Pitch));
+            front = glm::normalize(front);
+        }
+
+        Front = front;
+        Right = glm::normalize(glm::cross(Front, WorldUp));
         Up = glm::normalize(glm::cross(Right, Front));
     }
 
     glm::vec3 rotationAxis = glm::vec3(0.0f, 1.0, 0.0);
     float rotationAngle = 0.0f;
+
+    bool thirdPersonMode = false;
+    float thirdPersonOffset = 30.0f;
 };
 #endif

@@ -6,16 +6,16 @@ CameraMaster::CameraMaster()
 {
 }
 
-int CameraMaster::addCamera(Camera* camera)
+int CameraMaster::addCamera(Camera* camera, bool camMode)
 {
 	cameras.push_back(camera);
+    cameras[cameras.size() - 1]->setCamMode(camMode);
 	return cameras.size()-1;
 }
 
 void CameraMaster::removeCamera(int key)
 {
 	eraseCameras.insert(key);
-	//update(key);
 }
 
 void CameraMaster::update(int key, glm::vec3 translation)
@@ -25,21 +25,11 @@ void CameraMaster::update(int key, glm::vec3 translation)
     }
 
     if (!eraseCameras.empty()) {
-        std::vector<int> keysToRemove;
         for (int eraseKey : eraseCameras) {
             if (eraseKey < cameras.size()) {
-                keysToRemove.push_back(eraseKey);
+                cameras.erase(cameras.begin() + eraseKey);
             }
         }
-
-        // Sort the keys in reverse order
-        std::sort(keysToRemove.rbegin(), keysToRemove.rend());
-
-        // Erase elements from cameras vector
-        for (int eraseKey : keysToRemove) {
-            cameras.erase(cameras.begin() + eraseKey);
-        }
-
         eraseCameras.clear();
     }
 }
@@ -49,6 +39,13 @@ void CameraMaster::updateCamSpeed(int key, float camSpeed)
 	if (key < cameras.size()) {
 		cameras[key]->setSpeed(camSpeed);
 	}
+}
+
+void CameraMaster::setCamMode(int key, bool thirdPerson)
+{
+    if (key < cameras.size()) {
+        cameras[key]->setCamMode(thirdPerson);
+    }
 }
 
 std::vector<Camera*> CameraMaster::getCameras()

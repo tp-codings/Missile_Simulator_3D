@@ -9,13 +9,15 @@ class CameraMaster
 public:
 	CameraMaster();
 
-	static int addCamera(Camera* camera);
+	static int addCamera(Camera* camera, bool camMode = false);
 
 	static void removeCamera(int key);
 
 	static void update(int key, glm::vec3 translation = glm::vec3(0.0f));
 
 	static void updateCamSpeed(int key, float camSpeed);
+
+	static void setCamMode(int key, bool thirdPerson = true);
 
 	static std::vector<Camera*> getCameras();
 

@@ -11,6 +11,14 @@ MissileMaster::MissileMaster()
 
 void MissileMaster::update(float deltaTime, Camera& camera, std::vector<Planes *> planes)
 {
+	if (eraseMissiles.size() > 0) {
+		for (auto it = eraseMissiles.rbegin(); it != eraseMissiles.rend(); ++it) {
+			this->missiles.erase(this->missiles.begin() + *it);
+			//this->camKeys.erase(this->camKeys.begin() + *it);
+		}
+		this->eraseMissiles.clear();
+	}
+
 	for (size_t i = 0; i < this->missiles.size(); ++i) {
 		this->missiles[i]->update(deltaTime);
 
@@ -61,17 +69,11 @@ void MissileMaster::update(float deltaTime, Camera& camera, std::vector<Planes *
 			this->eraseMissiles.insert(i);
 			this->explosion(this->missiles[i]->getPosition(), this->missiles[i]->getDirection(), 1000, 0.001, 150, 70, 0.09, 0.5);
 		}
-		CameraMaster::update(this->camKeys[i], glm::vec3(this->missiles[i]->getPosition().x , this->missiles[i]->getPosition().y , this->missiles[i]->getPosition().z+10.0f));
+		
+		CameraMaster::update(this->camKeys[i], glm::vec3(this->missiles[i]->getPosition().x , this->missiles[i]->getPosition().y , this->missiles[i]->getPosition().z));
 	}
 
-	if (eraseMissiles.size() > 0) {
-		for (auto it = eraseMissiles.rbegin(); it != eraseMissiles.rend(); ++it) {
-			this->missiles.erase(this->missiles.begin() + *it);
-			CameraMaster::removeCamera(*(this->camKeys.begin() + *it));
-			this->camKeys.erase(this->camKeys.begin() + *it);
-		}
-		this->eraseMissiles.clear();
-	}
+
 	this->particleMaster->update(deltaTime, camera);
 }
 
@@ -92,7 +94,7 @@ void MissileMaster::render(glm::mat4 projection, Camera& camera)
 void MissileMaster::addMissile(Missile* missile)
 {
 	this->missiles.push_back(missile);
-	this->camKeys.push_back(CameraMaster::addCamera(new Camera(missile->getPosition())));
+	this->camKeys.push_back(CameraMaster::addCamera(new Camera(missile->getPosition()), true));
 }
 
 std::vector<Missile*> MissileMaster::getMissiles()
@@ -103,6 +105,7 @@ std::vector<Missile*> MissileMaster::getMissiles()
 void MissileMaster::removeMissile(int index)
 {
 	this->eraseMissiles.insert(index);
+	CameraMaster::removeCamera(camKeys[index]);
 }
 
 std::tuple<int, float> MissileMaster::updateNearestPlane(Missile* missile, vector<Planes*> planes)
