@@ -9,6 +9,7 @@
 #include "Planes.h"
 #include "ParticleMaster.h"
 #include "Loader.h"
+#include <glm/gtx/vector_angle.hpp>
 
 #include "CameraMaster.h"
 

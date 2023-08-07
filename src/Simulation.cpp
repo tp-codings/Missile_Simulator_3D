@@ -138,6 +138,7 @@ void Simulation::initMatrices()
 void Simulation::initPlanes()
 {
 	int amount = rand()%100 + 5;
+	amount = 5;
 
 	for (int i = 0; i < amount; i++) {
 		this->planeMaster->addPlane(new Planes(Helper::getRandomPlanePosition(this->terrain), Helper::getRandomDirection(), 70, Colors::WHITE));
@@ -147,12 +148,15 @@ void Simulation::initPlanes()
 void Simulation::initTorrets()
 {
 	int amount = rand() % 30 + 5;
+	amount = 2;
 
 	for (int i = 0; i < amount; i++) {
 		this->torretMaster->addTorrets(new Torret(Helper::getRandomPosition(this->terrain)));
 	}
+	this->torretMaster->addTorrets(new Torret(glm::vec3(40.0f)));
 
 	amount = rand() % 10 + 5;
+	amount = 2;
 
 	for (int i = 0; i < amount; i++) {
 		this->missileTruckMaster->addMissileTrucks(new Torret(Helper::getRandomPosition(this->terrain)));

@@ -50,15 +50,18 @@ void S400Master::update(float deltaTime, Camera& camera, std::vector<Planes*> pl
 			else {
 				this->s400[i]->setAcceleration(glm::vec3(this->s400[i]->getAcceleration().z));
 
-				if (nearestDistance > 50)
-				{
-					float acc = 4.0f * deltaTime;
-					this->s400[i]->setDirection(glm::vec3(this->s400[i]->getDirection().x + direction.x * acc, this->s400[i]->getDirection().y + direction.y * acc, this->s400[i]->getDirection().z + direction.z * acc));
-				}
+				float angleToTarget = glm::angle(glm::normalize(this->s400[i]->getDirection()), direction);
+				if (angleToTarget < 0.5) {
+					if (nearestDistance > 50)
+					{
+						float acc = 80.0f * deltaTime;
+						this->s400[i]->setDirection(glm::vec3(this->s400[i]->getDirection().x + direction.x * acc, this->s400[i]->getDirection().y + direction.y * acc, this->s400[i]->getDirection().z + direction.z * acc));
+					}
 
-				else if (nearestDistance <= 50) {
-					float acc = 100.0f * deltaTime;
-					this->s400[i]->setDirection(glm::vec3(this->s400[i]->getDirection().x + direction.x * acc, this->s400[i]->getDirection().y + direction.y * acc, this->s400[i]->getDirection().z + direction.z * acc));
+					else if (nearestDistance <= 50) {
+						float acc = 100.0f * deltaTime;
+						this->s400[i]->setDirection(glm::vec3(this->s400[i]->getDirection().x + direction.x * acc, this->s400[i]->getDirection().y + direction.y * acc, this->s400[i]->getDirection().z + direction.z * acc));
+					}
 				}
 			}
 			int spreadFactor = 5;
