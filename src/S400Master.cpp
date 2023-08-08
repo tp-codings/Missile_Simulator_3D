@@ -44,12 +44,12 @@ void S400Master::update(float deltaTime, Camera& camera, std::vector<Planes*> pl
 		}
 
 		else {
-			this->s400[i]->setAccAcc(glm::vec3(50.0f));
+			this->s400[i]->setAccAcc(glm::vec3(40.0f));
 			if (this->s400[i]->getTimer() < 1.6f) {
 				this->s400[i]->setDirection(glm::vec3(0.0f, 1.0f, 0.001f));
 
 			}
-			else if (this->s400[i]->getTimer() < 2.0f) {
+			else if (this->s400[i]->getTimer() < 2.4f) {
 				this->s400[i]->setAcceleration(glm::vec3(this->s400[i]->getAcceleration().x, this->s400[i]->getAcceleration().x + 60, this->s400[i]->getAcceleration().z));
 				float acc = 4.0f * deltaTime;
 				this->s400[i]->setDirection(glm::vec3(this->s400[i]->getDirection().x + direction.x * acc, this->s400[i]->getDirection().y + direction.y * acc, this->s400[i]->getDirection().z + direction.z * acc));
@@ -92,9 +92,10 @@ void S400Master::update(float deltaTime, Camera& camera, std::vector<Planes*> pl
 		}*/
 		if (this->s400[i]->getTimer() > 35.0f) {
 			this->eraseS400.insert(i);
+			CameraMaster::removeCamera(camKeys[i]);
 			this->explosion(this->s400[i]->getPosition(), this->s400[i]->getDirection(), 1000, 0.001, 150, 70, 0.09, 2.0f);
 		}
-		CameraMaster::update(this->camKeys[i], glm::vec3(this->s400[i]->getPosition().x, this->s400[i]->getPosition().y, this->s400[i]->getPosition().z));
+		CameraMaster::updateCamera(this->camKeys[i], glm::vec3(this->s400[i]->getPosition().x, this->s400[i]->getPosition().y, this->s400[i]->getPosition().z));
 	}
 
 	this->particleMaster->update(deltaTime, camera);

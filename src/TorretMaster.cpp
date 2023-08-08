@@ -40,8 +40,9 @@ void TorretMaster::update(float deltaTime, Camera& camera, std::vector<Planes*> 
 			}
 			this->torrets[i]->update(deltaTime);
 		}
+		float angleToTarget = glm::angle(glm::normalize(this->torrets[i]->getMissile()->getDirection()), direction);
 
-		if (nearestDistance < 1300 && planes.size()>0) {
+		if (nearestDistance < 1300 && planes.size()>0 && angleToTarget < 0.5) {
 			this->torrets[i]->setShot(true);
 			missileMaster->addMissile(this->torrets[i]->getMissile());
 		}

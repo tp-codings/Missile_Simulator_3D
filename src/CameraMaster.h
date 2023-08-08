@@ -13,7 +13,9 @@ public:
 
 	static void removeCamera(int key);
 
-	static void update(int key, glm::vec3 translation = glm::vec3(0.0f));
+	static void updateCamera(int key, glm::vec3 translation = glm::vec3(0.0f));
+
+	static void update();
 
 	static void updateCamSpeed(int key, float camSpeed);
 

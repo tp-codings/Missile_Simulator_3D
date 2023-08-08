@@ -18,12 +18,15 @@ void CameraMaster::removeCamera(int key)
 	eraseCameras.insert(key);
 }
 
-void CameraMaster::update(int key, glm::vec3 translation)
+void CameraMaster::updateCamera(int key, glm::vec3 translation)
 {
     if (key < cameras.size()) {
         cameras[key]->setTranslation(translation);
     }
+}
 
+void CameraMaster::update()
+{
     if (!eraseCameras.empty()) {
         for (int eraseKey : eraseCameras) {
             if (eraseKey < cameras.size()) {

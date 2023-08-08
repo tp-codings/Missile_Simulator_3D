@@ -51,6 +51,7 @@ void Simulation::update(float deltaTime, int FPS, Camera camera)
 		this->missileTruckMaster->update(this->deltaTime * Settings::timeFactor, this->camera, this->planeMaster->getPlanes(), this->s400Master);
 		this->gunTowerMaster->update(this->deltaTime * Settings::timeFactor, this->camera, this->planeMaster->getPlanes(), this->bulletMaster, InputController::shootGunTower);
 		this->bulletMaster->update(this->deltaTime * Settings::timeFactor, this->camera);
+		CameraMaster::update();
 		//this->skybox->updateSkybox(Settings:skyBoxChoice) //Noch Probleme
 	}
 }

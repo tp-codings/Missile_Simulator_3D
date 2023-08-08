@@ -164,7 +164,7 @@ private:
             float camY = Position.y + thirdPersonOffset * sin(glm::radians(Pitch));
             float camZ = Position.z + thirdPersonOffset * sin(glm::radians(Yaw)) * cos(glm::radians(Pitch));
 
-            front = glm::normalize(Position - glm::vec3(camX, camY, camZ));
+            front = -glm::normalize(Position - glm::vec3(camX, camY, camZ));
 
         }
         else

@@ -67,10 +67,11 @@ void MissileMaster::update(float deltaTime, Camera& camera, std::vector<Planes *
 		//}
 		if (this->missiles[i]->getTimer() > 35.0f) {
 			this->eraseMissiles.insert(i);
+			CameraMaster::removeCamera(camKeys[i]);
 			this->explosion(this->missiles[i]->getPosition(), this->missiles[i]->getDirection(), 1000, 0.001, 150, 70, 0.09, 0.5);
 		}
 		
-		CameraMaster::update(this->camKeys[i], glm::vec3(this->missiles[i]->getPosition().x , this->missiles[i]->getPosition().y , this->missiles[i]->getPosition().z));
+		CameraMaster::updateCamera(this->camKeys[i], glm::vec3(this->missiles[i]->getPosition().x , this->missiles[i]->getPosition().y , this->missiles[i]->getPosition().z));
 	}
 
 
