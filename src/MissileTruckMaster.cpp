@@ -22,7 +22,7 @@ void MissileTruckMaster::update(float deltaTime, Camera& camera, std::vector<Pla
 			if (!this->missileTrucks[shootPosition]->getShot()) {
 				this->missileTrucks[shootPosition]->setShot(true);
 				s400Master->addS400(this->missileTrucks[shootPosition]->getMissile());
-				this->explosion(this->missileTrucks[shootPosition]->getPosition() + glm::vec3(0.0f, 4.13f, 0.0f), glm::vec3(0.0f), 1000.0f, 0.0001, 5, 5, 0.01, 0.32);
+				this->explosion(this->missileTrucks[shootPosition]->getPosition() + glm::vec3(0.0f, 4.13f, 0.0f), glm::vec3(0.0f), 1000, 0.0001f, 5, 5, 0.01f, 0.32f);
 				shootPosition++;
 				InputController::shootMissileTruck = false;
 			}
@@ -68,6 +68,6 @@ void MissileTruckMaster::explosion(glm::vec3 pos, glm::vec3 direction, int sprea
 			ParticleTextureHandler(this->particleAtlas, 4),
 			pos,
 			glm::vec3(spreadFactor * (rand() % spreadDiversity - (spreadDiversity / 2)), spreadFactor * (rand() % spreadDiversity - (spreadDiversity / 2)), spreadFactor * (rand() % spreadDiversity - (spreadDiversity / 2))) + direction,
-			gravityImpact, (rand() % 5 * maxDuration + 1) / maxDuration, 0, scale));
+			gravityImpact, (float)(rand() % 5 * maxDuration + 1) / maxDuration, 0, scale));
 	}
 }

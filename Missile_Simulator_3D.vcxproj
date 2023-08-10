@@ -169,6 +169,7 @@
     <ClCompile Include="src\ScreenRenderer.cpp" />
     <ClCompile Include="src\Simulation.cpp" />
     <ClCompile Include="src\stb_handler.cpp" />
+    <ClCompile Include="src\Sun.cpp" />
     <ClCompile Include="src\TerrrainGenerator.cpp" />
     <ClCompile Include="src\Torret.cpp" />
     <ClCompile Include="src\TorretMaster.cpp" />
@@ -199,6 +200,7 @@
     <ClInclude Include="src\S400Master.h" />
     <ClInclude Include="src\ScreenRenderer.h" />
     <ClInclude Include="src\Simulation.h" />
+    <ClInclude Include="src\Sun.h" />
     <ClInclude Include="src\TerrrainGenerator.h" />
     <ClInclude Include="src\Torret.h" />
     <ClInclude Include="src\TorretMaster.h" />

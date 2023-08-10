@@ -15,7 +15,7 @@ public:
 	this->scale = 0.0f;
 	};
 
-	void Draw(Shader *s, glm::mat4 projection, glm::mat4 view, glm::vec3 color){
+	void Draw(Shader *s, glm::mat4 projection, glm::mat4 view, glm::vec3 color = glm::vec3(1.0f)){
 		this->Transform();
 		s->use();
 		s->setMat4("projection", projection);

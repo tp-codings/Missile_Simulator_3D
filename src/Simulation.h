@@ -37,6 +37,8 @@
 #include "BulletMaster.h"
 #include "CameraMaster.h"
 
+#include "Sun.h"
+
 #include "ScreenRenderer.h"
 #include "Settings.h"
 #include "InputController.h"
@@ -88,6 +90,7 @@ private:
 	GunTowerMaster* gunTowerMaster;
 	BulletMaster* bulletMaster;
 	TerrainGenerator *terrain;
+	Sun* sun;
 
 	Camera camera;
 

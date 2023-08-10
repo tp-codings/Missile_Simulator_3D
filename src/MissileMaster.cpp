@@ -48,7 +48,7 @@ void MissileMaster::update(float deltaTime, Camera& camera, std::vector<Planes *
 			}
 		}
 		int spreadFactor = 5;
-		float spread = 0.05;
+		float spread = 0.05f;
 
 		for (int m = 1; m < 20; m++) {
 			glm::vec3 vel = this->missiles[i]->getVelocity();
@@ -59,16 +59,16 @@ void MissileMaster::update(float deltaTime, Camera& camera, std::vector<Planes *
 				//position particles along traveled distance
 				this->missiles[i]->getPosition() - glm::normalize(this->missiles[i]->getDirection()) * speed * deltaTime * (float)(1 / m),
 				0.2f * -glm::normalize(glm::vec3(this->missiles[i]->getDirection().x + spread * (rand() % spreadFactor - (spreadFactor / 2)), this->missiles[i]->getDirection().y + spread * (rand() % spreadFactor - (spreadFactor / 2)), this->missiles[i]->getDirection().z + spread * (rand() % spreadFactor - (spreadFactor / 2)) / 10)),
-				0.01, (rand() % 40 + 10) / 20, 0, 1.0));
+				0.01f, (float)(rand() % 40 + 10) / 20, 0, 1.0f));
 		}
 		//if (this->missiles[i]->getPosition().y < this->terrain->getHeightAtPosition(missiles[i]->getPosition().x, missiles[i]->getPosition().z)) {
 		//	this->eraseMissiles.insert(i);
 		//	this->explosion(this->missiles[i]->getPosition(), -this->missiles[i]->getDirection(), 1000, 0.001, 150, 70, 0.09);
 		//}
 		if (this->missiles[i]->getTimer() > 35.0f) {
-			this->eraseMissiles.insert(i);
+			this->eraseMissiles.insert((int)i);
 			CameraMaster::removeCamera(camKeys[i]);
-			this->explosion(this->missiles[i]->getPosition(), this->missiles[i]->getDirection(), 1000, 0.001, 150, 70, 0.09, 0.5);
+			this->explosion(this->missiles[i]->getPosition(), this->missiles[i]->getDirection(), 1000, 0.001f, 150, 70, 0.09f, 0.5);
 		}
 		
 		CameraMaster::updateCamera(this->camKeys[i], glm::vec3(this->missiles[i]->getPosition().x , this->missiles[i]->getPosition().y , this->missiles[i]->getPosition().z));
@@ -121,7 +121,7 @@ std::tuple<int, float> MissileMaster::updateNearestPlane(Missile* missile, vecto
 		distance = sqrt(connectionVector.x * connectionVector.x + connectionVector.y * connectionVector.y + connectionVector.z * connectionVector.z);
 		if (distance < tempDistance) {
 			tempDistance = distance;
-			nearest = i;
+			nearest = (int)i;
 		}
 	}
 
@@ -136,7 +136,7 @@ void MissileMaster::explosion(glm::vec3 pos, glm::vec3 direction, int spreadDive
 			ParticleTextureHandler(this->particleAtlas, 4),
 			pos,
 			glm::vec3(spreadFactor * (rand() % spreadDiversity - (spreadDiversity / 2)), spreadFactor * (rand() % spreadDiversity - (spreadDiversity / 2)), spreadFactor * (rand() % spreadDiversity - (spreadDiversity / 2))) + direction,
-			gravityImpact, (rand() % 5 * maxDuration + 1) / maxDuration, 0, scale));
+			gravityImpact, (float)(rand() % 5 * maxDuration + 1) / maxDuration, 0, scale));
 
 	}
 }

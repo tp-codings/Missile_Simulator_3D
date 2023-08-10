@@ -47,7 +47,7 @@ void GunTowerMaster::update(float deltaTime, Camera& camera, std::vector<Planes*
 						0.5f);
 					bulletMaster->addBullet(p);
 				}
-				this->explosion(this->gunTowers[i]->getTower()->getPosition() + shootDirection, glm::vec3(0.0f), 1000, 0.0001, 5, 10, 0.01, 0.02);
+				this->explosion(this->gunTowers[i]->getTower()->getPosition() + shootDirection, glm::vec3(0.0f), 1000, 0.0001f, 5, 10, 0.01f, 0.02f);
 			}
 		}
 		else {
@@ -97,7 +97,7 @@ std::tuple<int, float> GunTowerMaster::updateNearestPlane(Missile* missile, vect
 		distance = sqrt(connectionVector.x * connectionVector.x + connectionVector.y * connectionVector.y + connectionVector.z * connectionVector.z);
 		if (distance < tempDistance) {
 			tempDistance = distance;
-			nearest = i;
+			nearest = (int)i;
 		}
 	}
 
@@ -112,7 +112,7 @@ void GunTowerMaster::explosion(glm::vec3 pos, glm::vec3 direction, int spreadDiv
 			ParticleTextureHandler(this->particleAtlas, 4),
 			pos,
 			glm::vec3(spreadFactor * (rand() % spreadDiversity - (spreadDiversity / 2)), spreadFactor * (rand() % spreadDiversity - (spreadDiversity / 2)), spreadFactor * (rand() % spreadDiversity - (spreadDiversity / 2))) + direction,
-			gravityImpact, (rand() % 5 * maxDuration + 1) / maxDuration, 0, scale));
+			gravityImpact, (float)(rand() % 5 * maxDuration + 1) / maxDuration, 0, scale));
 
 	}
 }

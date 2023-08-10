@@ -17,7 +17,7 @@ void Simulation::update(float deltaTime, int FPS, Camera camera)
 
 	//Update Timing
 	this->deltaTime = deltaTime;
-	this->FPS = FPS;
+	this->FPS = (float)FPS;
 
 	this->camera = camera;
 
@@ -62,7 +62,7 @@ void Simulation::render()
 	glBindFramebuffer(GL_FRAMEBUFFER, this->framebuffer);
 	glEnable(GL_DEPTH_TEST);
 	//Sets Backgroundcolor to dimmed color of the directional light color
-	glClearColor(Settings::dirLightColor.x, Settings::dirLightColor.y, Settings::dirLightColor.z, 1.0f);
+	glClearColor(Settings::dirLightColor.x * 0.5f, Settings::dirLightColor.y * 0.5f, Settings::dirLightColor.z * 0.5f, 1.0f);
 
 	//Bufferclear
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -96,6 +96,7 @@ void Simulation::init()
 	this->inputController = new InputController(this->window);
 	this->skybox = new Skybox();
 	this->loader = new Loader();
+	this->sun = new Sun();
 
 	this->initMaster();
 	this->initHUD();
@@ -188,6 +189,7 @@ void Simulation::renderSimulation()
 	this->missileTruckMaster->render(this->projection, this->camera);
 	this->gunTowerMaster->render(this->projection, this->camera);
 	this->bulletMaster->render(this->projection, this->camera);	
+	this->sun->render(this->projection, this->view);
 	glBindVertexArray(0);
 }
 
@@ -198,14 +200,14 @@ void Simulation::renderHUD()
 	this->textRenderer->render("CameraView: " + std::to_string(this->camera.Front.x) + ", " + std::to_string(this->camera.Front.y) + ", " + std::to_string(this->camera.Front.z), 0.0f, (float)this->WINDOW_HEIGHT - 3 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 	this->textRenderer->render("DeltaTime: " + std::to_string(this->deltaTime), 0.0f, (float)this->WINDOW_HEIGHT - 4 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 
-	this->textRenderer->render("Start: " + std::to_string(Settings::start), this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 1 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-	this->textRenderer->render("Cam: " + std::to_string(InputController::camChoice) + "/" + std::to_string(CameraMaster::getCameras().size()), this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 2 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+	this->textRenderer->render("Start: " + std::to_string(Settings::start), (float)this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 1 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+	this->textRenderer->render("Cam: " + std::to_string(InputController::camChoice) + "/" + std::to_string(CameraMaster::getCameras().size()), (float)this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 2 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 	
 	std::string skyboxes[] = { "No Skybox", "Ocean", "Space", "Forest", "City" };
-	this->textRenderer->render("Skybox: " + skyboxes[Settings::skyBoxChoice], this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 3 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-	this->textRenderer->render("Planes: " + std::to_string(this->planeMaster->getPlanes().size()), this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 4 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-	this->textRenderer->render("Missiles: " + std::to_string(this->missileMaster->getMissiles().size()), this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 5 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-	this->textRenderer->render("MissilesSelfDestruct: " + std::to_string(this->missilesSelfDestruct), this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 6 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-	this->textRenderer->render("PlanesSelfDestruct: " + std::to_string(this->planesSelfDestruct), this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 7 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-	this->textRenderer->render("Debug: " + this->debug, this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 8 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+	this->textRenderer->render("Skybox: " + skyboxes[Settings::skyBoxChoice], (float)this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 3 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+	this->textRenderer->render("Planes: " + std::to_string(this->planeMaster->getPlanes().size()), (float)this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 4 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+	this->textRenderer->render("Missiles: " + std::to_string(this->missileMaster->getMissiles().size()), (float)this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 5 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+	this->textRenderer->render("MissilesSelfDestruct: " + std::to_string(this->missilesSelfDestruct), (float)this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 6 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+	this->textRenderer->render("PlanesSelfDestruct: " + std::to_string(this->planesSelfDestruct), (float)this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 7 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+	this->textRenderer->render("Debug: " + this->debug, (float)this->WINDOW_WIDTH / 2, (float)this->WINDOW_HEIGHT - 8 * (float)this->fontSize, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 }

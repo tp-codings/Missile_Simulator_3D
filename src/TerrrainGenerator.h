@@ -178,8 +178,8 @@ private:
 		}
 
 		std::cout << "Loaded " << indices.size() << " indices" << std::endl;
-		numStrips = (height - 1) / rez;
-		numTrisPerStrip = (width / rez) * 2 - 2;
+		numStrips = (int)((height - 1) / rez);
+		numTrisPerStrip = (int)((width / rez) * 2 - 2);
 		std::cout << "Created lattice of " << numStrips << " strips with " << numTrisPerStrip << " triangles each" << std::endl;
 		std::cout << "Created " << numStrips * numTrisPerStrip << " triangles total" << std::endl;
 	}

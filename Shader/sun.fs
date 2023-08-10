@@ -5,12 +5,11 @@ in vec2 TexCoords;
 
 uniform sampler2D texture_diffuse1;
 
-uniform vec3 color;
+uniform vec3 dirLightColor;
 
 
 void main()
 {    
-
-    FragColor = vec4(color, 1.0);
+    FragColor = vec4(dirLightColor*1.5, 1.0);
 
 }

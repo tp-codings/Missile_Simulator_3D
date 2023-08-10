@@ -46,7 +46,7 @@ public:
 		return this->camera;
 	};
 	int getFPS(){
-		return this->FPS;
+		return (int)this->FPS;
 	};
 
 private:

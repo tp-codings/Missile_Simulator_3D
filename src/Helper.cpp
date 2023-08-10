@@ -22,10 +22,10 @@ glm::vec3 Helper::getRandomPosition(TerrainGenerator* terrain)
 
 glm::vec3 Helper::getRandomPlanePosition(TerrainGenerator* terrain)
 {
-    float minX = -terrain->getWidth();
-    float maxX = terrain->getWidth();
-    float minY = -terrain->getHeight();
-    float maxY = terrain->getHeight();
+    float minX = (float)-terrain->getWidth();
+    float maxX = (float)terrain->getWidth();
+    float minY = (float)-terrain->getHeight();
+    float maxY = (float)terrain->getHeight();
 
     glm::vec2 randomPos = glm::vec2(getRandomFloat(minX, maxX), getRandomFloat(minY, maxY));
     float height = getRandomFloat(1000.0f, 1900.0f);

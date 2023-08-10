@@ -25,9 +25,9 @@ void CollisionMaster::updateMissileCollision(PlaneMaster* planeMaster, MissileMa
 					planes[j]->setCrashRotationSpeed(rand() % 10 + -5);
 					//this->crashingPlanes.push_back(planes[j]);
 				}
-				planeMaster->removePlanes(j);
-				missileMaster->removeMissile(i);
-				this->explosion(planes[j]->getPosition(), planes[j]->getDirection(), 1000, 0.001, 1000, 100, 0.001f, 3.0f);
+				planeMaster->removePlanes((int)j);
+				missileMaster->removeMissile((int)i);
+				this->explosion(planes[j]->getPosition(), planes[j]->getDirection(), 1000, 0.001f, 1000, 100, 0.001f, 3.0f);
 			}
 		}
 	}
@@ -51,9 +51,9 @@ void CollisionMaster::updateS400Collision(PlaneMaster* planeMaster, S400Master* 
 					planes[j]->setCrashRotationSpeed(rand() % 10 + -5);
 					//this->crashingPlanes.push_back(planes[j]);
 				}
-				planeMaster->removePlanes(j);
-				s400Master->removeS400(i);
-				this->explosion(planes[j]->getPosition(), planes[j]->getDirection(), 1000, 0.001, 1000, 100, 0.001f, 3.0f);
+				planeMaster->removePlanes((int)j);
+				s400Master->removeS400((int)i);
+				this->explosion(planes[j]->getPosition(), planes[j]->getDirection(), 1000, 0.001f, 1000, 100, 0.001f, 3.0f);
 			}
 		}
 	}
@@ -72,8 +72,8 @@ void CollisionMaster::updateBulletCollision(PlaneMaster* planeMaster, BulletMast
 			float distance = sqrt(connectionVector.x * connectionVector.x + connectionVector.y * connectionVector.y + connectionVector.z * connectionVector.z);
 
 			if (distance <= radius) {
-				planeMaster->removePlanes(j);
-				this->explosion(planes[j]->getPosition(), planes[j]->getDirection(), 1000, 0.001, 100, 100, 0.001f, 3.0f);
+				planeMaster->removePlanes((int)j);
+				this->explosion(planes[j]->getPosition(), planes[j]->getDirection(), 1000, 0.001f, 100, 100, 0.001f, 3.0f);
 			}
 		}
 	}
@@ -90,9 +90,9 @@ int CollisionMaster::updateMMCollision(MissileMaster* missileMaster)
 			float distance = sqrt(connectionVector.x * connectionVector.x + connectionVector.y * connectionVector.y + connectionVector.z * connectionVector.z);
 
 			if (distance <= radius) {
-				missileMaster->removeMissile(i);
-				missileMaster->removeMissile(j);
-				this->explosion(missiles[i]->getPosition(), missiles[i]->getDirection(), 1000, 0.001, 150, 70, 0.001f, 2.0f);
+				missileMaster->removeMissile((int)i);
+				missileMaster->removeMissile((int)j);
+				this->explosion(missiles[i]->getPosition(), missiles[i]->getDirection(), 1000, 0.001f, 150, 70, 0.001f, 2.0f);
 				return 1;
 			}
 		}
@@ -111,9 +111,9 @@ int CollisionMaster::updateSSCollision(S400Master* s400Master)
 			float distance = sqrt(connectionVector.x * connectionVector.x + connectionVector.y * connectionVector.y + connectionVector.z * connectionVector.z);
 
 			if (distance <= radius) {
-				s400Master->removeS400(i);
-				s400Master->removeS400(j);
-				this->explosion(s400s[i]->getPosition(), s400s[i]->getDirection(), 1000, 0.001, 150, 70, 0.001f, 2.0f);
+				s400Master->removeS400((int)i);
+				s400Master->removeS400((int)j);
+				this->explosion(s400s[i]->getPosition(), s400s[i]->getDirection(), 1000, 0.001f, 150, 70, 0.001f, 2.0f);
 				return 1;
 			}
 		}
@@ -136,7 +136,7 @@ void CollisionMaster::explosion(glm::vec3 pos, glm::vec3 direction, int spreadDi
 			ParticleTextureHandler(this->particleAtlas, 4),
 			pos,
 			glm::vec3(spreadFactor * (rand() % spreadDiversity - (spreadDiversity / 2)), spreadFactor * (rand() % spreadDiversity - (spreadDiversity / 2)), spreadFactor * (rand() % spreadDiversity - (spreadDiversity / 2))) + direction,
-			gravityImpact, (rand() % 5 * maxDuration + 1) / maxDuration, 0, scale));
+			gravityImpact, (float)(rand() % 5 * maxDuration + 1) / maxDuration, 0, scale));
 
 	}
 }

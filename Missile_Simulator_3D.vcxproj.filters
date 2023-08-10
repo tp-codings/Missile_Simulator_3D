@@ -138,6 +138,9 @@
     <ClCompile Include="src\TerrrainGenerator.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="src\Sun.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Simulation.h">
@@ -225,6 +228,9 @@
       <Filter>Headerdateien\Engine</Filter>
     </ClInclude>
     <ClInclude Include="src\ModelHandler.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Sun.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
