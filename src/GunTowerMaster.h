@@ -1,6 +1,6 @@
 #pragma once
 #include <Camera/camera.h>
-#include <ModelHandler/ModelHandler.h>
+#include "ModelHandler.h"
 #include <glm/gtx/vector_angle.hpp>
 
 #include "Missile.h"
@@ -9,6 +9,8 @@
 #include "ParticleMaster.h"
 #include "BulletMaster.h"
 #include "Loader.h"
+
+#include "Settings.h"
 
 class GunTowerMaster
 {

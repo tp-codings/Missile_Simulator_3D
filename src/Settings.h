@@ -21,8 +21,13 @@ public:
     static float timeFactor;
     static int skyBoxChoice;
     static bool showRange;
-    static ImVec4 dirLightColor;
     static const char* camMode;
+
+    static ImVec4 dirLightColor;
+    static glm::vec3 dirLightPos;
+    static float shininess;
+   
+
     
 private:
     void init();

@@ -2,7 +2,7 @@
 #include <set>
 #include <tuple>
 #include <Camera/camera.h>
-#include <ModelHandler/ModelHandler.h>
+#include "ModelHandler.h"
 #include <glm/gtx/vector_angle.hpp>
 
 #include "Missile.h"
@@ -12,6 +12,7 @@
 #include <glm/gtx/vector_angle.hpp>
 
 #include "CameraMaster.h"
+#include "Settings.h"
 
 class S400Master
 {

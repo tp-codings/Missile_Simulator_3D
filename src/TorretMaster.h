@@ -1,6 +1,6 @@
 #pragma once
 #include <Camera/camera.h>
-#include <ModelHandler/ModelHandler.h>
+#include "ModelHandler.h"
 #include <glm/gtx/vector_angle.hpp>
 
 #include "Missile.h"
@@ -11,6 +11,7 @@
 #include "Loader.h"
 
 #include "RangeRenderer.h"
+#include "Settings.h"
 
 class TorretMaster
 {

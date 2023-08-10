@@ -73,8 +73,6 @@ void MissileMaster::update(float deltaTime, Camera& camera, std::vector<Planes *
 		
 		CameraMaster::updateCamera(this->camKeys[i], glm::vec3(this->missiles[i]->getPosition().x , this->missiles[i]->getPosition().y , this->missiles[i]->getPosition().z));
 	}
-
-
 	this->particleMaster->update(deltaTime, camera);
 }
 
@@ -83,6 +81,9 @@ void MissileMaster::render(glm::mat4 projection, Camera& camera)
 	glm::mat4 view = camera.GetViewMatrix();
 	this->shader.use();
 	this->shader.setVec3("viewPos", camera.Position);
+	this->shader.setVec3("dirLightPos", Settings::dirLightPos);
+	this->shader.setVec3("dirLightColor", glm::vec3(Settings::dirLightColor.x, Settings::dirLightColor.y, Settings::dirLightColor.z));
+	this->shader.setFloat("shininess", Settings::shininess);
 
 	for (auto i : missiles) {
 		this->model->Translate(i->getPosition());

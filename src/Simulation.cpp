@@ -62,7 +62,7 @@ void Simulation::render()
 	glBindFramebuffer(GL_FRAMEBUFFER, this->framebuffer);
 	glEnable(GL_DEPTH_TEST);
 	//Sets Backgroundcolor to dimmed color of the directional light color
-	glClearColor(Settings::dirLightColor.x* 0.2f, Settings::dirLightColor.y* 0.2f, Settings::dirLightColor.z* 0.2f, 0.2f);
+	glClearColor(Settings::dirLightColor.x, Settings::dirLightColor.y, Settings::dirLightColor.z, 1.0f);
 
 	//Bufferclear
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

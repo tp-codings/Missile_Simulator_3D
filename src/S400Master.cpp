@@ -108,6 +108,7 @@ void S400Master::render(glm::mat4 projection, Camera& camera)
 
 	this->shader.use();
 	this->shader.setVec3("viewPos", camera.Position);
+
 	for (auto i : s400) {
 		this->model->Translate(i->getPosition());
 		this->model->Rotate(i->getRotationAngle(), i->getRotationAxis());

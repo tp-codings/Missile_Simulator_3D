@@ -1,7 +1,7 @@
 #pragma once
 #include <set>
 #include <Camera/camera.h>
-#include <ModelHandler/ModelHandler.h>
+#include "ModelHandler.h"
 #include <glm/gtx/vector_angle.hpp>
 
 #include "Missile.h"

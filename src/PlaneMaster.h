@@ -1,10 +1,12 @@
 #pragma once
 #include <set>
 #include <Camera/camera.h>
-#include <ModelHandler/ModelHandler.h>
+#include "ModelHandler.h"
 #include "Planes.h"
 #include "ParticleMaster.h"
 #include "Loader.h"
+
+#include "Settings.h"
 
 class PlaneMaster
 {

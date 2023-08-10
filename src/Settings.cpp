@@ -105,5 +105,8 @@ float Settings::cameraSpeed = 600.0f;
 float Settings::timeFactor = 1.0f;
 int Settings::skyBoxChoice = 4;
 bool Settings::showRange = false;
-ImVec4 Settings::dirLightColor = ImVec4(1.0, 1.0, 1.0, 1.0);
 const char* Settings::camMode = "MAIN";
+
+ImVec4 Settings::dirLightColor = ImVec4(0.3, 0.3, 0.8, 1.0);
+float Settings::shininess = 64.f;
+glm::vec3 Settings::dirLightPos = glm::vec3(0.0f, 500.0f, 0.0f);

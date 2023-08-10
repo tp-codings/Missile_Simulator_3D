@@ -180,6 +180,7 @@
     <ClInclude Include="src\Engine.h" />
     <ClInclude Include="src\FastNoiseLite.h" />
     <ClInclude Include="src\InputController.h" />
+    <ClInclude Include="src\ModelHandler.h" />
     <ClInclude Include="src\Settings.h" />
     <ClInclude Include="src\GunTower.h" />
     <ClInclude Include="src\GunTowerMaster.h" />

@@ -8,9 +8,9 @@ in vec3 FragPos;
 out vec4 FragColor;
 
 uniform vec3 vColor ;
-vec3 lightPos = vec3(0.0, 500.0, 0.0);
-vec3 lightColor = vec3(1.0);
-float shininess = 64.f;
+uniform vec3 dirLightPos;
+uniform vec3 dirLightColor;
+uniform float shininess;
 
 uniform vec3 viewPos;
 
@@ -23,10 +23,10 @@ void main(){
         vec3 ambient = ambientStrength * vColor;
     
         // Point Light
-        vec3 lightDir = normalize(lightPos - FragPos);
+        vec3 lightDir = normalize(dirLightPos - FragPos);
     
         float diff = max(dot(vNormal, lightDir), 0.0); 
-        vec3 diffuse = diff * lightColor;
+        vec3 diffuse = diff * dirLightColor;
     
         float specularStrength = 0.0;
     
@@ -34,7 +34,7 @@ void main(){
         vec3 reflectDir = reflect(-lightDir, vNormal);
     
         float spec = pow(max(dot(viewDir, reflectDir), 0.0), shininess); 
-        vec3 specular = specularStrength * spec * lightColor;
+        vec3 specular = specularStrength * spec * dirLightColor;
     
         // Directional Light
         //vec3 dirLightDirNorm = normalize(dirLightDir);

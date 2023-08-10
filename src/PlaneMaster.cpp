@@ -39,6 +39,7 @@ void PlaneMaster::render(glm::mat4 projection, Camera& camera)
 {
 	this->shader.use();
 	this->shader.setVec3("viewPos", camera.Position);
+
 	glm::mat4 view = camera.GetViewMatrix();
 
 	for (auto i : planes) {

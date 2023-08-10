@@ -62,6 +62,8 @@ void GunTowerMaster::update(float deltaTime, Camera& camera, std::vector<Planes*
 void GunTowerMaster::render(glm::mat4 projection, Camera& camera)
 {
 	glm::mat4 view = camera.GetViewMatrix();
+	this->gunTowerShader.use();
+	this->gunTowerShader.setVec3("viewPos", camera.Position);
 
 	for (auto i : gunTowers) {
 		this->gunTowerModel->Translate(i->getPosition());

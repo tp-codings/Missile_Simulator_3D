@@ -19,7 +19,7 @@
 #include <imgui/imgui_impl_opengl3.h>
 
 #include <TextRenderer/TextRenderer.h>
-#include <ModelHandler/ModelHandler.h>
+#include "ModelHandler.h"
 #include <SkyBox/Skybox.h>
 
 #include "TerrrainGenerator.h"

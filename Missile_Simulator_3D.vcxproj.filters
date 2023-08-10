@@ -224,6 +224,9 @@
     <ClInclude Include="src\WindowHandler.h">
       <Filter>Headerdateien\Engine</Filter>
     </ClInclude>
+    <ClInclude Include="src\ModelHandler.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\cubemap.fs">
