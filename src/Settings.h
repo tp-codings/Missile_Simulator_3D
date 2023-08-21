@@ -26,6 +26,7 @@ public:
     static ImVec4 dirLightColor;
     static glm::vec3 dirLightPos;
     static float shininess;
+    static float ambientStrength;
    
 
     

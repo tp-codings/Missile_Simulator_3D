@@ -25,6 +25,7 @@ public:
 		s->setVec3("dirLightPos", Settings::dirLightPos);
 		s->setVec3("dirLightColor", glm::vec3(Settings::dirLightColor.x, Settings::dirLightColor.y, Settings::dirLightColor.z));
 		s->setFloat("shininess", Settings::shininess);
+		s->setFloat("ambientStrength", Settings::ambientStrength);
 
 		this->model->Draw(*s);
 	};

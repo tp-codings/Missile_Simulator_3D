@@ -11,13 +11,12 @@ uniform vec3 vColor ;
 uniform vec3 dirLightPos;
 uniform vec3 dirLightColor;
 uniform float shininess;
+uniform float ambientStrength = 0.2;
 
 uniform vec3 viewPos;
 
 
 void main(){
-
-        float ambientStrength = 0.2;
     
         // Ambient Light
         vec3 ambient = ambientStrength * vColor;

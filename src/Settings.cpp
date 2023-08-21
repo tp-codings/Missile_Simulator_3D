@@ -78,6 +78,7 @@ void Settings::render()
         }
 
         ImGui::ColorPicker3("DirLightColor", (float*)&this->dirLightColor, ImGuiColorEditFlags_InputRGB);
+        ImGui::SliderFloat("AmbientStrength", &this->ambientStrength, 0, 1);
         ImGui::SliderFloat3("DirLightPosition", (float*)&this->dirLightPos, -2000.0f, 2000.0f);
 
         ImGui::End();
@@ -108,6 +109,7 @@ float Settings::timeFactor = 1.0f;
 int Settings::skyBoxChoice = 4;
 bool Settings::showRange = false;
 const char* Settings::camMode = "MAIN";
+float Settings::ambientStrength = 0.2;
 
 ImVec4 Settings::dirLightColor = ImVec4(0.3, 0.3, 0.8, 1.0);
 float Settings::shininess = 64.f;
