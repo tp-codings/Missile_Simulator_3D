@@ -35,7 +35,7 @@
 #include "MissileTruckMaster.h"
 #include "GunTowerMaster.h"
 #include "BulletMaster.h"
-#include "CameraMaster.h"
+//#include "CameraMaster.h"
 
 #include "Sun.h"
 

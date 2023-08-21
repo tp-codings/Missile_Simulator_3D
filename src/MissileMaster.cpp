@@ -23,8 +23,8 @@ void MissileMaster::update(float deltaTime, Camera& camera, std::vector<Planes *
 		this->missiles[i]->update(deltaTime);
 
 		if (planes.size() > 0) {
-			this->missiles[i]->setAccAcc(glm::vec3(50.0f));
-			this->missiles[i]->setMaxVelocity(glm::vec3(120.0f));
+			this->missiles[i]->setAccAcc(glm::vec3(100.0f));
+			this->missiles[i]->setMaxVelocity(glm::vec3(150.0f));
 
 			int nearest;
 			float nearestDistance;

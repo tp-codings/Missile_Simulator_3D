@@ -39,7 +39,7 @@ void S400Master::update(float deltaTime, Camera& camera, std::vector<Planes*> pl
 			this->s400[i]->setAccAcc(glm::vec3(0.0f));
 			float acc = 2.0f * deltaTime;
 			this->s400[i]->setVelocity(glm::vec3(0.0f, 14.0f, 0.0f) - glm::vec3(0.0f, 10 * this->s400[i]->getTimer(), 0.0f));
-			this->s400[i]->setMaxVelocity(glm::vec3(1000.0f));
+			this->s400[i]->setMaxVelocity(glm::vec3(500.0f));
 			//this->s400[i]->setDirection(glm::vec3(this->s400[i]->getDirection().x + direction.x * acc, this->s400[i]->getDirection().y + direction.y * acc, this->s400[i]->getDirection().z + direction.z * acc));
 		}
 

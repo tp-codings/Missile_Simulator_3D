@@ -79,6 +79,7 @@ void Settings::render()
 
         ImGui::ColorPicker3("DirLightColor", (float*)&this->dirLightColor, ImGuiColorEditFlags_InputRGB);
         ImGui::SliderFloat3("DirLightPosition", (float*)&this->dirLightPos, -2000.0f, 2000.0f);
+
         ImGui::End();
 
         ImGui::Render();
