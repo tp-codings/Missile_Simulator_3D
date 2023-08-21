@@ -81,9 +81,6 @@ void MissileMaster::render(glm::mat4 projection, Camera& camera)
 	glm::mat4 view = camera.GetViewMatrix();
 	this->shader.use();
 	this->shader.setVec3("viewPos", camera.Position);
-	this->shader.setVec3("dirLightPos", Settings::dirLightPos);
-	this->shader.setVec3("dirLightColor", glm::vec3(Settings::dirLightColor.x, Settings::dirLightColor.y, Settings::dirLightColor.z));
-	this->shader.setFloat("shininess", Settings::shininess);
 
 	for (auto i : missiles) {
 		this->model->Translate(i->getPosition());

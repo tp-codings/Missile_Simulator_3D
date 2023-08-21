@@ -10,6 +10,6 @@ Sun::Sun()
 
 void Sun::render(glm::mat4 projection, glm::mat4 view)
 {
-	this->model->Translate(Settings::dirLightPos);
+	this->model->Translate(Settings::pointLightPos);
 	this->model->Draw(&this->shader, projection, view);
 }

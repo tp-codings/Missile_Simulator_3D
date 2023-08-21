@@ -79,6 +79,8 @@ private:
 	int numStrips;
 	int numTrisPerStrip;
 
+	std::vector<glm::vec3> normals;
+
 	unsigned int terrainVAO, terrainVBO, terrainIBO;
 
 

@@ -22,8 +22,10 @@ public:
 		s->setMat4("view", view);
 		s->setMat4("model", this->transformation);
 		s->setVec3("vColor", color);
-		s->setVec3("dirLightPos", Settings::dirLightPos);
+		s->setVec3("pointLightPos", Settings::pointLightPos);
+		s->setVec3("pointLightColor", glm::vec3(Settings::pointLightColor.x, Settings::pointLightColor.y, Settings::pointLightColor.z));
 		s->setVec3("dirLightColor", glm::vec3(Settings::dirLightColor.x, Settings::dirLightColor.y, Settings::dirLightColor.z));
+		s->setVec3("dirLightDir", Settings::dirLightDir);
 		s->setFloat("shininess", Settings::shininess);
 		s->setFloat("ambientStrength", Settings::ambientStrength);
 

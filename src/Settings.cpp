@@ -77,9 +77,11 @@ void Settings::render()
             skyBoxChoice = 4;
         }
 
+        ImGui::ColorPicker3("PointLightColor", (float*)&this->pointLightColor, ImGuiColorEditFlags_InputRGB);
+        ImGui::SliderFloat3("PointLightPosition", (float*)&this->pointLightPos, -2000.0f, 2000.0f);
         ImGui::ColorPicker3("DirLightColor", (float*)&this->dirLightColor, ImGuiColorEditFlags_InputRGB);
+        ImGui::SliderFloat3("DirLightDir", (float*)&this->dirLightDir, -1.0f, 1.0f);
         ImGui::SliderFloat("AmbientStrength", &this->ambientStrength, 0, 1);
-        ImGui::SliderFloat3("DirLightPosition", (float*)&this->dirLightPos, -2000.0f, 2000.0f);
 
         ImGui::End();
 
@@ -112,5 +114,8 @@ const char* Settings::camMode = "MAIN";
 float Settings::ambientStrength = 0.2;
 
 ImVec4 Settings::dirLightColor = ImVec4(0.3, 0.3, 0.8, 1.0);
+ImVec4 Settings::pointLightColor = ImVec4(0.3, 0.3, 0.8, 1.0);
 float Settings::shininess = 64.f;
-glm::vec3 Settings::dirLightPos = glm::vec3(1000.0f, 1000.0f, 1000.0f);
+
+glm::vec3 Settings::pointLightPos = glm::vec3(1000.0f, 1000.0f, 1000.0f);
+glm::vec3 Settings::dirLightDir = glm::vec3(1.0f, 1.0f, 1.0f);

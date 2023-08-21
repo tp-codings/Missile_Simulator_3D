@@ -23,8 +23,14 @@ public:
     static bool showRange;
     static const char* camMode;
 
+    static glm::vec3 dirLightDir;
     static ImVec4 dirLightColor;
-    static glm::vec3 dirLightPos;
+
+    static glm::vec3 pointLightPos;
+    static ImVec4 pointLightColor;
+
+
+
     static float shininess;
     static float ambientStrength;
    
