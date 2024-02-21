@@ -13,18 +13,21 @@
 #include <vector>
 
 #include "FastNoiseLite.h"
+#include "Settings.h"
 
 class TerrainGenerator {
 public:
 	TerrainGenerator(const char* path) {
 		this->setUpHeightMap(path);
 		this->generateHeightMap();
+		this->calculateNormals();
 		this->initBuffer();
 
 		this->shader = Shader("Shader/terrain.vs", "Shader/terrain.fs");
 	}
 	TerrainGenerator(float ampltudeMultiplier, float width, float height) {
 		this->generatePerlinNoise(ampltudeMultiplier, width, height);
+		this->calculateNormals();
 		this->initBuffer();
 
 		this->shader = Shader("Shader/terrain.vs", "Shader/terrain.fs");
@@ -36,6 +39,12 @@ public:
 		this->shader.setMat4("view", view);
 		glm::mat4 model = glm::mat4(1.0f);
 		this->shader.setMat4("model", model);
+		this->shader.setVec3("pointLightPos", Settings::pointLightPos);
+		this->shader.setVec3("pointLightColor", glm::vec3(Settings::pointLightColor.x, Settings::pointLightColor.y, Settings::pointLightColor.z));
+		this->shader.setVec3("dirLightColor", glm::vec3(Settings::dirLightColor.x, Settings::dirLightColor.y, Settings::dirLightColor.z));
+		this->shader.setVec3("dirLightDir", Settings::dirLightDir);
+		this->shader.setFloat("shininess", Settings::shininess);
+		this->shader.setFloat("ambientStrength", Settings::ambientStrength);
 
 		glBindVertexArray(terrainVAO);
 		//        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -82,7 +91,6 @@ private:
 	std::vector<glm::vec3> normals;
 
 	unsigned int terrainVAO, terrainVBO, terrainIBO;
-
 
 
 
@@ -134,6 +142,31 @@ private:
 		numTrisPerStrip = (width / rez) * 2 - 2;
 		std::cout << "Created lattice of " << numStrips << " strips with " << numTrisPerStrip << " triangles each" << std::endl;
 		std::cout << "Created " << numStrips * numTrisPerStrip << " triangles total" << std::endl;
+	}
+
+	void calculateNormals() {
+		normals.resize(vertices.size() / 3, glm::vec3(0.0f));
+
+		for (unsigned i = 0; i < indices.size(); i += 3) {
+			unsigned idx1 = indices[i];
+			unsigned idx2 = indices[i + 1];
+			unsigned idx3 = indices[i + 2];
+
+			glm::vec3 v1(vertices[idx1 * 3], vertices[idx1 * 3 + 1], vertices[idx1 * 3 + 2]);
+			glm::vec3 v2(vertices[idx2 * 3], vertices[idx2 * 3 + 1], vertices[idx2 * 3 + 2]);
+			glm::vec3 v3(vertices[idx3 * 3], vertices[idx3 * 3 + 1], vertices[idx3 * 3 + 2]);
+
+			glm::vec3 normal = glm::normalize(glm::cross(v2 - v1, v3 - v1));
+
+			normals[idx1] += normal;
+			normals[idx2] += normal;
+			normals[idx3] += normal;
+		}
+
+		for (unsigned i = 0; i < normals.size(); i++) {
+			normals[i] = glm::normalize(normals[i]);
+		}
+		std::cout << "Calculated normals " << normals.size() << std::endl;
 	}
 
 	void generatePerlinNoise(float amplitudeMultiplier, float width, float height) {
@@ -197,6 +230,10 @@ private:
 		// position attribute
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 		glEnableVertexAttribArray(0);
+
+		// Normal attribute location is 1
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
+		glEnableVertexAttribArray(1);
 
 		glGenBuffers(1, &terrainIBO);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, terrainIBO);

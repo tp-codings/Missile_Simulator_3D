@@ -3,10 +3,12 @@
 out vec4 FragColor;
 
 in float Height;
+in vec3 vNormal;
+in vec3 FragPos;
 
 uniform vec3 vColor ;
 uniform float shininess;
-uniform float ambientStrength;
+uniform float ambientStrength = 0.5;
 
 uniform vec3 pointLightPos;
 uniform vec3 pointLightColor;
@@ -24,9 +26,8 @@ void main()
     if(Height < -10.0){
         result = vec3(0.0, 0.5, 1.0);
     }
-
-        // Ambient Light
-    vec3 ambient = ambientStrength * vColor;
+    // Ambient Light
+    vec3 ambient = ambientStrength * result;
     
     // Point Light
     vec3 lightDir = normalize(pointLightPos - FragPos);
@@ -51,7 +52,7 @@ void main()
     float dirSpec = pow(max(dot(viewDir, dirReflectDir), 0.0), shininess); 
     vec3 dirSpecular = specularStrength * dirSpec * dirLightColor;
         
-    result = (ambient + diffuse + specular + dirDiffuse + dirSpecular) * vColor + result; 
-    //vec3 result = (ambient+diffuse+specular) * vColor;
+    result = (ambient + diffuse + specular + dirDiffuse + dirSpecular) * result; 
+    //vec3 result = (ambient+diffuse+specular) * result;
     FragColor = vec4(result, 1.0);
 }
