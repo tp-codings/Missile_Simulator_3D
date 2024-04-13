@@ -3,7 +3,7 @@ This is program which simulates an air defence system with missiles launched fro
 
 ## Features
 - Turrets find their target automatically and fire if the target is in range
-- Missiles from truck launch system can be fired manually -> those missiles are faster with longer range
+- Missiles from truck launch system can be fired manually -> those missiles are faster with longer range, but not so maneuverable
 - freely movable camera in 3D space
 - change between missile chase cams (third person view)
 - supports terrain generator by heightmap
@@ -38,3 +38,20 @@ This is program which simulates an air defence system with missiles launched fro
 - Shift: Down
 - Mouse: Look around
 - Scroll wheel: Zoom
+
+## GUI Usage
+- F: Open/Close GUI
+- TimeFactor: Slow Motion Factor (useful for chaotic particle behavior)
+- CamSpeed: Moving speed of first person view camera
+- Start/Stop: Start/Stop the simulation
+- Show Range: Shows range as a dome around city that should be protected
+- DirLightColor: Option to modify direction light color
+- DirLightDir: Option to modify direction light direction
+- AmbientStrength: Defines strength of ambient light in the scene
+
+## Keyboard Shortcuts
+- R: Toggle range view
+- P: Fire missile from truck
+- C: Switch between cams
+- Enter: Start/Stop simulation
+- Arrow Keys: Change direction of all planes
