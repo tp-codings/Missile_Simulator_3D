@@ -8,6 +8,7 @@ This is program which simulates an air defence system with missiles launched fro
 - change between missile chase cams (third person view)
 - supports terrain generator by heightmap
 - particle effects
+- missiles can collide during flight
   
 ## Project Overview
 
@@ -55,3 +56,14 @@ This is program which simulates an air defence system with missiles launched fro
 - C: Switch between cams
 - Enter: Start/Stop simulation
 - Arrow Keys: Change direction of all planes
+
+# Examples
+
+https://github.com/tp-codings/Missile_Simulator_3D/assets/118997294/dba37930-b11e-4769-8520-d2df164a7189
+
+https://github.com/tp-codings/Missile_Simulator_3D/assets/118997294/5ccf60ed-f1e0-4daa-a814-23193ce88e4d
+
+https://github.com/tp-codings/Missile_Simulator_3D/assets/118997294/50b5ff4a-a596-41ef-9936-150f319c0443
+
+https://github.com/tp-codings/Missile_Simulator_3D/assets/118997294/fe4f253f-210e-453e-b86a-a6977cedeb1e
+
