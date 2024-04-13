@@ -1,5 +1,5 @@
 # Missile_Simulator_3D
-This is program which simulates an air defence system with missiles launched from trucks and turrets and their trajectory to moving planes in the air.
+This is program which simulates an air defence system with missiles launched from trucks and turrets and their trajectory to moving planes in the air. It is inspired by the Iron Dome. 
 
 ## Features
 - Turrets find their target automatically and fire if the target is in range
@@ -54,6 +54,7 @@ This is program which simulates an air defence system with missiles launched fro
 - R: Toggle range view
 - P: Fire missile from truck
 - C: Switch between cams
+- K: Fire Canon
 - Enter: Start/Stop simulation
 - Arrow Keys: Change direction of all planes
 
@@ -68,9 +69,15 @@ https://github.com/tp-codings/Missile_Simulator_3D/assets/118997294/50b5ff4a-a59
 https://github.com/tp-codings/Missile_Simulator_3D/assets/118997294/fe4f253f-210e-453e-b86a-a6977cedeb1e
 
 # Open Issues
-To be honest, that list could be very long. I tried out so many things in this project. I tried so many things in this project. In many places they didn't work 100%, but I didn't want to spend forever fixing everything, I wanted to keep trying out the things that interested me like particle effects and terrain generation. So there is a lot of room for improvement. The following list is, for sure, not complete:
-
-- 
+To be honest, that list could be very long. I tried out so many things in this project. In many places they didn't work 100%, but I didn't want to spend forever fixing everything, I wanted to keep trying out the things that interested me like particle effects or terrain generation. Looking back, I would probably do a few things differently. The architecture of the application is better than in some previous projects, but it could definitely benefit from suitable design patterns and concepts such as polymorphism. So there is a lot of room for improvement. The following list is, for sure, not complete:
+- switching between cameras does not always work, sometimes the cam will not be destroyed after the missile is destroyed
+- There are no shadows, what leads to a wierd look of the terrain
+- The rotation of the rocket in the tower does not always follow the tower. This can cause the rocket to spin “through the turret.”
+- In some cases, the missiles perform a very abrupt turn in the air when the actual target is destroyed or a new one is within closer range and within the missile's detection angle
+- Sometimes, trucks are not placed properly on the ground, but hovering above
+- The firing system of the canon is not good, I have not yet found an algorithm that positions the cannon sights to match the aircraft in order to hit it (should be like Phalanx CIWS)
+- Particle effects are rudimentary
+- ...
 
 # Contact Information
 
