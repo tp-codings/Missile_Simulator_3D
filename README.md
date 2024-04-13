@@ -67,3 +67,17 @@ https://github.com/tp-codings/Missile_Simulator_3D/assets/118997294/50b5ff4a-a59
 
 https://github.com/tp-codings/Missile_Simulator_3D/assets/118997294/fe4f253f-210e-453e-b86a-a6977cedeb1e
 
+# Open Issues
+To be honest, that list could be very long. I tried out so many things in this project. I tried so many things in this project. In many places they didn't work 100%, but I didn't want to spend forever fixing everything, I wanted to keep trying out the things that interested me like particle effects and terrain generation. So there is a lot of room for improvement. The following list is, for sure, not complete:
+
+- 
+
+# Contact Information
+
+Feel free to reach out to me:
+
+- **Email:** [tobipaul50@gmail.com](mailto:tobipaul50@gmail.com)
+- **LinkedIn:** [Tobias Paul](https://www.linkedin.com/in/tobias-paul-657513276/)
+- **GitHub:** [@tp-codings](https://github.com/tp-codings)
+
+Looking forward to connecting with you! 😊
